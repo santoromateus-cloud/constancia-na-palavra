@@ -1,0 +1,56 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+// Navegação da área logada: Ler · Planos · Mural · Conta.
+// Barra no topo com marca + abas; destaca a aba atual.
+const ABAS = [
+  { href: "/ler", label: "Ler", emoji: "📖" },
+  { href: "/planos", label: "Planos", emoji: "📅" },
+  { href: "/mural", label: "Mural", emoji: "💬" },
+  { href: "/conta", label: "Conta", emoji: "👤" },
+];
+
+export default function AppNav() {
+  const pathname = usePathname();
+  return (
+    <nav className="an-nav">
+      <div className="an-in">
+        <Link href="/ler" className="an-brand">
+          <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden>
+            <rect width="64" height="64" rx="15" fill="#2f4858" />
+            <rect x="16" y="34" width="9" height="16" rx="4.5" fill="#f2cc8f" />
+            <rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#e07a5f" />
+            <rect x="39" y="16" width="9" height="34" rx="4.5" fill="#2a9d8f" />
+          </svg>
+          <span>Constância</span>
+        </Link>
+        <div className="an-abas">
+          {ABAS.map((a) => {
+            const on = pathname === a.href;
+            return (
+              <Link key={a.href} href={a.href} className={"an-aba" + (on ? " on" : "")}>
+                <span className="an-em" aria-hidden>{a.emoji}</span>
+                <span className="an-lb">{a.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <style jsx>{`
+        .an-nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--creme) 88%,transparent);border-bottom:1px solid var(--line)}
+        .an-in{max-width:820px;margin:0 auto;height:60px;padding:0 clamp(14px,4vw,22px);display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .an-brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--ink)}
+        .an-abas{display:flex;align-items:center;gap:4px}
+        .an-aba{display:flex;align-items:center;gap:6px;padding:8px 11px;border-radius:12px;color:#8a95a1;font-size:14px;font-weight:600;transition:.18s}
+        .an-aba .an-em{font-size:15px;filter:grayscale(.3);opacity:.75}
+        .an-aba:hover{color:var(--base)}
+        .an-aba.on{color:var(--coral);background:color-mix(in srgb,var(--coral) 11%,transparent)}
+        .an-aba.on .an-em{filter:none;opacity:1}
+        @media(max-width:560px){.an-aba .an-lb{display:none}.an-brand span{display:none}}
+      `}</style>
+    </nav>
+  );
+}
