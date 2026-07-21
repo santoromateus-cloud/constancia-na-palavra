@@ -3,6 +3,10 @@
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase";
 
+// Google OAuth ainda nao esta configurado no Supabase (provider desligado).
+// Religar na fase da venda: configurar o provider e trocar para true.
+const GOOGLE_LOGIN = false;
+
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"entrar" | "criar">("entrar");
@@ -68,7 +72,7 @@ export default function Login() {
       <div className="login-card-wrap">
         <div className="login-card">
           <a href="/" className="lc-logo">
-            <svg width="40" height="40" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#2f4858" /><rect x="16" y="34" width="9" height="16" rx="4.5" fill="#f2cc8f" /><rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#e07a5f" /><rect x="39" y="16" width="9" height="34" rx="4.5" fill="#2a9d8f" /></svg>
+            <svg width="40" height="40" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#3A2E1D" /><rect x="16" y="34" width="9" height="16" rx="4.5" fill="#E8D9AE" /><rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#C9A85C" /><rect x="39" y="16" width="9" height="34" rx="4.5" fill="#6A7A42" /></svg>
             <b>Constância na Palavra</b>
           </a>
           <h1>{mode === "criar" ? "Criar sua conta." : "Bem-vinda de volta."}</h1>
@@ -95,6 +99,7 @@ export default function Login() {
             {mode === "criar" ? "Já tenho conta — entrar" : "Ainda não tenho conta — criar agora"}
           </button>
 
+          {GOOGLE_LOGIN && (<>
           <div className="em-ou"><span>ou</span></div>
 
           <button className="g-btn" onClick={entrarComGoogle} disabled={loading}>
@@ -106,6 +111,7 @@ export default function Login() {
             </svg>
             {loading ? "Redirecionando…" : "Entrar com Google"}
           </button>
+          </>)}
 
           <p className="lc-mini">Sua caminhada na Palavra começa aqui. Um dia de cada vez.</p>
           <a href="/" className="lc-skip">← Voltar ao início</a>
@@ -114,9 +120,9 @@ export default function Login() {
 
       <style jsx>{`
         .login-split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
-        .login-photo{position:relative;overflow:hidden;background:linear-gradient(160deg,#2f4858 0%,#26384a 60%,#1c2233 100%)}
-        .login-photo::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 20% 0%, rgba(242,204,143,.18), transparent 55%)}
-        .lp-quote{position:absolute;left:36px;bottom:36px;right:36px;z-index:2;color:#fff}
+        .login-photo{position:relative;overflow:hidden;background:linear-gradient(160deg,#3A2E1D 0%,#2E2416 60%,#251C10 100%)}
+        .login-photo::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 20% 0%, rgba(201,168,92,.20), transparent 55%)}
+        .lp-quote{position:absolute;left:36px;bottom:36px;right:36px;z-index:2;color:#FCF8EF}
         .lp-quote p{font-family:var(--serif);font-size:clamp(20px,2vw,28px);font-style:italic;line-height:1.35;max-width:26ch}
         .lp-quote span{display:block;margin-top:12px;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--areia)}
         .login-card-wrap{display:flex;align-items:center;justify-content:center;padding:clamp(24px,5vw,60px)}
@@ -124,21 +130,21 @@ export default function Login() {
         .lc-logo{display:flex;align-items:center;gap:11px;margin-bottom:28px}
         .lc-logo b{font-family:var(--serif);font-size:20px}
         .login-card h1{font-size:clamp(28px,3.4vw,38px);line-height:1.05}
-        .lc-sub{color:#54606e;font-size:15px;margin-top:12px;line-height:1.5}
+        .lc-sub{color:#6C5C45;font-size:15px;margin-top:12px;line-height:1.5}
         .em-form{display:flex;flex-direction:column;gap:10px;margin-top:24px}
-        .em-input{width:100%;border:1px solid #e3ddd2;border-radius:14px;padding:14px;font-family:var(--sans);font-size:15px;color:var(--ink);background:var(--paper)}
+        .em-input{width:100%;border:1px solid #E0D5BD;border-radius:14px;padding:14px;font-family:var(--sans);font-size:15px;color:var(--ink);background:var(--paper)}
         .em-input:focus{outline:none;border-color:var(--coral)}
-        .em-btn{width:100%;background:var(--coral);color:#fff;border:none;border-radius:14px;padding:15px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;transition:.2s;margin-top:4px}
-        .em-btn:hover:not(:disabled){background:#d96f53;transform:translateY(-1px)}
+        .em-btn{width:100%;background:var(--coral);color:#FCF8EF;border:none;border-radius:14px;padding:15px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;transition:.2s;margin-top:4px}
+        .em-btn:hover:not(:disabled){background:#47512C;transform:translateY(-1px)}
         .em-btn:disabled{opacity:.5;cursor:not-allowed}
-        .em-err{font-size:13px;color:#a83c2c;background:#fdecea;border:1px solid #f3cfc8;border-radius:10px;padding:9px 12px;line-height:1.4;margin:0}
-        .em-msg{font-size:13px;color:#1f7a6e;background:#eef6f4;border:1px solid #cfe7e1;border-radius:10px;padding:9px 12px;line-height:1.4;margin:0}
+        .em-err{font-size:13px;color:#a83c2c;background:#F9EBE3;border:1px solid #E9CDB9;border-radius:10px;padding:9px 12px;line-height:1.4;margin:0}
+        .em-msg{font-size:13px;color:#4E5A2E;background:#F1F0E0;border:1px solid #D8D6B4;border-radius:10px;padding:9px 12px;line-height:1.4;margin:0}
         .em-toggle{background:none;border:none;color:var(--coral);font-family:var(--sans);font-weight:600;font-size:14px;cursor:pointer;margin-top:14px;padding:0}
         .em-toggle:hover{text-decoration:underline}
         .em-ou{display:flex;align-items:center;text-align:center;margin:22px 0 4px;color:var(--muted)}
-        .em-ou::before,.em-ou::after{content:"";flex:1;height:1px;background:#e3ddd2}
+        .em-ou::before,.em-ou::after{content:"";flex:1;height:1px;background:#E0D5BD}
         .em-ou span{padding:0 12px;font-size:12px}
-        .g-btn{width:100%;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--paper);border:1px solid #e3ddd2;color:var(--ink);font-family:var(--sans);font-weight:600;font-size:15px;border-radius:14px;padding:15px;cursor:pointer;box-shadow:var(--shadow-sm);transition:.2s}
+        .g-btn{width:100%;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--paper);border:1px solid #E0D5BD;color:var(--ink);font-family:var(--sans);font-weight:600;font-size:15px;border-radius:14px;padding:15px;cursor:pointer;box-shadow:var(--shadow-sm);transition:.2s}
         .g-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--shadow)}
         .g-btn:disabled{opacity:.6;cursor:default}
         .lc-mini{font-size:12px;color:var(--muted);margin-top:16px;line-height:1.5}
