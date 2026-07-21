@@ -97,25 +97,25 @@ const sharedCss = `
   .ler-wrap{min-height:calc(100vh - 60px);background:var(--creme);padding:24px 18px 60px}
   .ler-card{max-width:680px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:clamp(24px,4vw,40px);box-shadow:var(--shadow)}
   .ler-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .ler-kick{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--coral)}
+  .ler-kick{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--ouro)}
   .ler-streak{font-size:15px;font-weight:800;color:#b45b3e}
   .ler-plano{font-family:var(--serif);font-size:clamp(20px,2.6vw,26px);margin:10px 0 0;color:var(--base)}
   .ler-prog{margin:18px 0 22px}
-  .ler-prog-bar{height:9px;border-radius:6px;background:color-mix(in srgb,var(--coral) 14%,#fff);overflow:hidden}
+  .ler-prog-bar{height:9px;border-radius:6px;background:color-mix(in srgb,var(--coral) 14%,#FCF8EF);overflow:hidden}
   .ler-prog-bar i{display:block;height:100%;border-radius:6px;background:var(--coral);transition:width .8s cubic-bezier(.16,1,.3,1)}
   .ler-prog-meta{font-size:12.5px;color:var(--muted);margin-top:6px}
-  .ler-banner{background:color-mix(in srgb,var(--verde) 12%,#fff);border:1px solid color-mix(in srgb,var(--verde) 30%,transparent);color:#1f7a6e;border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:600;margin-bottom:18px}
+  .ler-banner{background:color-mix(in srgb,var(--verde) 12%,#FCF8EF);border:1px solid color-mix(in srgb,var(--verde) 30%,transparent);color:#4E5A2E;border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:600;margin-bottom:18px}
   .ler-ref{font-family:var(--serif);font-size:clamp(22px,3vw,30px);color:var(--ink);margin:0 0 14px;font-weight:600}
   .ler-texto{white-space:pre-line;font-size:16.5px;line-height:1.7;color:#2b3440;background:color-mix(in srgb,var(--areia) 16%,var(--paper));border-left:4px solid var(--coral);border-radius:0 14px 14px 0;padding:20px 22px;margin-bottom:24px;max-height:52vh;overflow-y:auto}
-  .ler-texto-vazio{white-space:normal;color:#54606e;font-style:italic}
-  .ler-btn{display:block;width:100%;text-align:center;background:var(--coral);color:#fff;border:none;border-radius:14px;padding:15px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;transition:.2s}
-  .ler-btn:hover{background:#d96f53;transform:translateY(-1px)}
+  .ler-texto-vazio{white-space:normal;color:#6C5C45;font-style:italic}
+  .ler-btn{display:block;width:100%;text-align:center;background:var(--coral);color:#FCF8EF;border:none;border-radius:14px;padding:15px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;transition:.2s}
+  .ler-btn:hover{background:#47512C;transform:translateY(-1px)}
   .ler-btn-sec{background:var(--base)}
-  .ler-btn-sec:hover{background:#26384a}
+  .ler-btn-sec:hover{background:#2E2416}
   .ler-btn-link{text-decoration:none}
   .ler-mini{margin-top:16px;font-size:12.5px;color:var(--muted);text-align:center}
   .ler-empty h1,.ler-medal h1{font-family:var(--serif);font-size:clamp(24px,3.2vw,32px);margin:12px 0 10px}
-  .ler-nota{font-size:15px;color:#54606e;line-height:1.6;margin-bottom:22px}
+  .ler-nota{font-size:15px;color:#6C5C45;line-height:1.6;margin-bottom:22px}
   .ler-medal{text-align:center}
   .ler-medalha{font-size:64px;line-height:1;margin-bottom:6px}
   .ler-stats{display:flex;gap:12px;justify-content:center;margin:0 0 22px}
