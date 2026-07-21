@@ -45,20 +45,20 @@ export default async function Planos() {
       <style>{`
         .pl-wrap{min-height:calc(100vh - 60px);background:var(--creme);padding:28px 18px 60px}
         .pl-head{max-width:680px;margin:0 auto 26px;text-align:center}
-        .pl-kick{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--coral)}
+        .pl-kick{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--ouro)}
         .pl-head h1{font-family:var(--serif);font-size:clamp(26px,3.6vw,38px);margin:12px 0 0}
-        .pl-sub{font-size:15px;color:#54606e;line-height:1.6;margin:14px auto 0;max-width:52ch}
+        .pl-sub{font-size:15px;color:#6C5C45;line-height:1.6;margin:14px auto 0;max-width:52ch}
         .pl-grid{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
         .pl-card{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
         .pl-card.on{border:1.5px solid var(--coral);box-shadow:var(--shadow)}
-        .pl-badge{position:absolute;top:-11px;left:22px;background:var(--coral);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+        .pl-badge{position:absolute;top:-11px;left:22px;background:var(--coral);color:#FCF8EF;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
         .pl-card h2{font-family:var(--serif);font-size:22px;color:var(--base);margin:0 0 8px}
-        .pl-desc{font-size:14px;color:#54606e;line-height:1.55;flex:1}
+        .pl-desc{font-size:14px;color:#6C5C45;line-height:1.55;flex:1}
         .pl-dias{font-size:12.5px;color:var(--muted);font-weight:600;margin:16px 0 18px}
-        .pl-btn{display:block;width:100%;text-align:center;background:var(--coral);color:#fff;border:none;border-radius:13px;padding:14px;font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer;transition:.2s}
-        .pl-btn:hover{background:#d96f53;transform:translateY(-1px)}
+        .pl-btn{display:block;width:100%;text-align:center;background:var(--coral);color:#FCF8EF;border:none;border-radius:13px;padding:14px;font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer;transition:.2s}
+        .pl-btn:hover{background:#47512C;transform:translateY(-1px)}
         .pl-btn-sec{background:var(--base)}
-        .pl-btn-sec:hover{background:#26384a}
+        .pl-btn-sec:hover{background:#2E2416}
         .pl-vazio{text-align:center;color:var(--muted);font-size:15px;margin-top:40px}
       `}</style>
     </main>
