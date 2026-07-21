@@ -19,10 +19,10 @@ export default function AppNav() {
       <div className="an-in">
         <Link href="/ler" className="an-brand">
           <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden>
-            <rect width="64" height="64" rx="15" fill="#2f4858" />
-            <rect x="16" y="34" width="9" height="16" rx="4.5" fill="#f2cc8f" />
-            <rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#e07a5f" />
-            <rect x="39" y="16" width="9" height="34" rx="4.5" fill="#2a9d8f" />
+            <rect width="64" height="64" rx="15" fill="#3A2E1D" />
+            <rect x="16" y="34" width="9" height="16" rx="4.5" fill="#E8D9AE" />
+            <rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#C9A85C" />
+            <rect x="39" y="16" width="9" height="34" rx="4.5" fill="#6A7A42" />
           </svg>
           <span>Constância</span>
         </Link>
