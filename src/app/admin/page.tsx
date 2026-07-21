@@ -16,9 +16,9 @@ type Res = { liberados: string[]; invalidos: string[]; falhas: string[]; plano?:
 type Usuario = { email: string; plano: string; status: string | null; origem: string };
 
 const C = {
-  ink: "#1c2233", base: "#2f4858", coral: "#e07a5f", areia: "#f2cc8f",
-  creme: "#f7f5f1", verde: "#2a9d8f", muted: "#6b7280", line: "#e7e3da", paper: "#fffdfa",
-  serif: '"Fraunces","Georgia",serif', sans: '"Inter",system-ui,sans-serif',
+  ink: "#251C10", base: "#3A2E1D", coral: "#556036", areia: "#E8D9AE",
+  creme: "#F5EFE2", verde: "#6A7A42", muted: "#8B7A61", line: "#E5DBC6", paper: "#FCF8EF",
+  serif: '"Lora","Georgia",serif', sans: '"Work Sans",system-ui,sans-serif',
 };
 
 const PLANOS: { id: PlanoId; nome: string; desc: string }[] = [
@@ -26,8 +26,8 @@ const PLANOS: { id: PlanoId; nome: string; desc: string }[] = [
   { id: "mensal", nome: "Mensal", desc: "acesso mensal" },
 ];
 const PLANO_INFO: Record<string, { nome: string; cor: string; bg: string }> = {
-  free: { nome: "Grátis", cor: "#6b7280", bg: "#f0efea" },
-  mensal: { nome: "Mensal", cor: "#1f7a6e", bg: "#e8f5f1" },
+  free: { nome: "Grátis", cor: "#8B7A61", bg: "#f0efea" },
+  mensal: { nome: "Mensal", cor: "#4E5A2E", bg: "#e8f5f1" },
   vitalicio: { nome: "Vitalício", cor: "#b8562f", bg: "#fdeee6" },
 };
 const info = (p: string) => PLANO_INFO[p] ?? PLANO_INFO.free;
@@ -44,7 +44,7 @@ const RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function Logo() {
   return (
     <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 11, marginBottom: 22 }}>
-      <svg width="34" height="34" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#2f4858" /><rect x="16" y="34" width="9" height="16" rx="4.5" fill="#f2cc8f" /><rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#e07a5f" /><rect x="39" y="16" width="9" height="34" rx="4.5" fill="#2a9d8f" /></svg>
+      <svg width="34" height="34" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#3A2E1D" /><rect x="16" y="34" width="9" height="16" rx="4.5" fill="#E8D9AE" /><rect x="27.5" y="26" width="9" height="24" rx="4.5" fill="#C9A85C" /><rect x="39" y="16" width="9" height="34" rx="4.5" fill="#6A7A42" /></svg>
       <b style={{ fontFamily: C.serif, fontSize: 18, color: C.ink }}>Constância na Palavra</b>
     </a>
   );
@@ -133,7 +133,7 @@ export default function Admin() {
 
   const card: CSSProperties = {
     background: C.paper, border: `1px solid ${C.line}`, borderRadius: 22,
-    padding: "clamp(22px,4vw,34px)", boxShadow: "0 14px 44px -16px rgba(28,34,51,.16)",
+    padding: "clamp(22px,4vw,34px)", boxShadow: "0 14px 44px -16px rgba(54,42,28,.14)",
   };
 
   let corpo: ReactNode;
@@ -144,7 +144,7 @@ export default function Admin() {
     corpo = (
       <section style={card}>
         <h1 style={{ fontFamily: C.serif, fontSize: 26, color: C.base, margin: "0 0 8px" }}>Entre primeiro</h1>
-        <p style={{ color: "#54606e", fontSize: 15, lineHeight: 1.55, marginBottom: 18 }}>Esta área é só pra administradores logados.</p>
+        <p style={{ color: "#6C5C45", fontSize: 15, lineHeight: 1.55, marginBottom: 18 }}>Esta área é só pra administradores logados.</p>
         <a className="btn btn-primary" href="/login" style={{ width: "100%", justifyContent: "center" }}>Fazer login</a>
       </section>
     );
@@ -152,7 +152,7 @@ export default function Admin() {
     corpo = (
       <section style={card}>
         <h1 style={{ fontFamily: C.serif, fontSize: 26, color: C.base, margin: "0 0 8px" }}>Acesso restrito</h1>
-        <p style={{ color: "#54606e", fontSize: 15, lineHeight: 1.55, marginBottom: 18 }}>Esta área é só pra administradores.</p>
+        <p style={{ color: "#6C5C45", fontSize: 15, lineHeight: 1.55, marginBottom: 18 }}>Esta área é só pra administradores.</p>
         <a className="btn btn-ghost" href="/ler">← voltar à leitura</a>
       </section>
     );
@@ -165,7 +165,7 @@ export default function Admin() {
           <h1 style={{ fontFamily: C.serif, fontSize: "clamp(25px,4.2vw,32px)", color: C.base, margin: "10px 0 8px", letterSpacing: "-.02em" }}>
             Liberar acesso
           </h1>
-          <p style={{ color: "#54606e", fontSize: 15, lineHeight: 1.55, margin: "0 0 18px" }}>
+          <p style={{ color: "#6C5C45", fontSize: 15, lineHeight: 1.55, margin: "0 0 18px" }}>
             Escolha o plano, cole os e-mails (um por linha ou por vírgula) e libere de cortesia.
           </p>
 
@@ -179,7 +179,7 @@ export default function Admin() {
                   style={{
                     textAlign: "left", cursor: "pointer", borderRadius: 14, padding: "12px 14px",
                     border: `1.5px solid ${on ? C.coral : C.line}`,
-                    background: on ? "rgba(224,122,95,.08)" : C.paper, transition: ".16s", font: "inherit",
+                    background: on ? "rgba(85,96,54,.08)" : C.paper, transition: ".16s", font: "inherit",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: on ? C.coral : C.ink }}>
@@ -219,9 +219,9 @@ export default function Admin() {
 
           {(erro || res) && (
             <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
-              {erro && <Callout cor="#a83c2c" fundo="#fdecea" borda="#f3cfc8">{erro}</Callout>}
+              {erro && <Callout cor="#a83c2c" fundo="#F9EBE3" borda="#E9CDB9">{erro}</Callout>}
               {res && res.liberados.length > 0 && (
-                <Callout cor="#1f7a6e" fundo="#eef6f4" borda="#cfe7e1">
+                <Callout cor="#4E5A2E" fundo="#F1F0E0" borda="#D8D6B4">
                   <b>✓ {res.liberados.length} acesso{res.liberados.length > 1 ? "s" : ""} {nomePlano(res.plano)} liberado{res.liberados.length > 1 ? "s" : ""}</b>
                 </Callout>
               )}
@@ -238,7 +238,7 @@ export default function Admin() {
             <h2 style={{ fontFamily: C.serif, fontSize: "clamp(21px,3.4vw,26px)", color: C.base, margin: 0 }}>Usuários</h2>
             <span style={{ fontSize: 13, color: C.muted }}>{usuarios.length} no total</span>
           </div>
-          <p style={{ color: "#54606e", fontSize: 14, lineHeight: 1.5, margin: "6px 0 14px" }}>
+          <p style={{ color: "#6C5C45", fontSize: 14, lineHeight: 1.5, margin: "6px 0 14px" }}>
             Veja todo mundo e troque ou cancele o plano de cada um. Muda na hora.
           </p>
 
@@ -275,7 +275,7 @@ export default function Admin() {
                             font: "inherit", fontSize: 12.5, fontWeight: 600, borderRadius: 9, padding: "6px 11px",
                             cursor: atual || acaoEm === u.email ? "default" : "pointer",
                             border: `1px solid ${atual ? C.coral : cancelar ? "#e6cfca" : C.line}`,
-                            background: atual ? "rgba(224,122,95,.10)" : "transparent",
+                            background: atual ? "rgba(85,96,54,.10)" : "transparent",
                             color: atual ? C.coral : cancelar ? "#a83c2c" : C.base,
                             opacity: acaoEm === u.email && !atual ? 0.5 : 1,
                           }}
