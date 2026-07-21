@@ -13,23 +13,21 @@ const card: React.CSSProperties = {
   background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: 22,
   padding: 32, boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column',
 }
-const feat: React.CSSProperties = { display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14.5, color: '#46505f', lineHeight: 1.5 }
+const feat: React.CSSProperties = { display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14.5, color: '#5D4E39', lineHeight: 1.5 }
 const check = <span aria-hidden style={{ color: 'var(--verde)', fontWeight: 800, marginTop: 1 }}>✓</span>
 
 export default function PricingPage() {
   return (
     <main style={{ minHeight: '100vh' }}>
       <style>{`
-        @keyframes cnpPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
-        @keyframes cnpSheen{0%{background-position:-180% 0}60%,100%{background-position:180% 0}}
+        @keyframes cnpPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}}
         .prelaunch{position:relative;overflow:hidden}
-        .prelaunch::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);background-size:200% 100%;animation:cnpSheen 4.5s ease-in-out infinite;pointer-events:none}
-        .pdot{width:8px;height:8px;border-radius:50%;background:#e07a5f;animation:cnpPulse 1.6s ease-in-out infinite;flex:none}
-        @media (prefers-reduced-motion: reduce){.prelaunch::after{animation:none}.pdot{animation:none}}
+        .pdot{width:8px;height:8px;border-radius:50%;background:#556036;animation:cnpPulse 1.6s ease-in-out infinite;flex:none}
+        @media (prefers-reduced-motion: reduce){.pdot{animation:none}}
       `}</style>
 
       {/* Faixa de pré-lançamento (animada) */}
-      <div className="prelaunch" style={{ background: 'var(--areia)', color: '#5a4a2a', textAlign: 'center', fontSize: 13, fontWeight: 600, padding: '9px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9 }}>
+      <div className="prelaunch" style={{ background: 'var(--areia)', color: '#6B5327', textAlign: 'center', fontSize: 13, fontWeight: 600, padding: '9px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9 }}>
         <span className="pdot" aria-hidden />
         <span>Pré-lançamento — preço de fundadoras. Vai subir em breve.</span>
       </div>
@@ -57,7 +55,7 @@ export default function PricingPage() {
             Escolha como começar.{' '}
             <span style={{ color: 'var(--coral)', fontStyle: 'italic', fontWeight: 500 }}>Os dois abrem tudo.</span>
           </h1>
-          <p style={{ fontSize: 'clamp(16px,1.5vw,18px)', color: '#46505f', margin: '20px auto 0', maxWidth: '52ch', lineHeight: 1.6 }}>
+          <p style={{ fontSize: 'clamp(16px,1.5vw,18px)', color: '#5D4E39', margin: '20px auto 0', maxWidth: '52ch', lineHeight: 1.6 }}>
             Mensal ou vitalício, o acesso é o mesmo: sua leitura da Bíblia todos os dias, a
             sequência que segura sua constância e a companhia das irmãs no mural.
           </p>
@@ -86,7 +84,7 @@ export default function PricingPage() {
           <article style={{ ...card, border: '1.5px solid var(--coral)', boxShadow: 'var(--shadow)', position: 'relative' }} className="reveal d3">
             <span style={{
               position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)',
-              background: 'var(--coral)', color: '#fff', fontSize: 11, fontWeight: 700,
+              background: 'var(--coral)', color: '#FCF8EF', fontSize: 11, fontWeight: 700,
               padding: '5px 16px', borderRadius: 999, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap',
             }}>Acesso pra sempre</span>
             <p style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'var(--coral)' }}>Vitalício</p>
