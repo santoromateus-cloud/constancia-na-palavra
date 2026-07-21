@@ -80,17 +80,17 @@ export default async function Mural() {
       <style>{`
         .mu-wrap{min-height:calc(100vh - 60px);background:var(--creme);padding:28px 18px 60px}
         .mu-head{max-width:640px;margin:0 auto 22px;text-align:center}
-        .mu-kick{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--coral)}
+        .mu-kick{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--ouro)}
         .mu-head h1{font-family:var(--serif);font-size:clamp(24px,3.4vw,34px);margin:12px 0 0}
-        .mu-sub{font-size:14.5px;color:#54606e;line-height:1.6;margin:12px auto 0;max-width:50ch}
+        .mu-sub{font-size:14.5px;color:#6C5C45;line-height:1.6;margin:12px auto 0;max-width:50ch}
         .mu-form{max-width:640px;margin:0 auto 26px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow-sm)}
         .mu-textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:var(--sans);font-size:15px;color:var(--ink);background:var(--creme);resize:vertical;line-height:1.5;outline:none}
         .mu-textarea:focus{border-color:var(--coral)}
         .mu-form-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
         .mu-input{flex:1;min-width:180px;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--creme);outline:none}
         .mu-input:focus{border-color:var(--coral)}
-        .mu-btn{background:var(--coral);color:#fff;border:none;border-radius:12px;padding:11px 22px;font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer;transition:.2s}
-        .mu-btn:hover{background:#d96f53;transform:translateY(-1px)}
+        .mu-btn{background:var(--coral);color:#FCF8EF;border:none;border-radius:12px;padding:11px 22px;font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer;transition:.2s}
+        .mu-btn:hover{background:#47512C;transform:translateY(-1px)}
         .mu-list{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
         .mu-post{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm)}
         .mu-post-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
