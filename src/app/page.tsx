@@ -4,8 +4,8 @@ import Link from "next/link";
    CONSTÂNCIA NA PALAVRA — Landing de conversão
    Server component. Reusa os tokens/classes do globals.css.
    Voz devocional e acolhedora (público feminino cristão).
-   Sem IA. CTA principal → /pricing. Design é placeholder — o
-   capricho visual vem numa fase posterior.
+   Sem IA. CTA principal → /pricing. Identidade Luz e Lavra
+   (marfim/tabaco/dourado/oliva) em produção desde 22/07.
    ============================================================ */
 
 export default function Home() {
@@ -140,6 +140,29 @@ export default function Home() {
           <p className="lp-quote" style={{ marginTop: 18 }}>
             “Você já sabe que deveria ler todo dia. O que faltava não era mais um sermão —
             era um lugar simples que te lembra, te mostra o próximo passo e caminha ao seu lado.”
+          </p>
+        </div>
+      </section>
+
+      {/* mentora */}
+      <section className="lp-wrap tight">
+        <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 16 }}>
+          <div style={{ width: 136, height: 136, borderRadius: "50%", padding: 6, background: "linear-gradient(135deg, var(--ambar), var(--ouro))", boxShadow: "var(--shadow)" }}>
+            <img
+              src="/elisangela.jpg"
+              alt="Elisangela Martins"
+              width={124}
+              height={124}
+              style={{ width: 124, height: 124, borderRadius: "50%", objectFit: "cover", objectPosition: "center top", display: "block", border: "3px solid var(--paper)" }}
+            />
+          </div>
+          <span className="kick lp-eyebrow">Sua guia nessa caminhada</span>
+          <h2 className="lp-h2" style={{ margin: 0 }}>Elisangela Martins</h2>
+          <p className="lp-sub" style={{ margin: 0 }}>
+            Mentora bíblica, fundadora da Escola Mulher Sábia. O Constância na Palavra nasceu
+            da mesma pergunta que ela ouve todos os dias das suas alunas: por que é tão difícil
+            manter o hábito de ler a Bíblia sozinha? A resposta virou este lugar — pra você não
+            caminhar mais sem companhia.
           </p>
         </div>
       </section>
