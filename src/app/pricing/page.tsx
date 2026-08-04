@@ -4,10 +4,13 @@ import Link from 'next/link'
 
 // ─── Links do Hotmart (preencher via env vars no Vercel quando os produtos existirem) ───
 // Constância: Mensal R$39,90 e Vitalício R$397 — os dois dão o MESMO acesso.
-// Fallback seguro = /pricing (nunca href="#"). Enquanto os produtos não existem, o
-// botão volta pra esta própria página em vez de morrer.
-const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || '/pricing'
-const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || '/pricing'
+// Sem env var preenchida, o checkout NÃO existe: o botão leva pro cadastro
+// (turma de fundadoras) em vez de voltar pra esta própria página, que era um
+// beco sem saída pra quem clicava. Assim que as env vars entrarem, os botões
+// viram checkout de verdade sozinhos.
+const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || ''
+const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || ''
+const CHECKOUT_ABERTO = Boolean(HOTMART_MENSAL && HOTMART_VITALICIO)
 
 const card: React.CSSProperties = {
   background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: 22,
@@ -77,7 +80,9 @@ export default function PricingPage() {
                 <li key={f} style={feat}>{check}{f}</li>
               ))}
             </ul>
-            <a href={HOTMART_MENSAL} target={HOTMART_MENSAL.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="btn btn-google" style={{ justifyContent: 'center' }}>Assinar o mensal →</a>
+            {CHECKOUT_ABERTO
+              ? <a href={HOTMART_MENSAL} target="_blank" rel="noopener noreferrer" className="btn btn-google" style={{ justifyContent: 'center' }}>Assinar o mensal →</a>
+              : <Link href="/login" className="btn btn-google" style={{ justifyContent: 'center' }}>Garantir minha vaga →</Link>}
           </article>
 
           {/* Vitalício */}
@@ -99,16 +104,26 @@ export default function PricingPage() {
                 <li key={f} style={feat}>{check}{f}</li>
               ))}
             </ul>
-            <a href={HOTMART_VITALICIO} target={HOTMART_VITALICIO.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="btn btn-primary" style={{ justifyContent: 'center' }}>Quero o vitalício →</a>
+            {CHECKOUT_ABERTO
+              ? <a href={HOTMART_VITALICIO} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ justifyContent: 'center' }}>Quero o vitalício →</a>
+              : <Link href="/login" className="btn btn-primary" style={{ justifyContent: 'center' }}>Garantir minha vaga →</Link>}
           </article>
         </section>
 
         {/* Reassurance */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '14px 28px', marginTop: 40, fontSize: 13, color: 'var(--muted)' }} className="reveal d5">
-          <span>🔒 Pagamento seguro pela Hotmart</span>
-          <span>↩️ Mensal: cancele quando quiser</span>
-          <span>📖 Um dia de cada vez, na Palavra</span>
-        </div>
+        {CHECKOUT_ABERTO ? (
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '14px 28px', marginTop: 40, fontSize: 13, color: 'var(--muted)' }} className="reveal d5">
+            <span>Pagamento seguro pela Hotmart</span>
+            <span>Mensal: cancele quando quiser</span>
+            <span>Um dia de cada vez, na Palavra</span>
+          </div>
+        ) : (
+          <p className="cnp-note reveal d5">
+            <b>O pagamento ainda não abriu.</b> Estamos na turma de fundadoras: crie sua conta agora,
+            entre na lista e você é avisada assim que a assinatura for liberada, com o preço desta
+            página garantido. Nada é cobrado hoje.
+          </p>
+        )}
 
         {/* Contato */}
         <p style={{ textAlign: 'center', marginTop: 30, fontSize: 14, color: 'var(--muted)' }} className="reveal d6">
