@@ -1,8 +1,11 @@
 // Paywall de ASSINATURA — mostrado na área logada quando a irmã está autenticada
 // mas sem plano ativo (mensal/vitalicio). Dois planos que dão o MESMO acesso.
-// Checkout via env (Vercel); fallback seguro = /pricing (nunca href="#").
-const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "/pricing";
-const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || "/pricing";
+// Checkout via env (Vercel). Sem env var, o checkout não existe: em vez de
+// mandar a irmã pra um botão que não leva a lugar nenhum, o card avisa que a
+// assinatura ainda não abriu e que ela já está na lista de fundadoras.
+const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "";
+const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || "";
+const CHECKOUT_ABERTO = Boolean(HOTMART_MENSAL && HOTMART_VITALICIO);
 
 export default function Paywall() {
   return (
@@ -11,32 +14,43 @@ export default function Paywall() {
         <span className="pw-kick">Constância na Palavra</span>
         <h1>Um dia de cada vez, na Palavra — com as irmãs.</h1>
         <p className="pw-sub">
-          Falta só um passo pra começar a sua caminhada diária na Bíblia, com
-          acompanhamento e a companhia da comunidade. Escolha como quer começar —
-          os dois planos abrem tudo.
+          {CHECKOUT_ABERTO
+            ? "Falta só um passo pra começar a sua caminhada diária na Bíblia, com acompanhamento e a companhia da comunidade. Escolha como quer começar: os dois planos abrem tudo."
+            : "Sua conta já está criada e o seu lugar na turma de fundadoras está guardado. A assinatura ainda não abriu, então nada é cobrado agora. Assim que liberar, você é avisada por e-mail com o preço de fundadora garantido."}
         </p>
+
+        {!CHECKOUT_ABERTO && (
+          <p style={{ fontSize: 13.5, color: "#6C5C45", lineHeight: 1.6, background: "color-mix(in srgb, var(--areia) 34%, var(--paper))", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px", marginBottom: 24 }}>
+            Estes são os planos que vão valer na abertura. Eles estão aqui só pra você já saber o
+            que esperar.
+          </p>
+        )}
 
         <div className="pw-plans">
           <div className="pw-plan">
             <b>Mensal</b>
             <span className="pw-price">R$39,90<small>/mês</small></span>
             <p>Sua leitura diária, o acompanhamento e o mural. Cancele quando quiser.</p>
-            <a className="pw-btn pw-btn-ghost" href={HOTMART_MENSAL} target="_blank" rel="noopener noreferrer">
-              Começar no mensal →
-            </a>
+            {CHECKOUT_ABERTO && (
+              <a className="pw-btn pw-btn-ghost" href={HOTMART_MENSAL} target="_blank" rel="noopener noreferrer">
+                Começar no mensal →
+              </a>
+            )}
           </div>
           <div className="pw-plan pw-plan-dest">
             <span className="pw-tag">Acesso pra sempre</span>
             <b>Vitalício</b>
             <span className="pw-price">R$397<small> uma vez</small></span>
             <p>O mesmo acesso, pago uma única vez. Sua constância sem data pra acabar.</p>
-            <a className="pw-btn pw-btn-primary" href={HOTMART_VITALICIO} target="_blank" rel="noopener noreferrer">
-              Quero o vitalício →
-            </a>
+            {CHECKOUT_ABERTO && (
+              <a className="pw-btn pw-btn-primary" href={HOTMART_VITALICIO} target="_blank" rel="noopener noreferrer">
+                Quero o vitalício →
+              </a>
+            )}
           </div>
         </div>
 
-        <a className="pw-skip" href="/pricing">Ver os planos com calma</a>
+        <a className="pw-skip" href="/">{CHECKOUT_ABERTO ? "Ver os planos com calma" : "Voltar para a página inicial"}</a>
       </section>
 
       <style>{`
