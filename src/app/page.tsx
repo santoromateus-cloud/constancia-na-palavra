@@ -1,12 +1,62 @@
 import Link from "next/link";
 
 /* ============================================================
-   CONSTÂNCIA NA PALAVRA — Landing de conversão
-   Server component. Reusa os tokens/classes do globals.css.
-   Voz devocional e acolhedora (público feminino cristão).
-   Sem IA. CTA principal → /pricing. Identidade Luz e Lavra
-   (marfim/tabaco/dourado/oliva) em produção desde 22/07.
+   CONSTÂNCIA NA PALAVRA — Home v3 · "A voz da Elisangela"
+   Server component. Identidade Luz e Lavra (marfim/tabaco/dourado/oliva).
+
+   O que mudou em 04/08/2026:
+   · A página inteira passa a ser falada em 1ª pessoa pela Elisangela.
+     Ela abre a home (retrato em arco na hero), assina o mecanismo,
+     conduz os passos e fecha a página. O produto deixa de ser um app
+     genérico e passa a ser "o lugar que ela montou".
+   · Removida a estatística "8 em 10 mulheres param no mês 2": número
+     sem fonte. Substituída pelas frases da própria leitora (linguagem
+     nativa levantada no raio-x de persona), atribuídas a ela, não a
+     depoimentos fabricados.
+   · Checkout ainda não existe. Enquanto as env vars do Hotmart não
+     forem preenchidas, os botões de plano NÃO voltam pra própria
+     página (loop morto): levam pro cadastro e a página avisa, em
+     texto claro, que o pagamento ainda não abriu.
    ============================================================ */
+
+const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "";
+const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || "";
+const CHECKOUT_ABERTO = Boolean(HOTMART_MENSAL && HOTMART_VITALICIO);
+
+const FOTO = "/elisangela.jpg";
+
+const ECOS = [
+  "Comecei animada e parei no meio do Antigo Testamento.",
+  "Já perdi tantos dias que nem sei mais por onde voltar.",
+  "Leio, fecho a Bíblia e não lembro do que li.",
+  "Queria muito ler com alguém, não sozinha.",
+];
+
+const PASSOS = [
+  {
+    t: "Abra a leitura de hoje",
+    p: "A passagem do dia já está escolhida e esperando por você. Você não precisa decidir por onde começar, nem lembrar onde parou.",
+  },
+  {
+    t: "Leia com calma, cinco minutos",
+    p: "Um trecho por dia, no seu ritmo. Tempo suficiente pra ser um encontro de verdade e curto o bastante pra caber num dia corrido.",
+  },
+  {
+    t: "Marque que leu",
+    p: "Um toque e a sua sequência cresce na tela. Quando você vê preto no branco que não parou, fica muito mais difícil quebrar.",
+  },
+  {
+    t: "Caminhe com as irmãs",
+    p: "No mural você lê o que as outras estão vivendo e deixa o seu pedido ou o seu louvor. É a companhia que sustenta a constância.",
+  },
+];
+
+const CAMINHOS = [
+  { d: "31", t: "Provérbios", p: "Um capítulo por dia, do primeiro ao último. Sabedoria prática pra vida de casa, de trabalho e de família." },
+  { d: "21", t: "Evangelho de João", p: "O evangelho da intimidade. Pra quem quer conhecer quem Jesus é antes de qualquer outra coisa." },
+  { d: "15", t: "Mulheres da Bíblia", p: "Quinze mulheres, quinze histórias. Um retrato por dia de quem também não teve caminho fácil." },
+  { d: "16", t: "Evangelho de Marcos", p: "O evangelho mais direto e mais rápido. Ideal pra quem está recomeçando e quer sentir movimento logo." },
+];
 
 export default function Home() {
   return (
@@ -14,7 +64,7 @@ export default function Home() {
       {/* faixa de pré-lançamento */}
       <div className="lp-band">
         <span className="dot" aria-hidden />
-        <span>Pré-lançamento — preço de fundadoras. Vai subir em breve.</span>
+        <span>Turma de fundadoras · o preço desta página não volta depois da abertura.</span>
       </div>
 
       {/* nav */}
@@ -22,171 +72,191 @@ export default function Home() {
         <div className="in">
           <Link href="/" className="brand">Constância na Palavra</Link>
           <div className="links">
+            <a className="nav-hide" href="#mentora">A mentora</a>
             <a className="nav-hide" href="#como">Como funciona</a>
             <a className="nav-hide" href="#planos">Planos</a>
             <Link href="/login" className="nav-hide">Entrar</Link>
-            <Link href="/pricing" className="cta">Começar hoje</Link>
+            <Link href="/login" className="cta">Começar hoje</Link>
           </div>
         </div>
       </nav>
 
-      {/* hero */}
-      <main className="hero">
-        <div className="hero-left">
-          <span className="kick reveal d1">Sua leitura da Bíblia · um dia de cada vez</span>
+      {/* ── HERO ── a Elisangela abre a página ── */}
+      <header className="cnp-hero">
+        <div className="cnp-hero-txt">
+          <span className="kick reveal d1">Escola Mulher Sábia</span>
           <h1 className="reveal d2">
-            Não é falta de fé.<br />É que você lê <span className="tw">sozinha</span>.
+            Dessa vez você não vai ler <em>sozinha</em>.
           </h1>
-          <p className="lead reveal d3">
-            Constância na Palavra é a caminhada diária na Bíblia com acompanhamento e a
-            companhia das irmãs. Uma passagem por dia, a sua sequência que cresce e um
-            lugar pra não desistir — pra você não parar mais no mês 2.
+          <p className="cnp-lead reveal d3">
+            Sou Elisangela Martins, mentora bíblica e fundadora da Escola Mulher Sábia. A pergunta
+            que mais chega até mim é sempre a mesma: <b>por que eu começo a ler a Bíblia e sempre
+            paro?</b> Fé não é o que está faltando. Falta um plano que te leve pela mão e alguém do
+            seu lado quando o dia aperta. Foi por isso que eu criei o Constância na Palavra.
           </p>
-          <div className="cta-row reveal d4">
-            <Link href="/pricing" className="btn btn-primary">Quero começar minha constância</Link>
+          <div className="cnp-cta reveal d4">
+            <Link href="/login" className="btn btn-primary">Começar minha constância</Link>
             <Link href="/login" className="btn btn-google">Já sou membro</Link>
           </div>
-          <div className="minfoot reveal d6" style={{ position: "static", marginTop: 26, flexWrap: "wrap", gap: "8px 18px" }}>
-            <span>📖 5 minutos por dia bastam.</span>
-            <span>📱 Funciona no celular e no PC, sem baixar nada.</span>
+          <div className="cnp-micro reveal d5">
+            <span>Uma passagem por dia</span>
+            <span>Cinco minutos bastam</span>
+            <span>No celular, sem baixar nada</span>
           </div>
         </div>
-        <div className="hero-right reveal d2" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 28px" }}>
-          <div className="hero-badge" style={{ position: "static", maxWidth: 340 }}>
-            <div className="q">
-              “Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.”
-            </div>
-            <div className="a"><span className="dot" /> Salmos 119:105</div>
-          </div>
-        </div>
-      </main>
 
-      {/* dor — a estatística do abandono */}
-      <section className="lp-wrap">
-        <div className="lp-head">
-          <span className="kick lp-eyebrow">Talvez você se reconheça</span>
-          <h2 className="lp-h2">
-            8 em 10 mulheres que começam a ler a Bíblia <span className="lp-em">param no mês 2</span> — no Levítico.
-          </h2>
-          <p className="lp-sub">
-            Não é preguiça e não é falta de amor pela Palavra. É que a leitura vira solitária,
-            sem plano e sem ninguém do lado. Aí a genealogia chega, o dia aperta, e o
-            marcador fica parado na mesma página por semanas.
+        <div className="cnp-portrait reveal d2">
+          <div className="cnp-frame">
+          <figure>
+            <img src={FOTO} alt="Elisangela Martins, mentora bíblica e fundadora da Escola Mulher Sábia" width={430} height={505} />
+            <figcaption className="cnp-plate">
+              <div className="nm">Elisangela Martins</div>
+              <div className="rl">Mentora bíblica</div>
+            </figcaption>
+          </figure>
+          </div>
+          <p className="cnp-verse">
+            Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.
+            <b>Salmos 119:105</b>
           </p>
         </div>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12 }}>
-          {[
-            "“Amanhã eu retomo do ponto que parei.”",
-            "“Já perdi tantos dias que nem sei por onde voltar.”",
-            "“Começo animada e some no meio do Antigo Testamento.”",
-            "“Queria ler com alguém, não sozinha.”",
-          ].map((t) => (
-            <div key={t} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px", fontFamily: "var(--serif)", fontStyle: "italic", fontSize: "clamp(16px,2.2vw,20px)", color: "var(--base)", boxShadow: "var(--shadow-sm)" }}>
-              {t}
+      </header>
+
+      {/* ── as frases dela ── */}
+      <section className="cnp-sec">
+        <div className="cnp-head-c">
+          <span className="kick">Talvez você já tenha dito</span>
+          <h2 className="cnp-title center">Se alguma dessas frases já passou pela sua cabeça, essa página é <em>pra você</em>.</h2>
+        </div>
+        <ul className="cnp-echo cnp-rise">
+          {ECOS.map((e) => <li key={e}>{e}</li>)}
+        </ul>
+        <p className="cnp-echo-foot cnp-rise">
+          Nenhuma delas é sinal de fé pequena. Todas são sinal da mesma coisa: você está tentando
+          sustentar sozinha uma caminhada que nunca foi feita pra ser sozinha.
+        </p>
+      </section>
+
+      {/* ── o mecanismo, na voz dela ── */}
+      <section className="cnp-sec tight">
+        <div className="cnp-dark cnp-rise">
+          <span className="kick">Por que a leitura desmorona</span>
+          <h2>Você não parou por preguiça. Parou porque estava sem trilho e sem companhia.</h2>
+          <p>
+            Eu vejo isso toda semana nas minhas alunas. A mulher decide ler a Bíblia inteira, começa
+            firme em Gênesis, atravessa Êxodo com esforço e some no meio do Levítico. Aí vem a culpa,
+            e a culpa paralisa em vez de mover. O que quebra esse ciclo não é mais um sermão sobre
+            disciplina. É ter uma passagem por dia já escolhida, ver a sua sequência crescendo na
+            tela e saber que tem outras mulheres lendo junto com você naquele mesmo dia.
+          </p>
+          <div className="cnp-sign">
+            <img src={FOTO} alt="" aria-hidden="true" />
+            <div>
+              <div className="n">Elisangela Martins</div>
+              <div className="r">Escola Mulher Sábia</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── como funciona ── */}
+      <section className="cnp-sec" id="como">
+        <div className="cnp-head-c">
+          <span className="kick">Como funciona</span>
+          <h2 className="cnp-title center">Quatro passos que cabem no seu dia <em>de verdade</em>.</h2>
+          <p className="cnp-desc center">
+            Não é um curso pra assistir nem uma meta pra bater. É uma rotina curta que você repete,
+            e que fica visível pra você não perder de vista.
+          </p>
+        </div>
+        <ol className="cnp-steps">
+          {PASSOS.map((s, i) => (
+            <li key={s.t} className="cnp-rise">
+              <span className="n" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>{s.t}</h3>
+                <p>{s.p}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ── os caminhos de leitura ── */}
+      <section className="cnp-sec tight">
+        <div className="cnp-head-c">
+          <span className="kick">Os caminhos</span>
+          <h2 className="cnp-title center">Quatro planos prontos. Você escolhe <em>por onde começar</em>.</h2>
+          <p className="cnp-desc center">
+            Cada plano tem começo, meio e fim, com um trecho por dia na ordem certa. Você pode trocar
+            de caminho quando quiser, e o seu progresso continua salvo.
+          </p>
+        </div>
+        <div className="cnp-paths">
+          {CAMINHOS.map((c) => (
+            <article key={c.t} className="cnp-path cnp-rise">
+              <div className="d">{c.d}<small>dias</small></div>
+              <h3>{c.t}</h3>
+              <p>{c.p}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* faixa de números */}
-      <section className="lp-wrap tight">
-        <div className="lp-stats">
-          <div className="lp-stat"><b>1</b><span>passagem por dia — nada de maratona</span></div>
-          <div className="lp-stat"><b>5 min</b><span>é o que a leitura de hoje leva</span></div>
-          <div className="lp-stat"><b>🔥</b><span>sua sequência que cresce a cada dia</span></div>
-          <div className="lp-stat"><b>+ irmãs</b><span>você não caminha sozinha</span></div>
+      {/* ── a mentora ── */}
+      <section className="cnp-sec" id="mentora">
+        <div className="cnp-mentor">
+          <div className="cnp-cameo cnp-rise">
+            <img src={FOTO} alt="Elisangela Martins" width={210} height={210} />
+          </div>
+          <div className="cnp-rise">
+            <span className="kick">Quem caminha com você</span>
+            <h2 className="cnp-title">Elisangela Martins</h2>
+            <p className="cnp-desc">
+              Mentora bíblica e fundadora da Escola Mulher Sábia, onde ensina mulheres a viver a
+              Palavra dentro de casa, na vida real, sem linguagem de seminário. O Constância na
+              Palavra nasceu da pergunta que ela mais ouve das alunas e existe pra responder a ela
+              em forma de rotina: uma leitura por dia, acompanhada, até virar hábito.
+            </p>
+            <div className="cnp-facts">
+              <div className="cnp-fact"><b>Escola Mulher Sábia</b><span>a comunidade que ela fundou</span></div>
+              <div className="cnp-fact"><b>+120 mil</b><span>mulheres acompanham o trabalho dela</span></div>
+              <div className="cnp-fact"><b>4 caminhos</b><span>de leitura já abertos aqui dentro</span></div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* como funciona */}
-      <section className="lp-wrap" id="como">
-        <div className="lp-head">
-          <span className="kick lp-eyebrow">Como funciona</span>
-          <h2 className="lp-h2">Constância <span className="lp-em">acompanhada</span>. Um dia de cada vez.</h2>
-          <p className="lp-sub">
-            O segredo não é ler mais rápido. É voltar amanhã. E depois de amanhã. A gente
-            transforma isso em algo leve, visível e com companhia.
+      {/* ── planos ── */}
+      <section className="cnp-sec" id="planos">
+        <div className="cnp-head-c">
+          <span className="kick">Planos</span>
+          <h2 className="cnp-title center">Escolha como começar. Os dois <em>abrem tudo</em>.</h2>
+          <p className="cnp-desc center">
+            Mensal ou vitalício, o acesso é o mesmo: a sua leitura diária, os quatro caminhos, a sua
+            sequência e o mural das irmãs.
           </p>
         </div>
-        <div className="lp-steps">
-          <div className="lp-step reveal d1">
-            <div className="num">1</div>
-            <h3>Abra a leitura do dia</h3>
-            <p>Uma passagem escolhida pra você, com um fio que faz sentido. Sem escolher por onde começar.</p>
-          </div>
-          <div className="lp-step reveal d2">
-            <div className="num">2</div>
-            <h3>Leia com calma</h3>
-            <p>Cinco minutos. Um versículo pra guardar. Um instante só seu com a Palavra.</p>
-          </div>
-          <div className="lp-step reveal d3">
-            <div className="num">3</div>
-            <h3>Marque “li hoje”</h3>
-            <p>Um toque, e a sua sequência cresce. O que tem marca dá vontade de não quebrar.</p>
-          </div>
-          <div className="lp-step reveal d4">
-            <div className="num">4</div>
-            <h3>Caminhe com as irmãs</h3>
-            <p>No mural da comunidade você vê que não está sozinha. É a companhia que segura a constância.</p>
-          </div>
-        </div>
-      </section>
 
-      {/* mecanismo — bloco escuro */}
-      <section className="lp-wrap tight">
-        <div className="lp-dark">
-          <span className="kick lp-eyebrow">Por que funciona</span>
-          <h2 className="lp-h2" style={{ marginTop: 14 }}>A força de vontade sozinha não segura. A companhia segura.</h2>
-          <p className="lp-quote" style={{ marginTop: 18 }}>
-            “Você já sabe que deveria ler todo dia. O que faltava não era mais um sermão —
-            era um lugar simples que te lembra, te mostra o próximo passo e caminha ao seu lado.”
-          </p>
-        </div>
-      </section>
-
-      {/* mentora */}
-      <section className="lp-wrap tight">
-        <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 16 }}>
-          <div style={{ width: 136, height: 136, borderRadius: "50%", padding: 6, background: "linear-gradient(135deg, var(--ambar), var(--ouro))", boxShadow: "var(--shadow)" }}>
-            <img
-              src="/elisangela.jpg"
-              alt="Elisangela Martins"
-              width={124}
-              height={124}
-              style={{ width: 124, height: 124, borderRadius: "50%", objectFit: "cover", objectPosition: "center top", display: "block", border: "3px solid var(--paper)" }}
-            />
-          </div>
-          <span className="kick lp-eyebrow">Sua guia nessa caminhada</span>
-          <h2 className="lp-h2" style={{ margin: 0 }}>Elisangela Martins</h2>
-          <p className="lp-sub" style={{ margin: 0 }}>
-            Mentora bíblica, fundadora da Escola Mulher Sábia. O Constância na Palavra nasceu
-            da mesma pergunta que ela ouve todos os dias das suas alunas: por que é tão difícil
-            manter o hábito de ler a Bíblia sozinha? A resposta virou este lugar — pra você não
-            caminhar mais sem companhia.
-          </p>
-        </div>
-      </section>
-
-      {/* planos */}
-      <section className="lp-wrap" id="planos">
-        <div className="lp-head">
-          <span className="kick lp-eyebrow">Planos</span>
-          <h2 className="lp-h2">Escolha como <span className="lp-em">começar</span>. Os dois abrem tudo.</h2>
-          <p className="lp-sub">Mensal ou vitalício, o acesso é o mesmo: sua leitura diária, sua sequência e o mural das irmãs.</p>
-        </div>
         <div className="lp-plans" style={{ maxWidth: 720, margin: "0 auto" }}>
-          <div className="lp-plan reveal d1">
+          <div className="lp-plan cnp-rise">
             <span className="tag">Mensal</span>
             <div className="price">R$39,90<small>/mês</small></div>
             <ul>
               <li>Sua leitura da Bíblia todos os dias</li>
+              <li>Os quatro caminhos de leitura</li>
               <li>A sequência que segura sua constância</li>
-              <li>O mural da comunidade</li>
+              <li>O mural das irmãs</li>
               <li>Cancele quando quiser</li>
             </ul>
-            <Link href="/pricing" className="btn btn-google" style={{ justifyContent: "center" }}>Assinar o mensal →</Link>
+            {CHECKOUT_ABERTO ? (
+              <a href={HOTMART_MENSAL} target="_blank" rel="noopener noreferrer" className="btn btn-google" style={{ justifyContent: "center" }}>Assinar o mensal →</a>
+            ) : (
+              <Link href="/login" className="btn btn-google" style={{ justifyContent: "center" }}>Garantir minha vaga →</Link>
+            )}
           </div>
-          <div className="lp-plan hot reveal d2">
+
+          <div className="lp-plan hot cnp-rise">
             <span className="lp-badge-top">Acesso pra sempre</span>
             <span className="tag">Vitalício</span>
             <div className="price">R$397<small> uma vez</small></div>
@@ -195,36 +265,71 @@ export default function Home() {
               <li>Pago uma única vez, sem mensalidade</li>
               <li>Sua constância sem data pra acabar</li>
             </ul>
-            <Link href="/pricing" className="btn btn-primary" style={{ justifyContent: "center" }}>Quero o vitalício →</Link>
+            {CHECKOUT_ABERTO ? (
+              <a href={HOTMART_VITALICIO} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ justifyContent: "center" }}>Quero o vitalício →</a>
+            ) : (
+              <Link href="/login" className="btn btn-primary" style={{ justifyContent: "center" }}>Garantir minha vaga →</Link>
+            )}
           </div>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px 26px", marginTop: 28, fontSize: 13, color: "var(--muted)" }}>
-          <span>🔒 Pagamento seguro pela Hotmart</span>
-          <span>↩️ Mensal: cancele quando quiser</span>
-        </div>
+
+        {CHECKOUT_ABERTO ? (
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px 26px", marginTop: 28, fontSize: 13, color: "var(--muted)" }}>
+            <span>Pagamento seguro pela Hotmart</span>
+            <span>Mensal: cancele quando quiser</span>
+          </div>
+        ) : (
+          <p className="cnp-note">
+            <b>O pagamento ainda não abriu.</b> Estamos na turma de fundadoras: você cria sua conta
+            agora, entra na lista e é avisada assim que a assinatura for liberada, com o preço desta
+            página garantido. Nada é cobrado hoje.
+          </p>
+        )}
       </section>
 
-      {/* faq */}
-      <section className="lp-wrap">
-        <div className="lp-head">
-          <span className="kick lp-eyebrow">Perguntas</span>
-          <h2 className="lp-h2">Antes de começar</h2>
+      {/* ── faq ── */}
+      <section className="cnp-sec tight">
+        <div className="cnp-head-c">
+          <span className="kick">Perguntas</span>
+          <h2 className="cnp-title center">Antes de começar</h2>
         </div>
         <div className="lp-faq">
-          <details><summary>Preciso baixar alguma coisa?</summary><div className="ans">Não. Funciona no navegador do celular e do PC. Você abre, lê a passagem do dia e marca que leu.</div></details>
-          <details><summary>E se eu já tenho o hábito de ler pela manhã?</summary><div className="ans">Melhor ainda. Aqui você mantém o seu ritmo, só que com a sua sequência visível e a companhia das irmãs pra não deixar cair.</div></details>
-          <details><summary>Perdi vários dias. Consigo voltar?</summary><div className="ans">Sempre. A proposta é constância, não perfeição. Você retoma a leitura de hoje e segue de onde está — um dia de cada vez.</div></details>
-          <details><summary>Qual a diferença entre o mensal e o vitalício?</summary><div className="ans">Nenhuma no acesso: os dois abrem tudo. A diferença é só a forma de pagar — mensal (R$39,90/mês) ou uma vez só (R$397, pra sempre).</div></details>
-          <details><summary>Como funciona a cobrança?</summary><div className="ans">Pela Hotmart, com segurança. No mensal você cancela quando quiser; no vitalício é um pagamento único.</div></details>
+          <details>
+            <summary>Preciso baixar alguma coisa?</summary>
+            <div className="ans">Não. Funciona no navegador do celular e do computador. Você abre, lê a passagem do dia e marca que leu.</div>
+          </details>
+          <details>
+            <summary>Já posso pagar?</summary>
+            <div className="ans">Ainda não. Estamos abrindo a turma de fundadoras, então a assinatura ainda está fechada. Crie sua conta agora e avisamos assim que o pagamento for liberado, com o preço desta página garantido pra você.</div>
+          </details>
+          <details>
+            <summary>Perdi vários dias. Consigo voltar?</summary>
+            <div className="ans">Sempre. A proposta aqui é constância, não perfeição. Você retoma a leitura de hoje e segue de onde está, um dia de cada vez.</div>
+          </details>
+          <details>
+            <summary>E se eu já tenho o hábito de ler pela manhã?</summary>
+            <div className="ans">Melhor ainda. Você mantém o seu ritmo, só que com a sequência visível e a companhia das irmãs pra não deixar cair no mês seguinte.</div>
+          </details>
+          <details>
+            <summary>Qual a diferença entre o mensal e o vitalício?</summary>
+            <div className="ans">Nenhuma no acesso: os dois abrem tudo. A diferença é só a forma de pagar, todo mês (R$39,90) ou uma vez só (R$397, pra sempre).</div>
+          </details>
+          <details>
+            <summary>Quem está por trás do Constância na Palavra?</summary>
+            <div className="ans">A Elisangela Martins, mentora bíblica e fundadora da Escola Mulher Sábia. O conteúdo dos caminhos de leitura é o texto bíblico na tradução João Ferreira de Almeida, em domínio público.</div>
+          </details>
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="lp-wrap tight">
-        <div className="lp-final">
-          <h2>Sua próxima leitura pode começar hoje.</h2>
-          <p>Um dia de cada vez, com acompanhamento e as irmãs do seu lado. Comece a sua constância agora.</p>
-          <Link href="/pricing" className="btn btn-primary">Começar minha constância</Link>
+      {/* ── CTA final ── */}
+      <section className="cnp-sec tight">
+        <div className="lp-final cnp-rise">
+          <h2>A sua leitura de hoje já está esperando.</h2>
+          <p>
+            Um trecho por dia, com o caminho escolhido e as irmãs do seu lado. Comece agora a
+            constância que você já tentou tantas vezes sozinha.
+          </p>
+          <Link href="/login" className="btn btn-primary">Começar minha constância</Link>
           <div className="lp-assin">Um dia de cada vez · na Palavra</div>
         </div>
       </section>
@@ -234,7 +339,7 @@ export default function Home() {
         <div className="in">
           <div className="brand">Constância na Palavra</div>
           <div className="meta">
-            Sua leitura da Bíblia, um dia de cada vez — com as irmãs.<br />
+            Uma realização de Elisangela Martins · Escola Mulher Sábia.<br />
             Dúvidas? <a href="mailto:ola@constancianapalavra.com.br">ola@constancianapalavra.com.br</a>
           </div>
         </div>

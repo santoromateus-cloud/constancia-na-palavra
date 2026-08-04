@@ -1,0 +1,129 @@
+/* ============================================================
+   HOME v3 — "A voz da Elisangela" (04/08/2026)
+   Arquivo NOVO. Importado no layout DEPOIS do globals.css.
+   Motivo de ser separado: o globals.css é o CSS de produção de
+   todas as páginas internas; o visual novo da home vive aqui,
+   isolado, e pode ser removido apagando uma linha do layout.
+   ============================================================ */
+
+/* Correção de bug antigo do menu: `.lp-nav .links a` (0,2,1) vencia
+   `.lp-nav .cta` (0,2,0) e pintava o texto do botão verde de marrom
+   escuro — o "Começar hoje" ficava ilegível. */
+.lp-nav .links a.cta{color:#FCF8EF}
+.lp-nav .links a.cta:hover{color:#FCF8EF}
+
+/* reveal no carregamento. Termina SEMPRE em opacity:1 — nunca deixa bloco
+   invisível se a animação não rodar (conteúdo de cliente não some). */
+.cnp-rise{animation:cnpRise .85s cubic-bezier(.16,1,.3,1) both}
+@keyframes cnpRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.cnp-rise{animation:none;opacity:1;transform:none}}
+
+/* ---------- HERO ---------- */
+.cnp-hero{max-width:1240px;margin:0 auto;padding:clamp(34px,5vw,72px) clamp(18px,5vw,48px) clamp(30px,4vw,56px);
+  display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(28px,4vw,64px);align-items:center}
+.cnp-hero-txt h1{font-family:var(--display);font-size:clamp(40px,5.6vw,74px);line-height:1.0;margin:22px 0 0;letter-spacing:-.01em}
+.cnp-hero-txt h1 em{font-style:italic;font-family:var(--serif);font-weight:500;color:var(--coral);position:relative;white-space:nowrap}
+.cnp-hero-txt h1 em::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:.06em;height:.16em;background:var(--areia);border-radius:4px;z-index:-1;transform:rotate(-.8deg)}
+.cnp-lead{font-family:var(--serif);font-size:clamp(16.5px,1.42vw,19px);line-height:1.62;color:#5A4A34;max-width:50ch;margin:24px 0 0}
+.cnp-lead b{font-weight:600;color:var(--ink)}
+.cnp-cta{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px;align-items:center}
+.cnp-micro{display:flex;flex-wrap:wrap;gap:7px 20px;margin-top:26px;font-size:13px;color:var(--muted)}
+.cnp-micro span{display:inline-flex;align-items:center;gap:8px}
+.cnp-micro span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--fio);flex:none}
+
+/* retrato em arco + fio dourado deslocado */
+.cnp-portrait{position:relative;justify-self:center;width:min(100%,430px)}
+.cnp-portrait figure{position:relative;margin:0;border-radius:230px 230px 20px 20px;overflow:hidden;
+  background:var(--base);box-shadow:0 30px 70px -34px rgba(54,42,28,.55);aspect-ratio:4/4.7}
+.cnp-portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.cnp-portrait figure::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(58,46,29,.10) 0 42%,rgba(45,35,21,.62) 100%)}
+.cnp-frame{position:relative}
+.cnp-frame::before{content:"";position:absolute;inset:16px -14px -16px 14px;border:1px solid var(--fio);
+  border-radius:230px 230px 20px 20px;opacity:.6;pointer-events:none}
+.cnp-plate{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;text-align:center;width:88%}
+.cnp-plate .nm{font-family:var(--display);font-size:clamp(20px,2.1vw,25px);color:#FCF8EF;line-height:1.1}
+.cnp-plate .rl{font-size:11px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;color:var(--areia);margin-top:7px}
+.cnp-verse{margin-top:22px;padding-left:16px;border-left:2px solid var(--fio);
+  font-family:var(--serif);font-style:italic;font-size:14.5px;line-height:1.5;color:#6C5C45}
+.cnp-verse b{display:block;font-style:normal;font-weight:700;font-size:11.5px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--ouro);margin-top:8px}
+@media(max-width:900px){
+  .cnp-hero{grid-template-columns:1fr;gap:34px;padding-top:26px}
+  .cnp-portrait{order:-1;width:min(100%,330px)}
+  .cnp-frame::before{inset:12px -10px -12px 10px}
+}
+
+/* ---------- seção genérica da home ---------- */
+.cnp-sec{max-width:1120px;margin:0 auto;padding:clamp(52px,7vw,96px) clamp(18px,5vw,44px)}
+.cnp-sec.tight{padding-top:clamp(28px,4vw,52px);padding-bottom:clamp(28px,4vw,52px)}
+.cnp-title{font-family:var(--display);font-size:clamp(27px,3.6vw,44px);line-height:1.08;margin:15px 0 0;max-width:22ch}
+.cnp-title.center{margin-left:auto;margin-right:auto;text-align:center}
+.cnp-title em{font-style:italic;font-family:var(--serif);font-weight:500;color:var(--coral)}
+.cnp-desc{font-family:var(--serif);font-size:clamp(15.5px,1.35vw,17.5px);line-height:1.65;color:#5A4A34;max-width:54ch;margin:18px 0 0}
+.cnp-desc.center{margin-left:auto;margin-right:auto;text-align:center}
+.cnp-head-c{text-align:center;max-width:760px;margin:0 auto clamp(32px,4vw,50px)}
+.cnp-head-c .kick{justify-content:center}
+
+/* ---------- frases da leitora (lista com fio, não cards) ---------- */
+.cnp-echo{max-width:760px;margin:0 auto;border-top:1px solid var(--line)}
+.cnp-echo li{list-style:none;border-bottom:1px solid var(--line);padding:19px 4px 19px 44px;position:relative;
+  font-family:var(--serif);font-style:italic;font-size:clamp(17px,2vw,22px);line-height:1.35;color:var(--base)}
+.cnp-echo li::before{content:"“";position:absolute;left:6px;top:14px;font-family:var(--display);font-style:normal;
+  font-size:38px;line-height:1;color:var(--fio)}
+.cnp-echo-foot{max-width:760px;margin:26px auto 0;font-family:var(--serif);font-size:16px;color:#5A4A34;line-height:1.6}
+
+/* ---------- bloco escuro com a voz dela ---------- */
+.cnp-dark{background:linear-gradient(158deg,#3B2F1E 0%,#2C2215 100%);color:#F5EFE2;border-radius:30px;
+  padding:clamp(30px,4.6vw,64px);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.cnp-dark::before{content:"";position:absolute;top:-40%;right:-10%;width:60%;height:160%;
+  background:radial-gradient(closest-side,rgba(201,168,92,.16),transparent 70%);pointer-events:none}
+.cnp-dark .kick{color:var(--areia)}
+.cnp-dark .kick::before{background:var(--areia)}
+.cnp-dark h2{font-family:var(--display);font-size:clamp(25px,3.3vw,40px);line-height:1.1;margin:16px 0 0;max-width:20ch;color:#FCF8EF}
+.cnp-dark p{font-family:var(--serif);font-size:clamp(16px,1.5vw,19px);line-height:1.62;color:#EDE3CE;max-width:52ch;margin:20px 0 0}
+.cnp-sign{display:flex;align-items:center;gap:14px;margin-top:30px}
+.cnp-sign img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:50% 12%;border:2px solid var(--areia)}
+.cnp-sign .n{font-family:var(--display);font-size:19px;color:#FCF8EF;line-height:1.1}
+.cnp-sign .r{font-size:11.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--areia);font-weight:700;margin-top:5px}
+
+/* ---------- passos editoriais (numeral grande, sem card) ---------- */
+.cnp-steps{max-width:900px;margin:0 auto;display:flex;flex-direction:column}
+.cnp-steps li{list-style:none;display:grid;grid-template-columns:96px 1fr;gap:clamp(14px,3vw,34px);
+  padding:26px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.cnp-steps li:first-child{border-top:1px solid var(--line)}
+.cnp-steps .n{font-family:var(--display);font-size:clamp(40px,5.5vw,64px);line-height:.9;color:var(--areia)}
+.cnp-steps h3{font-family:var(--serif);font-weight:600;font-size:clamp(18px,2vw,23px);color:var(--ink);margin:0}
+.cnp-steps p{font-size:15px;line-height:1.6;color:#6C5C45;margin:9px 0 0;max-width:52ch}
+@media(max-width:620px){.cnp-steps li{grid-template-columns:60px 1fr;gap:14px}}
+
+/* ---------- os caminhos (planos de leitura) ---------- */
+.cnp-paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.cnp-path{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px 22px 22px;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:.25s}
+.cnp-path::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,var(--fio),transparent)}
+.cnp-path:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.cnp-path .d{font-family:var(--display);font-size:34px;color:var(--ouro);line-height:1}
+.cnp-path .d small{font-size:13px;font-family:var(--sans);color:var(--muted);margin-left:5px;letter-spacing:.4px}
+.cnp-path h3{font-family:var(--serif);font-weight:600;font-size:19px;margin:12px 0 7px;color:var(--ink)}
+.cnp-path p{font-size:13.5px;line-height:1.55;color:#6C5C45}
+
+/* ---------- medalhão da mentora ---------- */
+.cnp-mentor{max-width:980px;margin:0 auto;display:grid;grid-template-columns:230px 1fr;gap:clamp(24px,4vw,54px);align-items:center}
+.cnp-cameo{position:relative;width:210px;height:210px;justify-self:center}
+.cnp-cameo img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 10%;
+  border:5px solid var(--paper);box-shadow:var(--shadow)}
+.cnp-cameo::before{content:"";position:absolute;inset:-11px;border:1px solid var(--fio);border-radius:50%;opacity:.75}
+.cnp-facts{display:flex;flex-wrap:wrap;gap:10px 30px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.cnp-fact b{display:block;font-family:var(--display);font-size:26px;color:var(--ouro);line-height:1.1}
+.cnp-fact span{font-size:12.5px;color:var(--muted)}
+@media(max-width:760px){.cnp-mentor{grid-template-columns:1fr;text-align:center}
+  .cnp-mentor .cnp-title,.cnp-mentor .cnp-desc{margin-left:auto;margin-right:auto;text-align:center}
+  .cnp-mentor .kick{justify-content:center}.cnp-facts{justify-content:center}}
+
+/* ---------- aviso honesto de checkout ---------- */
+.cnp-note{max-width:640px;margin:26px auto 0;text-align:center;font-size:13.5px;line-height:1.6;color:#6C5C45;
+  background:color-mix(in srgb,var(--areia) 34%,var(--paper));border:1px solid var(--line);
+  border-radius:16px;padding:15px 20px}
+.cnp-note b{color:var(--ink)}
