@@ -37,7 +37,33 @@ export type EstadoLeitura =
       perola: { n: number; texto: string } | null
       /** Dias de Graça no cofre (1 a cada 7 de constância, teto 3). */
       gracas: number
+      /** As camadas do dia (migration 009/010). Só existem nos caminhos que
+       *  têm essa prática — nos outros vêm null e a tela não mostra nada. */
+      camadas: CamadasDoDia
     }
+
+/** O que vem POR CIMA do texto bíblico naquele dia, quando o caminho tem.
+ *  Comentário só aparece com autor E obra: a 009 tem CHECK no banco pra isso,
+ *  porque citar sem creditar não é uma decisão que se deixa na disciplina. */
+export type CamadasDoDia = {
+  comentario: string | null
+  comentarioAutor: string | null
+  comentarioObra: string | null
+  geografia: string | null
+  geografiaLugar: string | null
+  curiosidade: string | null
+  fonte: string | null
+}
+
+const SEM_CAMADAS: CamadasDoDia = {
+  comentario: null,
+  comentarioAutor: null,
+  comentarioObra: null,
+  geografia: null,
+  geografiaLugar: null,
+  curiosidade: null,
+  fonte: null,
+}
 
 function hojeISO(): string {
   return new Date().toISOString().slice(0, 10)
@@ -169,30 +195,70 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
 
   let referencia: string | null = null
   let texto: string | null = null
-  const { data: dayRow } = await supabase
+  let camadas: CamadasDoDia = SEM_CAMADAS
+  // Duas tentativas de propósito. O select COM as camadas depende das colunas
+  // da migration 009; num banco onde ela ainda não rodou, o PostgREST devolve
+  // erro de coluna inexistente e a leitora ficaria sem o TEXTO do dia por causa
+  // de um recurso que ela nem tem. Se o primeiro select falhar, cai pro select
+  // antigo e a tela funciona igual, só sem as camadas.
+  // (Regra que este projeto aprendeu do jeito ruim: o código nunca pode quebrar
+  // esperando um asset ou uma migration que ainda não subiu.)
+  let dayRow: Record<string, string | null> | null = null
+  const comCamadas = await supabase
     .from('reading_plan_days')
-    .select('referencia, texto')
+    .select(
+      'referencia, texto, comentario, comentario_autor, comentario_obra, geografia, geografia_lugar, curiosidade, fonte',
+    )
     .eq('plan_id', up.plan_id)
     .eq('dia', diaAtual)
     .maybeSingle()
-  if (dayRow) {
-    referencia = (dayRow as { referencia: string | null }).referencia
-    texto = (dayRow as { texto: string | null }).texto
+  if (comCamadas.error) {
+    const basico = await supabase
+      .from('reading_plan_days')
+      .select('referencia, texto')
+      .eq('plan_id', up.plan_id)
+      .eq('dia', diaAtual)
+      .maybeSingle()
+    dayRow = (basico.data ?? null) as Record<string, string | null> | null
+  } else {
+    dayRow = (comCamadas.data ?? null) as Record<string, string | null> | null
   }
 
-  const streak = calcStreak(datas)
-  const jaLeuHoje = datas.includes(hojeISO())
+  if (dayRow) {
+    const d = dayRow as Record<string, string | null>
+    referencia = d.referencia
+    texto = d.texto
+    camadas = {
+      comentario: d.comentario ?? null,
+      comentarioAutor: d.comentario_autor ?? null,
+      comentarioObra: d.comentario_obra ?? null,
+      geografia: d.geografia ?? null,
+      geografiaLugar: d.geografia_lugar ?? null,
+      curiosidade: d.curiosidade ?? null,
+      fonte: d.fonte ?? null,
+    }
+  }
+
   const progressoPct = p.total_dias > 0 ? Math.round((diasLidos / p.total_dias) * 100) : 0
 
-  // A Lavra é da LEITORA, não do plano: conta os dias lidos em todos os planos
-  // que ela já percorreu. Trocar de caminho não derruba o campo dela.
-  const { count: totalCheckins } = await supabase
+  // A Lavra, a Candeia e o recorde são da LEITORA, não do plano.
+  //
+  // Corrigido em 01/09/2026, visto em produção: a sequência e o recorde saíam
+  // dos checkins do plano ATIVO enquanto a Lavra contava todos. Dava a tela
+  // absurda "31 dias na Palavra · recorde 0 dias" pra quem tinha acabado de
+  // trocar de caminho. Ler é ler: quem leu ontem em Provérbios e hoje em João
+  // não quebrou sequência nenhuma. Progresso e porcentagem seguem do plano;
+  // constância é da pessoa.
+  const { data: todosChecks } = await supabase
     .from('checkins')
-    .select('id', { count: 'exact', head: true })
+    .select('data')
     .eq('user_id', user.id)
-  const espigas = totalCheckins ?? diasLidos
+  const datasTodas = ((todosChecks ?? []) as { data: string }[]).map((c) => c.data)
+  const espigas = datasTodas.length || diasLidos
 
-  const recorde = Math.max(calcRecorde(datas), streak)
+  const streak = calcStreak(datasTodas)
+  const jaLeuHoje = datasTodas.includes(hojeISO())
+  const recorde = Math.max(calcRecorde(datasTodas), streak)
   const perola = extrairPerola(texto, diaAtual)
   const gracas = calcGracas(espigas)
 
@@ -212,6 +278,7 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
     recorde,
     perola,
     gracas,
+    camadas,
   }
 }
 

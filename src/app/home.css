@@ -12,11 +12,41 @@
 .lp-nav .links a.cta{color:#FCF8EF}
 .lp-nav .links a.cta:hover{color:#FCF8EF}
 
+/* Cabeçalho no celular (01/09/2026, visto no print de 390px): a marca inteira
+   e o "Começar de graça" quebravam em duas linhas cada um e o topo virava um
+   bloco de 130px de altura antes da primeira palavra da página. Abaixo de
+   560px a marca fica só "Constância" e o botão para de quebrar. */
+.lp-nav .brand{white-space:nowrap}
+@media(max-width:560px){
+  .lp-nav .in{gap:10px}
+  .lp-nav .brand{font-size:16px}
+  .lp-nav .brand .brand-resto{display:none}
+  .lp-nav .links a.cta{white-space:nowrap;font-size:13.5px;padding:11px 15px}
+}
+
 /* reveal no carregamento. Termina SEMPRE em opacity:1 — nunca deixa bloco
    invisível se a animação não rodar (conteúdo de cliente não some). */
 .cnp-rise{animation:cnpRise .85s cubic-bezier(.16,1,.3,1) both}
 @keyframes cnpRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.cnp-rise{animation:none;opacity:1;transform:none}}
+
+/* Reveal de verdade, amarrado ao SCROLL (01/09/2026).
+   Até aqui todo bloco da página animava de uma vez no carregamento — quando a
+   leitora chegava na metade da página, tudo já tinha "aparecido" fora da vista
+   e o resto da rolagem era estático. Com animation-timeline: view() o bloco
+   sobe no momento em que entra na tela, sem uma linha de JavaScript.
+   Fica atrás de @supports de propósito: onde o navegador não suporta (Safari,
+   por ora), continua valendo a animação de carregamento acima. Em nenhum
+   cenário o conteúdo fica escondido esperando script que pode não rodar. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .cnp-rise{
+      animation:cnpRise linear both;
+      animation-timeline:view();
+      animation-range:entry 4% cover 22%;
+    }
+  }
+}
 
 /* ---------- HERO ---------- */
 .cnp-hero{max-width:1240px;margin:0 auto;padding:clamp(34px,5vw,72px) clamp(18px,5vw,48px) clamp(30px,4vw,56px);
@@ -171,5 +201,128 @@
 
 /* sem a foto do ritual (arquivo ainda não subiu), o bloco vira uma coluna só
    em vez de deixar metade da caixa vazia */
-.cnp-free:not(:has(.cnp-free-img)){grid-template-columns:1fr;max-width:820px}
-.cnp-free:not(:has(.cnp-free-img)) .cnp-free-txt h2{max-width:24ch}
+.cnp-free:not(:has(.cnp-free-img)):not(:has(.cnp-anelzao)){grid-template-columns:1fr;max-width:820px}
+.cnp-free:not(:has(.cnp-free-img)):not(:has(.cnp-anelzao)) .cnp-free-txt h2{max-width:24ch}
+
+/* ============================================================
+   v5 · 01/09/2026 — blocos novos da reescrita
+   ============================================================ */
+
+/* ---------- o custo de não mudar (a implicação do SPIN) ----------
+   Papel quase branco, fio vermelho-terra à esquerda: é o único bloco da
+   página com temperatura de alerta, e ele fica sozinho justamente pra o
+   contraste funcionar. Alerta em todo lugar não alerta em lugar nenhum. */
+.cnp-custo{max-width:800px;margin:0 auto;padding:clamp(26px,4vw,44px) clamp(22px,4vw,46px);
+  background:var(--paper);border:1px solid var(--line);border-left:4px solid #A2553A;
+  border-radius:8px 26px 26px 8px;box-shadow:var(--shadow-sm)}
+.cnp-custo .kick{color:#A2553A}
+.cnp-custo .kick::before{background:#A2553A}
+.cnp-custo h2{font-family:var(--display);font-size:clamp(26px,3.5vw,40px);line-height:1.08;margin:14px 0 0;color:var(--ink)}
+.cnp-custo p{font-family:var(--serif);font-size:clamp(16px,1.5vw,18.5px);line-height:1.66;color:#5A4A34;margin:18px 0 0;max-width:56ch}
+.cnp-custo-fecho{font-family:var(--sans)!important;font-weight:700;color:var(--ink)!important;font-size:16.5px!important}
+
+/* ---------- as cinco peças do Método da Lavra ---------- */
+.cnp-pecas{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:4px;list-style:none}
+.cnp-pecas li{display:grid;grid-template-columns:74px 1fr;gap:clamp(14px,2.6vw,26px);
+  padding:24px 20px;border-radius:20px;align-items:start;
+  transition:background .3s,transform .3s cubic-bezier(.16,1,.3,1)}
+.cnp-pecas li:hover{background:color-mix(in srgb,var(--areia) 26%,transparent);transform:translateX(4px)}
+.pc-ico{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--areia) 62%,var(--paper)),var(--paper));
+  border:1px solid color-mix(in srgb,var(--ambar) 40%,var(--line));color:var(--ouro);
+  box-shadow:0 8px 20px -12px rgba(143,109,30,.6);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),color .3s}
+.cnp-pecas li:hover .pc-ico{transform:translateY(-3px) rotate(-5deg);color:var(--coral)}
+.pc-n{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--ouro)}
+.cnp-pecas h3{font-family:var(--display);font-weight:400;font-size:clamp(20px,2.5vw,26px);
+  color:var(--ink);margin:8px 0 0;line-height:1.15}
+.cnp-pecas p{font-size:15px;line-height:1.65;color:#6C5C45;margin:9px 0 0;max-width:56ch}
+@media(max-width:620px){.cnp-pecas li{grid-template-columns:1fr;gap:14px;padding:20px 4px}}
+
+/* ---------- vitrine: as telas de verdade, animadas ---------- */
+.cnp-vitrine{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1.25fr .75fr;
+  gap:18px;align-items:start}
+.vt-col{display:flex;flex-direction:column;gap:18px}
+.vt-card{background:var(--paper);border:1px solid var(--line);border-radius:24px;
+  padding:clamp(18px,2.6vw,24px);box-shadow:var(--shadow-sm)}
+.vt-kick{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;font-weight:700;color:var(--ouro)}
+
+/* a candeia acesa, com halo pulsando e chama tremendo */
+.vt-candeia{position:relative;overflow:hidden;display:flex;align-items:center;gap:clamp(12px,2.4vw,20px);
+  background:linear-gradient(150deg,#3B2F1E 0%,#2C2215 100%);color:var(--creme);
+  border-radius:24px;padding:clamp(20px,3vw,28px);box-shadow:0 20px 46px -26px rgba(44,34,21,.8)}
+.vt-luz{position:absolute;left:-6%;top:50%;width:230px;height:230px;transform:translateY(-50%);
+  border-radius:50%;background:radial-gradient(closest-side,rgba(224,200,138,.30),transparent 72%);
+  animation:vtHalo 3.4s ease-in-out infinite;pointer-events:none}
+@keyframes vtHalo{0%,100%{opacity:.55;transform:translateY(-50%) scale(.94)}50%{opacity:1;transform:translateY(-50%) scale(1.06)}}
+.vt-ico{position:relative;color:#F0DFAC;display:flex;animation:vtTremula 2.6s ease-in-out infinite;transform-origin:50% 85%}
+@keyframes vtTremula{0%,100%{transform:rotate(-2.5deg) scale(1)}50%{transform:rotate(2.5deg) scale(1.05)}}
+.vt-num{position:relative}
+.vt-num b{display:block;font-family:var(--display);font-size:clamp(38px,5.4vw,54px);line-height:.92;color:#FCF8EF}
+.vt-num span{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--areia)}
+.vt-lado{position:relative;margin-left:auto;display:flex;gap:clamp(14px,3vw,28px);text-align:right}
+.vt-lado b{display:block;font-family:var(--display);font-size:24px;line-height:1;color:var(--ambar)}
+.vt-lado span{font-size:10.5px;color:#B9A87E}
+
+/* a lavra: espigas balançando com atraso diferente por haste */
+.vt-lavra{width:100%;height:auto;display:block;margin-top:14px}
+.vt-haste{animation:vtBalanca 4.6s ease-in-out infinite}
+@keyframes vtBalanca{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+.vt-frase{font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--muted);text-align:center;margin-top:6px}
+
+/* a trilha em miniatura, com o fio dourado se desenhando */
+.vt-card-trilha{display:flex;flex-direction:column}
+.vt-trilha{position:relative;height:288px;margin-top:16px}
+.vt-fio{position:absolute;inset:0;width:100%;height:100%}
+.vt-fio-ouro{stroke-dasharray:900;stroke-dashoffset:900;animation:vtAcende 2.4s cubic-bezier(.16,1,.3,1) .3s infinite}
+@keyframes vtAcende{0%{stroke-dashoffset:900}45%,100%{stroke-dashoffset:0}}
+.vt-no{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:var(--paper);
+  border:2px solid var(--line);color:var(--muted);font-size:11px;font-weight:700}
+.vt-no i{font-style:normal}
+.vt-no.feito{background:linear-gradient(145deg,#D8BC77,#A98634);border-color:transparent;color:#FCF8EF}
+.vt-no.hoje{background:linear-gradient(145deg,#63703F,#454F2B);border-color:transparent;color:#F2E2B4;
+  width:36px;height:36px;animation:vtPulsa 2.1s ease-out infinite;z-index:2}
+@keyframes vtPulsa{0%{box-shadow:0 0 0 0 rgba(106,122,66,.5)}70%{box-shadow:0 0 0 13px rgba(106,122,66,0)}100%{box-shadow:0 0 0 0 rgba(106,122,66,0)}}
+
+@media(max-width:840px){
+  .cnp-vitrine{grid-template-columns:1fr}
+  .vt-trilha{height:300px}
+}
+@media(max-width:520px){
+  .vt-candeia{flex-wrap:wrap}
+  .vt-lado{margin-left:0;width:100%;justify-content:space-between;text-align:left;
+    padding-top:14px;border-top:1px solid rgba(232,217,174,.18)}
+}
+
+/* ---------- o anel dos 1.189 capítulos ---------- */
+.cnp-anelzao{position:relative;justify-self:center;width:min(100%,280px);aspect-ratio:1;display:grid;place-items:center}
+.cnp-anelzao svg{position:absolute;inset:0;width:100%;height:100%}
+.cnp-anelzao-arco{stroke-dasharray:603;stroke-dashoffset:603;animation:anelGira 2.2s cubic-bezier(.16,1,.3,1) .25s both}
+@keyframes anelGira{to{stroke-dashoffset:126}}
+.cnp-anelzao-txt{position:relative;text-align:center}
+.cnp-anelzao-txt b{display:block;font-family:var(--display);font-size:clamp(40px,6vw,56px);line-height:1;color:var(--ink)}
+.cnp-anelzao-txt span{display:block;font-size:11px;letter-spacing:2.6px;text-transform:uppercase;font-weight:700;color:var(--ouro);margin-top:8px}
+.cnp-anelzao-txt i{display:block;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--muted);margin-top:12px}
+
+/* ---------- selo "novo" e ícone nos cards de caminho ---------- */
+.cnp-path-novo{position:absolute;top:14px;right:14px;z-index:2;
+  font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:#FCF8EF;
+  background:linear-gradient(140deg,#6A7A42,#4A5430);border-radius:20px;padding:5px 10px;
+  box-shadow:0 6px 14px -8px rgba(74,84,48,.9)}
+.cnp-path-ico{display:flex;color:var(--ambar);margin-top:12px;transition:transform .35s cubic-bezier(.34,1.56,.64,1),color .3s}
+.cnp-path:hover .cnp-path-ico{transform:translateY(-2px) scale(1.12);color:var(--coral)}
+.cnp-paths-nota{max-width:760px;margin:30px auto 0;text-align:center;font-size:12.5px;line-height:1.6;color:var(--muted)}
+
+/* ---------- a projeção (need-payoff) ---------- */
+.cnp-proj{max-width:840px;margin:0 auto;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,#4A5430 0%,#333B21 100%);color:#F1EEDF;
+  border-radius:30px;padding:clamp(30px,4.6vw,58px);box-shadow:var(--shadow)}
+.cnp-proj::before{content:"";position:absolute;top:-45%;left:-8%;width:56%;height:170%;
+  background:radial-gradient(closest-side,rgba(224,200,138,.20),transparent 70%);pointer-events:none}
+.cnp-proj .kick{color:#D8CFA4;position:relative}
+.cnp-proj .kick::before{background:#D8CFA4}
+.cnp-proj h2{position:relative;font-family:var(--display);font-size:clamp(26px,3.5vw,42px);line-height:1.08;margin:15px 0 0;color:#FCF8EF}
+.cnp-proj p{position:relative;font-family:var(--serif);font-size:clamp(16px,1.5vw,19px);line-height:1.66;color:#E7E4D2;margin:20px 0 0;max-width:56ch}
+.cnp-proj-fecho{border-left:2px solid var(--ambar);padding-left:16px;color:#FCF8EF!important}
