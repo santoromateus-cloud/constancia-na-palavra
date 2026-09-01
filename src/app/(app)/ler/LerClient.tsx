@@ -105,7 +105,7 @@ function Camadas({ c }: { c: Camadas }) {
   );
 }
 
-/* ── A LAVRA ─────────────────────────────────────────────────
+/* ── A LAVRA ────────────────────────────────────────────────────
    Campo de espigas em SVG. Uma espiga por dia lido, até 30 na tela;
    depois disso o campo continua no contador, senão vira poluição.
    O que importa é a leitora ver o campo dela crescer, não contar grão. */
@@ -180,7 +180,7 @@ function Lavra({ espigas, brotando }: { espigas: number; brotando: boolean }) {
   );
 }
 
-/* ── CELEBRAÇÃO ──────────────────────────────────────────────
+/* ── CELEBRAÇÃO ─────────────────────────────────────────────
    1,5s de dopamina limpa: partículas douradas subindo do botão.
    BJ Fogg — a emoção positiva no instante do hábito é o que consolida. */
 function Particulas({ ativo }: { ativo: boolean }) {
