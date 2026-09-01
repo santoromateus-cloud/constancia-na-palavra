@@ -17,13 +17,25 @@ import Link from "next/link";
      forem preenchidas, os botões de plano NÃO voltam pra própria
      página (loop morto): levam pro cadastro e a página avisa, em
      texto claro, que o pagamento ainda não abriu.
+
+   O que mudou em 01/09/2026 (v4 · FREEMIUM):
+   · O produto passa a ter uma porta grátis de verdade: o marcador da
+     Bíblia inteira (66 livros, 1.189 capítulos), o progresso AT/NT e a
+     meta com data. A página agora VENDE essa porta primeiro.
+   · A Bíblia nunca fica atrás do paywall. O que se vende é o caminho
+     guiado, o jogo da constância e a companhia — não o texto.
+   · Fotos novas do ensaio de 2026 (hero, ritual e medalhão).
    ============================================================ */
 
 const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "";
 const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || "";
 const CHECKOUT_ABERTO = Boolean(HOTMART_MENSAL && HOTMART_VITALICIO);
 
-const FOTO = "/elisangela.jpg";
+// Ensaio 2026. FOTO = retrato principal · RITUAL = as mãos na Bíblia com o
+// celular ao lado (é literalmente o uso do produto) · MEDALHAO = o riso, fechado.
+const FOTO = "/elisangela-hero.jpg";
+const RITUAL = "/elisangela-ritual.jpg";
+const MEDALHAO = "/elisangela-medalhao.jpg";
 
 const ECOS = [
   "Comecei animada e parei no meio do Antigo Testamento.",
@@ -95,11 +107,11 @@ export default function Home() {
             seu lado quando o dia aperta. Foi por isso que eu criei o Constância na Palavra.
           </p>
           <div className="cnp-cta reveal d4">
-            <Link href="/login" className="btn btn-primary">Começar minha constância</Link>
+            <Link href="/login" className="btn btn-primary">Começar de graça</Link>
             <Link href="/login" className="btn btn-google">Já sou membro</Link>
           </div>
           <div className="cnp-micro reveal d5">
-            <span>Uma passagem por dia</span>
+            <span>Marcar a Bíblia inteira é grátis</span>
             <span>Cinco minutos bastam</span>
             <span>No celular, sem baixar nada</span>
           </div>
@@ -108,7 +120,7 @@ export default function Home() {
         <div className="cnp-portrait reveal d2">
           <div className="cnp-frame">
           <figure>
-            <img src={FOTO} alt="Elisangela Martins, mentora bíblica e fundadora da Escola Mulher Sábia" width={430} height={505} />
+            <img src={FOTO} alt="Elisangela Martins, mentora bíblica e fundadora da Escola Mulher Sábia" width={430} height={573} />
             <figcaption className="cnp-plate">
               <div className="nm">Elisangela Martins</div>
               <div className="rl">Mentora bíblica</div>
@@ -150,12 +162,46 @@ export default function Home() {
             tela e saber que tem outras mulheres lendo junto com você naquele mesmo dia.
           </p>
           <div className="cnp-sign">
-            <img src={FOTO} alt="" aria-hidden="true" />
+            <img src={MEDALHAO} alt="" aria-hidden="true" />
             <div>
               <div className="n">Elisangela Martins</div>
               <div className="r">Escola Mulher Sábia</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── a porta grátis: o marcador da Bíblia inteira ── */}
+      <section className="cnp-sec" id="gratis">
+        <div className="cnp-free cnp-rise">
+          <div className="cnp-free-txt">
+            <span className="kick">Comece hoje, sem pagar nada</span>
+            <h2>A Bíblia inteira na sua mão, capítulo por capítulo — de graça, para sempre.</h2>
+            <p>
+              Os 66 livros e os 1.189 capítulos estão aqui em caixinhas para você marcar. Cada
+              capítulo que você lê fica registrado, o seu percentual do Antigo e do Novo Testamento
+              sobe na tela, e você escolhe uma data de chegada — o app calcula sozinho quantos
+              capítulos por dia faltam para você chegar lá.
+            </p>
+            <ul className="cnp-free-lista">
+              <li><b>1.189 capítulos</b> para marcar, do Gênesis ao Apocalipse</li>
+              <li><b>Seu progresso</b> do Antigo e do Novo Testamento, sempre à vista</li>
+              <li><b>Sua meta</b> com data de início e de fim, e o ritmo diário calculado</li>
+            </ul>
+            <p className="cnp-free-nota">
+              Isso não é um teste de sete dias. É seu, e continua seu — com ou sem assinatura.
+              A Palavra não fica atrás de uma cobrança.
+            </p>
+            <Link href="/login" className="btn btn-primary">Criar minha conta grátis</Link>
+          </div>
+          <figure className="cnp-free-img">
+            <img
+              src={RITUAL}
+              alt="Mãos sobre uma Bíblia de couro, com um café e o celular ao lado, no momento da leitura"
+              width={900}
+              height={1108}
+            />
+          </figure>
         </div>
       </section>
 
@@ -207,7 +253,7 @@ export default function Home() {
       <section className="cnp-sec" id="mentora">
         <div className="cnp-mentor">
           <div className="cnp-cameo cnp-rise">
-            <img src={FOTO} alt="Elisangela Martins" width={210} height={210} />
+            <img src={MEDALHAO} alt="Elisangela Martins" width={210} height={210} />
           </div>
           <div className="cnp-rise">
             <span className="kick">Quem caminha com você</span>
@@ -231,10 +277,11 @@ export default function Home() {
       <section className="cnp-sec" id="planos">
         <div className="cnp-head-c">
           <span className="kick">Planos</span>
-          <h2 className="cnp-title center">Escolha como começar. Os dois <em>abrem tudo</em>.</h2>
+          <h2 className="cnp-title center">O marcador é grátis. O <em>caminho guiado</em> é o plano.</h2>
           <p className="cnp-desc center">
-            Mensal ou vitalício, o acesso é o mesmo: a sua leitura diária, os quatro caminhos, a sua
-            sequência e o mural das irmãs.
+            Você pode marcar a Bíblia inteira sem pagar nada, hoje e sempre. Quem assina ganha os
+            caminhos que a Elisangela montou, a Candeia que conta os seus dias seguidos, as Pérolas
+            que você coleciona e o mural das irmãs.
           </p>
         </div>
 
@@ -243,9 +290,10 @@ export default function Home() {
             <span className="tag">Mensal</span>
             <div className="price">R$39,90<small>/mês</small></div>
             <ul>
-              <li>Sua leitura da Bíblia todos os dias</li>
-              <li>Os quatro caminhos de leitura</li>
-              <li>A sequência que segura sua constância</li>
+              <li>Tudo do grátis, mais:</li>
+              <li>Os quatro caminhos de leitura guiados</li>
+              <li>A Candeia e os Dias de Graça</li>
+              <li>As Pérolas e a Lavra que cresce</li>
               <li>O mural das irmãs</li>
               <li>Cancele quando quiser</li>
             </ul>
@@ -299,6 +347,10 @@ export default function Home() {
             <div className="ans">Não. Funciona no navegador do celular e do computador. Você abre, lê a passagem do dia e marca que leu.</div>
           </details>
           <details>
+            <summary>O que é grátis de verdade?</summary>
+            <div className="ans">O marcador da Bíblia inteira: os 66 livros, os 1.189 capítulos para marcar, o seu progresso do Antigo e do Novo Testamento e a sua meta com data. Não é teste de sete dias nem versão que expira — é seu e continua seu. O plano pago abre os caminhos guiados, a Candeia, as Pérolas e o mural.</div>
+          </details>
+          <details>
             <summary>Já posso pagar?</summary>
             <div className="ans">Ainda não. Estamos abrindo a turma de fundadoras, então a assinatura ainda está fechada. Crie sua conta agora e avisamos assim que o pagamento for liberado, com o preço desta página garantido pra você.</div>
           </details>
@@ -326,10 +378,10 @@ export default function Home() {
         <div className="lp-final cnp-rise">
           <h2>A sua leitura de hoje já está esperando.</h2>
           <p>
-            Um trecho por dia, com o caminho escolhido e as irmãs do seu lado. Comece agora a
-            constância que você já tentou tantas vezes sozinha.
+            Crie sua conta em um minuto e comece a marcar. A Bíblia inteira é sua de graça, hoje —
+            e quando você quiser companhia no caminho, o plano está aqui.
           </p>
-          <Link href="/login" className="btn btn-primary">Começar minha constância</Link>
+          <Link href="/login" className="btn btn-primary">Começar de graça</Link>
           <div className="lp-assin">Um dia de cada vez · na Palavra</div>
         </div>
       </section>
