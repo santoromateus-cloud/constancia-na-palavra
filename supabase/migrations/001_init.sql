@@ -1,4 +1,6 @@
--- ============ FALA SEM TRAVA — schema inicial ============
+-- ============ CONSTÂNCIA NA PALAVRA — schema inicial ============
+-- (herdado do molde: perfis + auth. As tabelas de treino de voz não são
+--  usadas por este produto e ficam aqui só por histórico da migration.)
 -- Login Google é gerenciado pelo Supabase Auth (auth.users).
 -- Aqui ficam o perfil, as sessões de treino e a evolução. LGPD: guardamos
 -- a transcrição e as métricas, NUNCA o áudio (descartado após transcrever).
