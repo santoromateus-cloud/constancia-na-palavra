@@ -1,10 +1,10 @@
 # Constância na Palavra — o que rodar no Supabase
 
-São 6 arquivos. Rode **na ordem do número**, um de cada vez, no SQL Editor do
+São 7 arquivos. Rode **na ordem do número**, um de cada vez, no SQL Editor do
 Supabase (projeto MS EducaVerbum): abre o arquivo, copia tudo, cola, **Run**.
 
-Cada arquivo pode ser rodado quantas vezes você quiser. Já testei os seis
-rodando **três vezes seguidas** contra um Postgres 16 e nada duplicou nem
+Cada arquivo pode ser rodado quantas vezes você quiser. Já testei todos eles
+rodando **duas a três vezes seguidas** contra um Postgres 16 e nada duplicou nem
 quebrou. Se você não lembra se já tinha rodado a 008 e a 009 antes, roda de
 novo sem medo: o arquivo 1 agora derruba e recria as políticas em vez de
 parar no "policy já existe".
@@ -13,21 +13,19 @@ parar no "policy já existe".
 |---|---|---|
 | 1 | `1-freemium-e-camadas.sql` | Tabelas do marcador da Bíblia e da gamificação (as antigas 008 e 009), mais as colunas de comentário, geografia e curiosidade. |
 | 2 | `2-os-quatro-caminhos-novos.sql` | Cadastra os 4 caminhos novos. Só o cadastro. |
-| 3 | `3-caminho-cronologico.sql` | "A Bíblia na ordem em que aconteceu", 40 dias de texto. |
+| 3a | `3a-caminho-cronologico-dias-1-20.sql` | "A Bíblia na ordem em que aconteceu", dias 1 a 20. |
+| 3b | `3b-caminho-cronologico-dias-21-40.sql` | O mesmo caminho, dias 21 a 40. |
 | 4 | `4-caminho-geografia.sql` | "Onde tudo aconteceu", 21 dias de texto. |
 | 5 | `5-caminho-curiosidades.sql` | "O que você não sabia da Bíblia", 21 dias de texto. |
 | 6 | `6-caminho-spurgeon-e-camadas.sql` | "Salmos com Spurgeon", 30 dias, mais as notas de geografia e de curiosidade dos caminhos 4 e 5. |
 
-O 3 é o maior (167 KB). Se o editor do Supabase reclamar do tamanho, roda o
-arquivo em duas metades: corta em qualquer linha que comece com `  ('5555...`
-e repete o `insert into reading_plan_days (plan_id, dia, referencia, texto)
-values` no começo da segunda metade, trocando a vírgula final pela linha
-`on conflict (plan_id, dia) do update set referencia = excluded.referencia,
-texto = excluded.texto;`.
+O caminho cronológico é o maior dos quatro, então ele já vem partido em `3a` e
+`3b`. Rode os dois, na ordem. O maior arquivo da pasta agora tem 101 KB, que o
+editor do Supabase engole sem reclamar.
 
 ## Como conferir que deu certo
 
-Cola isso no SQL Editor depois do passo 6:
+Cola isso no SQL Editor depois do último passo:
 
 ```sql
 select p.ordem, p.titulo, p.total_dias,
