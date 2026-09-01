@@ -2,7 +2,15 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { ChevronDown, Check, Sparkles, Target, Lock } from "lucide-react";
+import { ChevronDown, Check, Sparkles } from "lucide-react";
+import {
+  IconeCadeado,
+  IconeCandeia,
+  IconeEspiga,
+  IconeIrmas,
+  IconeMeta,
+  IconePerola,
+} from "../../(app)/Icones";
 import type { Livro } from "@/lib/biblia";
 import type { EstadoTracker } from "@/lib/tracker";
 import { alternarCapitulo, alternarLivroInteiro, definirMeta } from "../actions";
@@ -190,7 +198,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
       {/* ── Meta ───────────────────────────────────────────────────────── */}
       <section className="bb-meta">
         <div className="bb-meta-cab">
-          <Target size={17} aria-hidden />
+          <IconeMeta size={18} />
           <h2>Minha meta</h2>
         </div>
         {meta && ritmo !== null && restantes !== null ? (
@@ -339,7 +347,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
       {!pago && (
         <section className="bb-ponte">
           <span className="bb-ponte-kick">
-            <Lock size={12} aria-hidden /> O que mais existe aqui dentro
+            <IconeCadeado size={12} strokeWidth={2.2} /> O que mais existe aqui dentro
           </span>
           <h2>O marcador é seu de graça. A caminhada é melhor acompanhada.</h2>
           <p>
@@ -348,10 +356,34 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
             Mural das Irmãs — tudo isso mora no plano completo.
           </p>
           <ul className="bb-ponte-lista">
-            <li>🕯️ Candeia e Dias de Graça — a sequência que perdoa o dia que faltou</li>
-            <li>🌾 A Lavra — o seu campo, uma espiga por leitura</li>
-            <li>🦪 Pérolas — um versículo-joia guardado a cada dia</li>
-            <li>💬 Mural das Irmãs — você não caminha sozinha</li>
+            <li>
+              <IconeCandeia size={22} />
+              <span>
+                <b>Candeia e Dias de Graça</b>
+                A sequência que perdoa o dia que faltou
+              </span>
+            </li>
+            <li>
+              <IconeEspiga size={22} />
+              <span>
+                <b>A Lavra</b>
+                O seu campo, uma espiga por leitura
+              </span>
+            </li>
+            <li>
+              <IconePerola size={22} />
+              <span>
+                <b>Pérolas</b>
+                Um versículo-joia guardado a cada dia
+              </span>
+            </li>
+            <li>
+              <IconeIrmas size={22} />
+              <span>
+                <b>Mural das Irmãs</b>
+                Você não caminha sozinha
+              </span>
+            </li>
           </ul>
           <Link href="/pricing" className="bb-ponte-btn">
             Ver o plano completo →
@@ -437,11 +469,15 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         /* ponte pro pago */
         .bb-ponte{margin-top:34px;background:var(--base);color:var(--creme);border-radius:26px;padding:clamp(24px,4vw,40px);position:relative;overflow:hidden}
         .bb-ponte::after{content:"";position:absolute;inset:0;background:radial-gradient(70% 90% at 100% 0%,rgba(201,168,92,.24),transparent 60%);pointer-events:none}
-        .bb-ponte-kick{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:var(--ambar)}
+        .bb-ponte-kick{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:var(--ambar)}
         .bb-ponte h2{font-size:clamp(23px,3.2vw,32px);line-height:1.14;margin:13px 0 0;color:var(--creme);max-width:22ch}
         .bb-ponte p{font-size:15px;line-height:1.65;color:color-mix(in srgb,var(--creme) 78%,transparent);margin:14px 0 0;max-width:56ch}
         .bb-ponte-lista{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:9px;margin:22px 0 26px}
-        .bb-ponte-lista li{font-size:14px;color:color-mix(in srgb,var(--creme) 88%,transparent);background:rgba(255,255,255,.05);border:1px solid rgba(232,217,174,.14);border-radius:13px;padding:12px 15px}
+        .bb-ponte-lista li{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.05);border:1px solid rgba(232,217,174,.14);border-radius:14px;padding:14px 16px;transition:.22s}
+        .bb-ponte-lista li:hover{background:rgba(255,255,255,.08);border-color:rgba(232,217,174,.3)}
+        .bb-ponte-lista li > svg{color:var(--ambar);flex:none;margin-top:1px}
+        .bb-ponte-lista li span{display:flex;flex-direction:column;gap:3px;font-size:12.5px;line-height:1.45;color:color-mix(in srgb,var(--creme) 68%,transparent)}
+        .bb-ponte-lista li b{font-family:var(--serif);font-size:14.5px;font-weight:600;color:var(--creme)}
         .bb-ponte-btn{display:inline-flex;align-items:center;background:var(--ambar);color:#2E2416;font-weight:700;font-size:15px;border-radius:13px;padding:14px 24px;transition:.2s;position:relative;z-index:1}
         .bb-ponte-btn:hover{transform:translateY(-2px);background:#E8D9AE}
         .bb-ponte small{display:block;margin-top:14px;font-size:12.5px;color:color-mix(in srgb,var(--creme) 58%,transparent)}
