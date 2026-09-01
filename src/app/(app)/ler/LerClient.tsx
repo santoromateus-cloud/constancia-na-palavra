@@ -180,7 +180,7 @@ function Lavra({ espigas, brotando }: { espigas: number; brotando: boolean }) {
   );
 }
 
-/* ── CELEBRAÇÃO ─────────────────────────────────────────────
+/* ── CELEBRAÇÃO ───────────────────────────────────────────────
    1,5s de dopamina limpa: partículas douradas subindo do botão.
    BJ Fogg — a emoção positiva no instante do hábito é o que consolida. */
 function Particulas({ ativo }: { ativo: boolean }) {
