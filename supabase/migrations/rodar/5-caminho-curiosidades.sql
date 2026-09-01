@@ -241,7 +241,7 @@ insert into reading_plan_days (plan_id, dia, referencia, texto) values
 3 Mas, quando tu deres esmola, não saiba a tua mão esquerda o que faz a direita;
 4 para que a tua esmola fique em secreto; e teu Pai, que vê em secreto, te recompensará.
 5 E, quando orardes, não sejais como os hipócritas; pois gostam de orar em pé nas sinagogas, e às esquinas das ruas, para serem vistos pelos homens. Em verdade vos digo que já receberam a sua recompensa.
-6 Mas tu, quando orares, entra no teu quarto e, fechando a porta, ora a teu Pai que está em secreto; e teu Pai, que vê em secreto, te recompensará.
+6 Mas tu, quando orares, entra no teu quarto e, fechando a porta, ora a teu Pai que está em secreto; e teu Pai, que vê em secreto, te recompensará diante dos homens.
 7 E, orando, não useis de vãs repetições, como os gentios; porque pensam que pelo seu muito falar serão ouvidos.
 8 Não vos assemelheis, pois, a eles; porque vosso Pai sabe o que vos é necessário, antes de vós lho pedirdes.
 9 Portanto, orai vós deste modo: Pai nosso que estás nos céus, santificado seja o teu nome;
