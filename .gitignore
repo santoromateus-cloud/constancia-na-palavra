@@ -1,0 +1,14 @@
+# dependências e build
+node_modules/
+.next/
+out/
+build/
+
+# ambiente (nunca subir segredo — o repo é público)
+.env
+.env.local
+.env*.local
+
+# sistema
+.DS_Store
+*.log
