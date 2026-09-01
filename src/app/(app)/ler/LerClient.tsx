@@ -2,7 +2,14 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import { IconeCandeia, IconeEspiga, IconePerola } from "../Icones";
+import {
+  IconeCandeia,
+  IconeComentario,
+  IconeCuriosidade,
+  IconeEspiga,
+  IconeGeografia,
+  IconePerola,
+} from "../Icones";
 import { liHoje } from "../actions";
 
 /* ============================================================
@@ -19,6 +26,16 @@ import { liHoje } from "../actions";
 
 type Perola = { n: number; texto: string } | null;
 
+type Camadas = {
+  comentario: string | null;
+  comentarioAutor: string | null;
+  comentarioObra: string | null;
+  geografia: string | null;
+  geografiaLugar: string | null;
+  curiosidade: string | null;
+  fonte: string | null;
+};
+
 type Props = {
   planoTitulo: string;
   referencia: string | null;
@@ -32,9 +49,63 @@ type Props = {
   espigas: number;
   gracas: number;
   perola: Perola;
+  camadas: Camadas;
 };
 
-/* ── A LAVRA ────────────────────────────────────────────────────
+/* ── AS CAMADAS DO DIA ──────────────────────────────────────────
+   O que vem por cima do texto nos caminhos que têm essa prática: o
+   comentário de um autor de domínio público, o lugar onde a cena se
+   passou e a curiosidade de contexto.
+
+   Ficam ANTES da pérola e sem depender do check-in de propósito: a
+   pérola é prêmio (só aparece depois de marcar), mas geografia e
+   contexto ajudam a ENTENDER — segurar isso atrás de um botão seria
+   cobrar pedágio na compreensão.
+
+   O crédito nunca é opcional: o autor e a obra vêm coladas na citação,
+   e o banco recusa comentário sem os dois (CHECK da migration 009). */
+function Camadas({ c }: { c: Camadas }) {
+  const temComentario = Boolean(c.comentario && c.comentarioAutor && c.comentarioObra);
+  if (!temComentario && !c.geografia && !c.curiosidade) return null;
+
+  return (
+    <section className="camadas">
+      {temComentario && (
+        <article className="cd cd-com">
+          <span className="cd-kick">
+            <IconeComentario size={15} /> O comentário
+          </span>
+          <blockquote>{c.comentario}</blockquote>
+          <cite>
+            {c.comentarioAutor}
+            <b>{c.comentarioObra}</b>
+          </cite>
+        </article>
+      )}
+
+      {c.geografia && (
+        <article className="cd cd-geo">
+          <span className="cd-kick">
+            <IconeGeografia size={15} /> Onde foi
+          </span>
+          {c.geografiaLugar && <h3>{c.geografiaLugar}</h3>}
+          <p>{c.geografia}</p>
+        </article>
+      )}
+
+      {c.curiosidade && (
+        <article className="cd cd-cur">
+          <span className="cd-kick">
+            <IconeCuriosidade size={15} /> O detalhe que muda tudo
+          </span>
+          <p>{c.curiosidade}</p>
+        </article>
+      )}
+    </section>
+  );
+}
+
+/* ── A LAVRA ─────────────────────────────────────────────────
    Campo de espigas em SVG. Uma espiga por dia lido, até 30 na tela;
    depois disso o campo continua no contador, senão vira poluição.
    O que importa é a leitora ver o campo dela crescer, não contar grão. */
@@ -109,7 +180,7 @@ function Lavra({ espigas, brotando }: { espigas: number; brotando: boolean }) {
   );
 }
 
-/* ── CELEBRAÇÃO ─────────────────────────────────────────────────
+/* ── CELEBRAÇÃO ──────────────────────────────────────────────
    1,5s de dopamina limpa: partículas douradas subindo do botão.
    BJ Fogg — a emoção positiva no instante do hábito é o que consolida. */
 function Particulas({ ativo }: { ativo: boolean }) {
@@ -273,6 +344,9 @@ export default function LerClient(p: Props) {
         {!lido && <p className="lt-mini">Um toque. É só isso que a sua sequência pede.</p>}
       </section>
 
+      {/* ── AS CAMADAS: comentário, geografia e curiosidade do dia ── */}
+      <Camadas c={p.camadas} />
+
       {/* ── A PÉROLA: a joia que ela guarda do que acabou de ler ── */}
       {mostrarPerola && p.perola && (
         <section className="perola">
@@ -379,6 +453,57 @@ export default function LerClient(p: Props) {
         }
         .lt-mini{text-align:center;font-size:12.5px;color:var(--muted);margin-top:12px}
 
+        /* ---------- CAMADAS DO DIA ----------
+           Três cards com peso visual DIFERENTE de propósito: o comentário é
+           voz de gente e ganha o bloco escuro; geografia e curiosidade são
+           nota de rodapé boa e ficam em papel. Assim a leitora sabe o que é
+           citação e o que é contexto sem precisar ler o rótulo. */
+        .camadas{display:flex;flex-direction:column;gap:14px}
+        .cd{
+          border-radius:22px;padding:clamp(19px,3.2vw,26px);
+          animation:cdSobe .7s cubic-bezier(.16,1,.3,1) both;
+        }
+        .camadas .cd:nth-child(2){animation-delay:.09s}
+        .camadas .cd:nth-child(3){animation-delay:.18s}
+        @keyframes cdSobe{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+        .cd-kick{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+
+        /* o comentário: bloco escuro, aspas de verdade, crédito colado */
+        .cd-com{
+          background:linear-gradient(152deg,#3B2F1E 0%,#2C2215 100%);
+          color:var(--creme);position:relative;overflow:hidden;
+          box-shadow:0 16px 40px -22px rgba(44,34,21,.75);
+        }
+        .cd-com::before{
+          content:"“";position:absolute;top:-26px;right:12px;
+          font-family:var(--display);font-size:150px;line-height:1;
+          color:rgba(201,168,92,.13);pointer-events:none;
+        }
+        .cd-com .cd-kick{color:var(--areia)}
+        .cd-com blockquote{
+          font-family:var(--serif);font-style:italic;
+          font-size:clamp(16px,2.1vw,19px);line-height:1.6;
+          color:#F1E7D2;margin:14px 0 0;position:relative;
+        }
+        .cd-com cite{
+          display:block;font-style:normal;margin-top:16px;padding-top:14px;
+          border-top:1px solid rgba(232,217,174,.22);
+          font-size:13px;font-weight:700;color:var(--areia);
+        }
+        .cd-com cite b{display:block;font-weight:400;font-size:12px;color:#B9A87E;margin-top:3px}
+
+        /* geografia e curiosidade: papel, fio dourado à esquerda */
+        .cd-geo,.cd-cur{
+          background:var(--paper);border:1px solid var(--line);
+          border-left:3px solid var(--ambar);
+          border-radius:6px 22px 22px 6px;
+          box-shadow:var(--shadow-sm);
+        }
+        .cd-geo .cd-kick,.cd-cur .cd-kick{color:var(--ouro)}
+        .cd-geo h3{font-family:var(--display);font-weight:400;font-size:clamp(19px,2.4vw,23px);color:var(--ink);margin:11px 0 0;line-height:1.15}
+        .cd-geo p,.cd-cur p{font-size:15px;line-height:1.66;color:#5D4E39;margin:10px 0 0}
+        .cd-cur{border-left-color:var(--coral)}
+
         /* ---------- PÉROLA ---------- */
         .perola{
           background:linear-gradient(145deg,color-mix(in srgb,var(--areia) 46%,var(--paper)),var(--paper) 70%);
@@ -401,6 +526,7 @@ export default function LerClient(p: Props) {
           .cl-item{text-align:left}
         }
         @media (prefers-reduced-motion: reduce){
+          .cd{animation:none}
           .candeia-luz,.candeia-ico{animation:none}
           .lt-barra i,.lt-btn{transition:none}
           .perola{animation:none}
