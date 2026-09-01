@@ -98,16 +98,30 @@
 @media(max-width:620px){.cnp-steps li{grid-template-columns:60px 1fr;gap:14px}}
 
 /* ---------- os caminhos (planos de leitura) ---------- */
-.cnp-paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:16px;max-width:1000px;margin:0 auto}
-.cnp-path{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px 22px 22px;
-  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:.25s}
-.cnp-path::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;
-  background:linear-gradient(90deg,var(--fio),transparent)}
-.cnp-path:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.cnp-path .d{font-family:var(--display);font-size:34px;color:var(--ouro);line-height:1}
-.cnp-path .d small{font-size:13px;font-family:var(--sans);color:var(--muted);margin-left:5px;letter-spacing:.4px}
-.cnp-path h3{font-family:var(--serif);font-weight:600;font-size:19px;margin:12px 0 7px;color:var(--ink)}
-.cnp-path p{font-size:13.5px;line-height:1.55;color:#6C5C45}
+/* Caminhos v4: o numeral de dias vira o herói do card, dentro de um anel
+   dourado — o MESMO sistema visual do anel de progresso do /biblia, pra o
+   produto inteiro parecer uma coisa só. */
+.cnp-paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:18px;max-width:1040px;margin:0 auto}
+.cnp-path{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:30px 24px 26px;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .28s cubic-bezier(.16,1,.3,1),box-shadow .28s,border-color .28s;
+  display:flex;flex-direction:column;align-items:center;text-align:center}
+/* brilho quente que só acende no hover — sem sheen parado, que a trava de
+   identidade proíbe */
+.cnp-path::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(70% 50% at 50% 0%,color-mix(in srgb,var(--ambar) 26%,transparent),transparent 70%)}
+.cnp-path:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--ambar) 55%,var(--line))}
+.cnp-path:hover::after{opacity:1}
+
+.cnp-path-anel{position:relative;width:96px;height:96px;display:grid;place-items:center}
+.cnp-path-anel svg{position:absolute;inset:0;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.cnp-path:hover .cnp-path-anel svg{transform:rotate(28deg)}
+.cnp-path-num{font-family:var(--display);font-size:38px;line-height:1;color:var(--base);position:relative}
+.cnp-path-dias{font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;font-weight:700;color:var(--ouro);margin-top:10px}
+.cnp-path h3{font-family:var(--display);font-weight:400;font-size:22px;margin:10px 0 0;color:var(--ink);line-height:1.15}
+.cnp-path p{font-size:13.5px;line-height:1.58;color:#6C5C45;margin-top:9px}
+.cnp-path-quem{font-family:var(--serif);font-style:italic;font-size:13px;line-height:1.5;color:var(--ouro);
+  margin-top:auto;padding-top:13px;border-top:1px solid var(--line);width:100%}
+.cnp-path p{margin-bottom:14px}
 
 /* ---------- medalhão da mentora ---------- */
 .cnp-mentor{max-width:980px;margin:0 auto;display:grid;grid-template-columns:230px 1fr;gap:clamp(24px,4vw,54px);align-items:center}
