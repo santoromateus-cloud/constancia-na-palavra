@@ -16,7 +16,13 @@
    e o "Começar de graça" quebravam em duas linhas cada um e o topo virava um
    bloco de 130px de altura antes da primeira palavra da página. Abaixo de
    560px a marca fica só "Constância" e o botão para de quebrar. */
-.lp-nav .brand{white-space:nowrap}
+/* `.lp-nav .brand` é flex com gap:10px no globals (sobra de quando tinha um
+   símbolo ao lado do nome). Com o nome partido em dois pedaços pra caber no
+   celular, o gap virou um espaço a mais e a marca saiu "Constância  na Palavra"
+   em produção. Zerar o gap não resolve: o espaço do começo do <span> é aparado
+   por ele ser item de flex, e vira "Constânciana Palavra". A marca aqui é só
+   texto, então ela deixa de ser flex e volta a ser uma frase. */
+.lp-nav .brand{display:inline-block;white-space:nowrap}
 @media(max-width:560px){
   .lp-nav .in{gap:10px}
   .lp-nav .brand{font-size:16px}
