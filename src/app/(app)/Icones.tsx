@@ -177,6 +177,24 @@ export function IconeMeta({ size = 24, className, strokeWidth = 1.6 }: P) {
   );
 }
 
+/** GRAÇA — o Dia de Graça: o dia perdido que não derruba a sequência.
+ *  Mão em concha com uma luz pousada. Concha e não punho: graça é recebida,
+ *  não conquistada — e no produto ela nunca é vendida, só ganha. */
+export function IconeGraca({ size = 24, className, strokeWidth = 1.6 }: P) {
+  return (
+    <svg {...base(size, className)} strokeWidth={strokeWidth}>
+      {/* a luz que pousa: o acento sólido */}
+      <circle cx="12" cy="6.4" r="2.6" fill="currentColor" stroke="none" />
+      <path d="M12 1.6v1.2M12 10v1.2M7.4 6.4H6.2M17.8 6.4h-1.2M8.9 3.3l-.8-.8M15.9 10.3l-.8-.8M8.9 9.5l-.8.8M15.9 2.5l-.8.8" opacity=".85" />
+      {/* a mão em concha */}
+      <path d="M4.4 14.2c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v1.4" />
+      <path d="M8 14.6v-1.2a1.8 1.8 0 0 1 3.6 0v1.2" />
+      <path d="M11.6 14.6v-1a1.8 1.8 0 0 1 3.6 0v1.4" />
+      <path d="M15.2 15.4v-.6a1.7 1.7 0 0 1 3.4 0v2.2c0 2.6-2.2 4.6-5.2 4.6h-2c-3 0-5.2-2-5.2-4.6v-3.4" />
+    </svg>
+  );
+}
+
 /** CADEADO — o que ainda não abriu. Discreto, sem agressividade. */
 export function IconeCadeado({ size = 24, className, strokeWidth = 1.8 }: P) {
   return (

@@ -58,6 +58,7 @@ export default async function Ler() {
       espigas={estado.espigas}
       gracas={estado.gracas}
       perola={estado.perola}
+      camadas={estado.camadas}
     />
   );
 }

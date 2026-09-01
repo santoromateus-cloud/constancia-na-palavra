@@ -116,8 +116,17 @@ export default async function Planos() {
         .tr-cont b{font-family:var(--display);font-size:30px;color:var(--base);display:block;line-height:1}
         .tr-cont span{font-size:11.5px;color:var(--muted)}
 
-        .trilha{position:relative;margin:24px 0 6px}
+        /* trilha estreita e centrada: caminho é coluna, não campo aberto.
+           Sem o max-width a senoide esticava até a borda e virava zigue-zague
+           raso — parecia gráfico, não trilha. */
+        .trilha{position:relative;margin:26px auto 6px;max-width:430px}
         .tr-fio{position:absolute;inset:0;width:100%;height:100%}
+        .tr-andado{
+          stroke-dasharray:2200;stroke-dashoffset:2200;
+          animation:trAcende 1.5s cubic-bezier(.16,1,.3,1) .25s forwards;
+        }
+        @keyframes trAcende{to{stroke-dashoffset:0}}
+
         .no{
           position:absolute;transform:translate(-50%,-50%);
           width:46px;height:46px;border-radius:50%;
@@ -125,10 +134,25 @@ export default async function Planos() {
           background:var(--paper);border:2px solid var(--line);color:var(--muted);
           font-size:13px;font-weight:700;
           transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;
+          animation:noBrota .5s cubic-bezier(.34,1.56,.64,1) backwards;
+        }
+        /* os nós brotam de cima pra baixo quando a tela abre (delay em cascata
+           vem inline do Trilha.tsx) — a trilha se desenha na frente dela.
+           fill-mode BACKWARDS de propósito: com "forwards" o estado final da
+           animação venceria o :hover pra sempre e o nó nunca mais cresceria
+           no toque. Assim a animação some ao terminar e o hover volta a valer. */
+        @keyframes noBrota{
+          from{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+          to{opacity:1;transform:translate(-50%,-50%) scale(1)}
         }
         .no i{font-style:normal}
-        .no:hover{transform:translate(-50%,-50%) scale(1.12)}
-        .no.marco{width:54px;height:54px}
+        .no:hover{transform:translate(-50%,-50%) scale(1.12);z-index:3}
+        .no.marco{width:54px;height:54px;border-style:solid;border-color:color-mix(in srgb,var(--ambar) 60%,var(--line))}
+        /* marco de semana ainda não alcançado: anel de espera em volta */
+        .no-marco-fio{
+          position:absolute;inset:-6px;border-radius:50%;
+          border:1px dashed color-mix(in srgb,var(--ambar) 55%,transparent);
+        }
 
         /* dia já lido: espiga dourada em campo cheio */
         .no.feito{
@@ -141,7 +165,8 @@ export default async function Planos() {
           background:linear-gradient(145deg,#63703F,#454F2B);
           border-color:transparent;color:#F2E2B4;width:58px;height:58px;
           box-shadow:0 0 0 0 rgba(106,122,66,.55);
-          animation:noPulsa 2.1s ease-out infinite;
+          animation:noBrota .5s cubic-bezier(.34,1.56,.64,1) backwards,
+                    noPulsa 2.1s ease-out infinite;
           z-index:2;
         }
         @keyframes noPulsa{
@@ -187,7 +212,8 @@ export default async function Planos() {
         }
         @media (prefers-reduced-motion: reduce){
           .no,.cm-card,.cm-btn{transition:none}
-          .no.hoje{animation:none}
+          .no,.no.hoje{animation:none}
+          .tr-andado{stroke-dashoffset:0;animation:none}
         }
       `}</style>
     </main>
