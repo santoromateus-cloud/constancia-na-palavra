@@ -24,18 +24,21 @@ import Link from "next/link";
      meta com data. A página agora VENDE essa porta primeiro.
    · A Bíblia nunca fica atrás do paywall. O que se vende é o caminho
      guiado, o jogo da constância e a companhia — não o texto.
-   · Fotos novas do ensaio de 2026 (hero, ritual e medalhão).
    ============================================================ */
 
 const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "";
 const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || "";
 const CHECKOUT_ABERTO = Boolean(HOTMART_MENSAL && HOTMART_VITALICIO);
 
-// Ensaio 2026. FOTO = retrato principal · RITUAL = as mãos na Bíblia com o
-// celular ao lado (é literalmente o uso do produto) · MEDALHAO = o riso, fechado.
-const FOTO = "/elisangela-hero.jpg";
-const RITUAL = "/elisangela-ritual.jpg";
-const MEDALHAO = "/elisangela-medalhao.jpg";
+// Ensaio 2026 — PENDENTE DE UPLOAD. Os 3 arquivos novos (elisangela-hero.jpg,
+// elisangela-ritual.jpg, elisangela-medalhao.jpg) estão prontos e recortados, mas
+// binário não sobe pela API do GitHub (o proxy de git desta sessão não tem o repo
+// autorizado e o /upload do GitHub web exige login). Enquanto não sobem, a página
+// usa a foto que JÁ está em produção — melhor do que <img> quebrada no ar.
+// Para ativar: subir os 3 arquivos em public/ e trocar as 3 linhas abaixo.
+const FOTO = "/elisangela.jpg";
+const RITUAL = "";                  // sem foto do ritual ainda: o bloco vira 1 coluna
+const MEDALHAO = "/elisangela.jpg";
 
 const ECOS = [
   "Comecei animada e parei no meio do Antigo Testamento.",
@@ -194,14 +197,16 @@ export default function Home() {
             </p>
             <Link href="/login" className="btn btn-primary">Criar minha conta grátis</Link>
           </div>
-          <figure className="cnp-free-img">
-            <img
-              src={RITUAL}
-              alt="Mãos sobre uma Bíblia de couro, com um café e o celular ao lado, no momento da leitura"
-              width={900}
-              height={1108}
-            />
-          </figure>
+          {RITUAL && (
+            <figure className="cnp-free-img">
+              <img
+                src={RITUAL}
+                alt="Mãos sobre uma Bíblia de couro, com um café e o celular ao lado, no momento da leitura"
+                width={900}
+                height={1108}
+              />
+            </figure>
+          )}
         </div>
       </section>
 
