@@ -154,3 +154,8 @@
   .cnp-free-img{order:-1;aspect-ratio:4/3}
   .cnp-free-txt h2,.cnp-free-txt > p,.cnp-free-nota{max-width:none}
 }
+
+/* sem a foto do ritual (arquivo ainda não subiu), o bloco vira uma coluna só
+   em vez de deixar metade da caixa vazia */
+.cnp-free:not(:has(.cnp-free-img)){grid-template-columns:1fr;max-width:820px}
+.cnp-free:not(:has(.cnp-free-img)) .cnp-free-txt h2{max-width:24ch}
