@@ -55,28 +55,45 @@ export default function PricingPage() {
         <header style={{ textAlign: 'center', maxWidth: 660, margin: '0 auto clamp(40px,5vw,60px)' }} className="reveal d1">
           <span className="kick" style={{ justifyContent: 'center' }}>Planos</span>
           <h1 style={{ fontSize: 'clamp(34px,5vw,58px)', lineHeight: 1.03, margin: '18px 0 0' }}>
-            Escolha como começar.{' '}
-            <span style={{ color: 'var(--coral)', fontStyle: 'italic', fontWeight: 500 }}>Os dois abrem tudo.</span>
+            Comece de graça.{' '}
+            <span style={{ color: 'var(--coral)', fontStyle: 'italic', fontWeight: 500 }}>Assine quando quiser companhia.</span>
           </h1>
-          <p style={{ fontSize: 'clamp(16px,1.5vw,18px)', color: '#5D4E39', margin: '20px auto 0', maxWidth: '52ch', lineHeight: 1.6 }}>
-            Mensal ou vitalício, o acesso é o mesmo: sua leitura da Bíblia todos os dias, a
-            sequência que segura sua constância e a companhia das irmãs no mural.
+          <p style={{ fontSize: 'clamp(16px,1.5vw,18px)', color: '#5D4E39', margin: '20px auto 0', maxWidth: '54ch', lineHeight: 1.6 }}>
+            O marcador da Bíblia inteira é grátis e continua grátis. O que o plano abre é o
+            caminho guiado, o jogo da sua constância e a companhia das irmãs.
           </p>
         </header>
 
         {/* Cards */}
-        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 22, alignItems: 'stretch' }}>
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(268px, 1fr))', gap: 22, alignItems: 'stretch' }}>
+
+          {/* Grátis */}
+          <article style={{ ...card, background: 'transparent', boxShadow: 'none' }} className="reveal d2">
+            <p style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'var(--muted)' }}>Grátis</p>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, margin: '14px 0 2px' }}>
+              <span className="serif" style={{ fontSize: 52, fontWeight: 600, color: 'var(--ink)' }}>R$0</span>
+              <span style={{ color: 'var(--muted)', fontSize: 15 }}>para sempre</span>
+            </div>
+            <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 26 }}>Só criar a conta</p>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28, flex: 1 }}>
+              {['Os 66 livros e os 1.189 capítulos para marcar', 'Seu progresso do Antigo e do Novo Testamento', 'A meta com data de início e de fim', 'O ritmo diário calculado para você chegar'].map(f => (
+                <li key={f} style={feat}>{check}{f}</li>
+              ))}
+            </ul>
+            <Link href="/login" className="btn btn-google" style={{ justifyContent: 'center' }}>Criar minha conta grátis →</Link>
+          </article>
 
           {/* Mensal */}
-          <article style={card} className="reveal d2">
+          <article style={card} className="reveal d3">
             <p style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'var(--muted)' }}>Mensal</p>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, margin: '14px 0 2px' }}>
               <span className="serif" style={{ fontSize: 52, fontWeight: 600, color: 'var(--ink)' }}>R$39,90</span>
               <span style={{ color: 'var(--muted)', fontSize: 15 }}>/mês</span>
             </div>
-            <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 26 }}>Cancele quando quiser</p>
+            <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 16 }}>Cancele quando quiser</p>
+            <p style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>Tudo do grátis, mais:</p>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28, flex: 1 }}>
-              {['Sua leitura da Bíblia todos os dias', 'A sequência que segura sua constância', 'O mural da comunidade', 'Um versículo pra guardar por dia'].map(f => (
+              {['Os caminhos de leitura guiados pela Elisangela', 'A Candeia: seus dias seguidos, com Dias de Graça', 'As Pérolas: um versículo-joia guardado por dia', 'A Lavra: seu campo crescendo a cada leitura', 'O Mural das Irmãs e a Dupla de Constância'].map(f => (
                 <li key={f} style={feat}>{check}{f}</li>
               ))}
             </ul>
@@ -86,7 +103,7 @@ export default function PricingPage() {
           </article>
 
           {/* Vitalício */}
-          <article style={{ ...card, border: '1.5px solid var(--coral)', boxShadow: 'var(--shadow)', position: 'relative' }} className="reveal d3">
+          <article style={{ ...card, border: '1.5px solid var(--coral)', boxShadow: 'var(--shadow)', position: 'relative' }} className="reveal d4">
             <span style={{
               position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)',
               background: 'var(--coral)', color: '#FCF8EF', fontSize: 11, fontWeight: 700,
