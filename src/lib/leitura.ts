@@ -29,10 +29,66 @@ export type EstadoLeitura =
       diasLidos: number
       progressoPct: number
       concluido: boolean
+      /** Total de dias lidos em TODOS os planos — é o tamanho da Lavra dela. */
+      espigas: number
+      /** Recorde de dias seguidos, pra celebrar o recomeço sem apagar o passado. */
+      recorde: number
+      /** A Pérola do dia: um versículo tirado do texto que ela acabou de ler. */
+      perola: { n: number; texto: string } | null
+      /** Dias de Graça no cofre (1 a cada 7 de constância, teto 3). */
+      gracas: number
     }
 
 function hojeISO(): string {
   return new Date().toISOString().slice(0, 10)
+}
+
+/** Maior sequência de dias de calendário já alcançada (o recorde dela). */
+export function calcRecorde(datas: string[]): number {
+  const ordenadas = [...new Set(datas)].sort()
+  if (ordenadas.length === 0) return 0
+  let melhor = 1
+  let atual = 1
+  for (let i = 1; i < ordenadas.length; i++) {
+    const anterior = new Date(ordenadas[i - 1] + 'T00:00:00Z').getTime()
+    const agora = new Date(ordenadas[i] + 'T00:00:00Z').getTime()
+    atual = agora - anterior === 86_400_000 ? atual + 1 : 1
+    if (atual > melhor) melhor = atual
+  }
+  return melhor
+}
+
+/**
+ * A PÉROLA do dia: um versículo tirado do texto que ela acabou de ler.
+ *
+ * Decisão de curadoria: em vez de um catálogo separado de versículos (que
+ * precisaria ser curado e verificado à parte), a joia sai do PRÓPRIO capítulo
+ * do dia. Vantagem dupla — não inventa nada e não depende de fonte nova, e a
+ * pérola conversa com o que ela leu naquele minuto em vez de ser aleatória.
+ *
+ * A escolha é determinística pelo dia do plano: a mesma leitora, no mesmo dia,
+ * vê sempre a mesma pérola. Nada de sorteio que muda ao recarregar a página.
+ */
+export function extrairPerola(texto: string | null, dia: number): { n: number; texto: string } | null {
+  if (!texto) return null
+  // O texto vem no formato "1 No princípio...\n2 E a terra era sem forma..."
+  const versiculos: { n: number; texto: string }[] = []
+  for (const linha of texto.split('\n')) {
+    const m = linha.match(/^\s*(\d+)\s+(.+)$/)
+    if (!m) continue
+    const corpo = m[2].trim()
+    // versículo curto demais não vira joia; longo demais não cabe no card
+    if (corpo.length < 60 || corpo.length > 260) continue
+    versiculos.push({ n: Number(m[1]), texto: corpo })
+  }
+  if (versiculos.length === 0) return null
+  return versiculos[(dia * 7) % versiculos.length]
+}
+
+/** Dias de Graça: 1 a cada 7 dias de constância acumulada, teto 3.
+ *  REGRA DURA do doc de gamificação: graça NUNCA é vendida, só conquistada. */
+export function calcGracas(diasLidos: number, usadas = 0): number {
+  return Math.max(0, Math.min(3, Math.floor(diasLidos / 7) - usadas))
 }
 
 /** Streak = quantos dias de calendário consecutivos, terminando hoje ou ontem, têm leitura. */
@@ -128,6 +184,18 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
   const jaLeuHoje = datas.includes(hojeISO())
   const progressoPct = p.total_dias > 0 ? Math.round((diasLidos / p.total_dias) * 100) : 0
 
+  // A Lavra é da LEITORA, não do plano: conta os dias lidos em todos os planos
+  // que ela já percorreu. Trocar de caminho não derruba o campo dela.
+  const { count: totalCheckins } = await supabase
+    .from('checkins')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+  const espigas = totalCheckins ?? diasLidos
+
+  const recorde = Math.max(calcRecorde(datas), streak)
+  const perola = extrairPerola(texto, diaAtual)
+  const gracas = calcGracas(espigas)
+
   return {
     temPlano: true,
     plano: p,
@@ -140,6 +208,10 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
     diasLidos,
     progressoPct,
     concluido,
+    espigas,
+    recorde,
+    perola,
+    gracas,
   }
 }
 
@@ -230,4 +302,21 @@ export async function escolherPlano(planId: string): Promise<{ ok: boolean }> {
     })
   }
   return { ok: true }
+}
+
+/** Dias lidos por plano, pra desenhar a trilha e o progresso de cada caminho.
+ *  Uma consulta só, agrupada na aplicação — a leitora tem poucos planos. */
+export async function getProgressoPorPlano(): Promise<Record<string, number>> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return {}
+
+  const { data } = await supabase.from('checkins').select('plan_id').eq('user_id', user.id)
+  const mapa: Record<string, number> = {}
+  for (const linha of (data ?? []) as { plan_id: string }[]) {
+    mapa[linha.plan_id] = (mapa[linha.plan_id] ?? 0) + 1
+  }
+  return mapa
 }
