@@ -24,6 +24,10 @@ import Link from "next/link";
      meta com data. A página agora VENDE essa porta primeiro.
    · A Bíblia nunca fica atrás do paywall. O que se vende é o caminho
      guiado, o jogo da constância e a companhia — não o texto.
+   · Caminhos redesenhados: o numeral de dias vira o herói do card,
+     dentro de um anel dourado (mesmo sistema visual do /biblia), e
+     cada caminho ganha um "para quem" — o card passa a responder
+     "esse é o meu?" em vez de só listar o que é.
    ============================================================ */
 
 const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "";
@@ -67,10 +71,30 @@ const PASSOS = [
 ];
 
 const CAMINHOS = [
-  { d: "31", t: "Provérbios", p: "Um capítulo por dia, do primeiro ao último. Sabedoria prática pra vida de casa, de trabalho e de família." },
-  { d: "21", t: "Evangelho de João", p: "O evangelho da intimidade. Pra quem quer conhecer quem Jesus é antes de qualquer outra coisa." },
-  { d: "15", t: "Mulheres da Bíblia", p: "Quinze mulheres, quinze histórias. Um retrato por dia de quem também não teve caminho fácil." },
-  { d: "16", t: "Evangelho de Marcos", p: "O evangelho mais direto e mais rápido. Ideal pra quem está recomeçando e quer sentir movimento logo." },
+  {
+    d: "31",
+    t: "Provérbios",
+    p: "Um capítulo por dia, do primeiro ao último — e o mês inteiro cabe certinho.",
+    q: "Para quem quer sabedoria que serve na cozinha, no trabalho e na conversa difícil.",
+  },
+  {
+    d: "21",
+    t: "Evangelho de João",
+    p: "O evangelho da intimidade, o que mais mostra Jesus de perto.",
+    q: "Para quem quer conhecer quem Ele é antes de qualquer outra coisa.",
+  },
+  {
+    d: "15",
+    t: "Mulheres da Bíblia",
+    p: "Quinze mulheres, quinze histórias — um retrato por dia.",
+    q: "Para quem precisa se ver em alguém que também não teve caminho fácil.",
+  },
+  {
+    d: "16",
+    t: "Evangelho de Marcos",
+    p: "O mais direto e mais rápido dos quatro. Jesus em movimento, do começo ao fim.",
+    q: "Para quem está recomeçando e precisa sentir que sai do lugar.",
+  },
 ];
 
 export default function Home() {
@@ -237,18 +261,37 @@ export default function Home() {
       <section className="cnp-sec tight">
         <div className="cnp-head-c">
           <span className="kick">Os caminhos</span>
-          <h2 className="cnp-title center">Quatro planos prontos. Você escolhe <em>por onde começar</em>.</h2>
+          <h2 className="cnp-title center">Você não escolhe o que ler. Você escolhe <em>por onde começar</em>.</h2>
           <p className="cnp-desc center">
-            Cada plano tem começo, meio e fim, com um trecho por dia na ordem certa. Você pode trocar
-            de caminho quando quiser, e o seu progresso continua salvo.
+            Cada caminho tem começo, meio e fim, com o trecho do dia já escolhido na ordem certa.
+            Você troca de caminho quando quiser e o seu progresso continua guardado — nada se perde.
           </p>
         </div>
         <div className="cnp-paths">
           {CAMINHOS.map((c) => (
             <article key={c.t} className="cnp-path cnp-rise">
-              <div className="d">{c.d}<small>dias</small></div>
+              <div className="cnp-path-anel" aria-hidden>
+                <svg viewBox="0 0 96 96" width="96" height="96">
+                  <circle cx="48" cy="48" r="43" fill="none" stroke="var(--line)" strokeWidth="1.5" />
+                  <circle
+                    cx="48"
+                    cy="48"
+                    r="43"
+                    fill="none"
+                    stroke="var(--fio)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray="270"
+                    strokeDashoffset="78"
+                    transform="rotate(-90 48 48)"
+                  />
+                </svg>
+                <span className="cnp-path-num">{c.d}</span>
+              </div>
+              <span className="cnp-path-dias">dias</span>
               <h3>{c.t}</h3>
               <p>{c.p}</p>
+              <p className="cnp-path-quem">{c.q}</p>
             </article>
           ))}
         </div>
