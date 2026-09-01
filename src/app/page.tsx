@@ -17,7 +17,7 @@ import {
    Server component. Identidade Luz e Lavra (marfim/tabaco/dourado/oliva).
 
    ── A COPY (01/09/2026, reescrita com supervisor-copy + vendas-validadas
-      + o método de hook do incrivelhook) ────────────────────────────────
+      + o método de hook do incrivelhook) ──────────────────────────────────
 
    Nível de consciência (Schwartz): 2, com um pé no 3. A leitora SABE que tem
    o problema — "eu começo e paro" é frase dela, não diagnóstico nosso. Ela já
@@ -55,7 +55,7 @@ import {
    · Promessa que o produto não cumpre. O checkout ainda não abriu e a página
      DIZ isso, em vez de esconder atrás de um botão morto.
 
-   ── O VISUAL ───────────────────────────────────────────────────────────
+   ── O VISUAL ──────────────────────────────────────────────────────────────
    · Vitrine: a home mostra as telas de verdade (candeia acesa, lavra crescendo,
      trilha serpenteando), animadas, em vez de descrever com adjetivo.
    · Reveal por scroll de verdade (animation-timeline: view()), com a animação
@@ -183,7 +183,7 @@ const CAMINHOS = [
   },
 ];
 
-/* ── VITRINE ──────────────────────────────────────────────────
+/* ── VITRINE ────────────────────────────────────────────────────
    Em vez de escrever "gamificação divertida" e pedir fé, a home MOSTRA as
    telas: a candeia acesa com a chama tremendo, o campo de espigas balançando
    e a trilha serpenteando com o dia de hoje pulsando. Tudo SVG + CSS, sem
