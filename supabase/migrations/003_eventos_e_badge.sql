@@ -1,4 +1,4 @@
--- ============ FALA SEM TRAVA — instrumentação mínima (eventos + badge B1-B5) ============
+-- ============ CONSTÂNCIA NA PALAVRA — instrumentação mínima (eventos + badge B1-B5) ============
 -- Sem isso nenhuma evidência do badge é coletável (Auditoria FST 2026-07-03, item 1 do
 -- essencial). Tabela append-only + views que leem o estado atual. As views cobrem o que dá
 -- pra medir HOJE (B1, B2, B3); B4 (recorrência mês 2) só existe com ≥60 dias de dado —

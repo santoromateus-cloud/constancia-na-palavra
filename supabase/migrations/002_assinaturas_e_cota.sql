@@ -1,4 +1,4 @@
--- ============ FALA SEM TRAVA — assinaturas (Hotmart) + cota por plano ============
+-- ============ CONSTÂNCIA NA PALAVRA — assinaturas (Hotmart) + cota por plano ============
 -- Modelo de planos: free (3 treinos/mês) · standard (1 treino/dia) · premium (ilimitado).
 -- Fonte da verdade da assinatura = tabela `assinaturas` por e-mail (vem do webhook
 -- do Hotmart, que pode chegar ANTES da pessoa ter conta). `perfis.plano` é o espelho

@@ -1,4 +1,4 @@
--- ============ FALA SEM TRAVA — idempotência do webhook Hotmart ============
+-- ============ CONSTÂNCIA NA PALAVRA — idempotência do webhook Hotmart ============
 -- Bug conhecido (skill bugs-conhecidos #11): provider reenvia o mesmo webhook 2-3x
 -- (retry de rede) e, em cenários de fora-de-ordem, um evento de cancelamento pode
 -- chegar antes do de ativação. O upsert por e-mail já torna o estado final idempotente,
