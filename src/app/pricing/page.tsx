@@ -93,7 +93,7 @@ export default function PricingPage() {
             <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 16 }}>Cancele quando quiser</p>
             <p style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>Tudo do grátis, mais:</p>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28, flex: 1 }}>
-              {['Os caminhos de leitura guiados pela Elisangela', 'A Candeia: seus dias seguidos, com Dias de Graça', 'As Pérolas: um versículo-joia guardado por dia', 'A Lavra: seu campo crescendo a cada leitura', 'O Mural das Irmãs e a Dupla de Constância'].map(f => (
+              {['Os caminhos de leitura guiados pela Elisangela', 'A Candeia: seus dias seguidos e o seu recorde', 'As Pérolas: um versículo-joia guardado por dia', 'A Lavra: seu campo crescendo a cada leitura', 'O Mural das Irmãs e a Dupla de Constância'].map(f => (
                 <li key={f} style={feat}>{check}{f}</li>
               ))}
             </ul>

@@ -127,7 +127,6 @@ export default async function RaioXPage() {
           <div><b className="tnum">{rx.streak}</b><span>{rx.streak === 1 ? "dia seguido" : "dias seguidos"}</span></div>
           <div><b className="tnum">{rx.recorde}</b><span>seu recorde</span></div>
           <div><b className="tnum">{rx.espigas}</b><span>dias na Palavra</span></div>
-          <div><b className="tnum">{rx.gracas}</b><span>{rx.gracas === 1 ? "dia de graça" : "dias de graça"}</span></div>
         </div>
 
         <div className="rx-cal">
@@ -333,7 +332,7 @@ export default async function RaioXPage() {
         .rx-vazio{font-family:var(--serif);font-size:14.5px;line-height:1.6;color:var(--muted)}
 
         /* ---------- 2 · constância ---------- */
-        .rx-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+        .rx-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
         .rx-nums div{text-align:center;background:color-mix(in srgb,var(--areia) 20%,var(--paper));border-radius:16px;padding:14px 6px}
         .rx-nums b{display:block;font-family:var(--display);font-size:clamp(22px,3.6vw,28px);color:var(--base);line-height:1}
         .rx-nums span{display:block;font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.25}
