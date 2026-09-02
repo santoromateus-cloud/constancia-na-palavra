@@ -36,5 +36,25 @@ export default async function AdminGate() {
   if (!user) redirect("/login");
   if (!ehAdmin(user.email)) notFound();
 
-  return <AdminPanel />;
+  return (
+    <>
+      {/* Atalho para a curadoria do mural. Fica ANTES do painel porque é a
+          única tela do /admin com fila esperando alguém — o resto ela abre
+          quando quer, essa aqui alguém está esperando. */}
+      <div style={{ background: "#F5EFE2", padding: "14px 18px 0" }}>
+        <a
+          href="/admin/mural"
+          style={{
+            display: "inline-block", maxWidth: 860, margin: "0 auto",
+            background: "#FCF8EF", border: "1px solid #E5DBC6", borderRadius: 999,
+            padding: "9px 18px", fontFamily: '"Work Sans",system-ui,sans-serif',
+            fontSize: 14, fontWeight: 700, color: "#556036", textDecoration: "none",
+          }}
+        >
+          Curadoria do mural →
+        </a>
+      </div>
+      <AdminPanel />
+    </>
+  );
 }

@@ -5,6 +5,15 @@ import { createClient } from '@/lib/supabase-server'
 // as reações; cada uma só cria o SEU post e a SUA reação (toggle). Sem IA.
 // Privacidade: não expomos e-mail/nome de outras usuárias (RLS de perfis é própria),
 // então os posts aparecem sem identificação pessoal — "uma irmã".
+//
+// 02/09/2026 — CURADORIA ANTES (migration 011). O recado NÃO vai ao ar sozinho:
+// entra na fila, a Elisângela lê, e só então aparece para as outras. A autora
+// enxerga o dela o tempo todo, marcado como "em análise". Quem publica não pode
+// se auto-aprovar: a policy de insert exige aprovado = false, e a aprovação só
+// acontece pelo service role, no painel dela.
+//
+// A exceção é da_casa: recado da própria Elisângela, que aparece com o nome
+// dela. Não existe autora inventada aqui — ou é uma irmã de verdade, ou é ela.
 
 export type ReacaoTipo = 'amem' | 'orando'
 
@@ -14,6 +23,12 @@ export type MuralPost = {
   referencia: string | null
   criado_em: string
   souAutora: boolean
+  /** Recado da Elisângela, mostrado com o nome dela. */
+  daCasa: boolean
+  /** Só a autora vê: esperando a curadoria. */
+  pendente: boolean
+  /** Só a autora vê: lido e não publicado. */
+  recusado: boolean
   reacoes: Record<ReacaoTipo, number>
   minhasReacoes: Record<ReacaoTipo, boolean>
 }
@@ -21,27 +36,37 @@ export type MuralPost = {
 const LIMITE_POSTS = 50
 export const MAX_TEXTO = 500
 
-/** Lista os posts aprovados (mais recentes) com contagem de reações e o que a usuária já reagiu. */
+type PostRow = {
+  id: string
+  user_id: string
+  texto: string
+  referencia: string | null
+  criado_em: string
+  aprovado: boolean
+  recusado: boolean | null
+  da_casa: boolean | null
+}
+
+/** Lista o mural: os posts publicados + os da própria usuária (mesmo em análise). */
 export async function listarMural(): Promise<MuralPost[]> {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { data: postsData } = await supabase
+  // O filtro é explícito no query, não só na RLS: publicados OU os meus.
+  // Duas camadas dizendo a mesma coisa, porque aqui um vazamento é o recado
+  // de uma mulher aparecendo antes de alguém ter lido.
+  let q = supabase
     .from('wall_posts')
-    .select('id, user_id, texto, referencia, criado_em')
-    .eq('aprovado', true)
+    .select('id, user_id, texto, referencia, criado_em, aprovado, recusado, da_casa')
     .order('criado_em', { ascending: false })
     .limit(LIMITE_POSTS)
 
-  const posts = (postsData ?? []) as {
-    id: string
-    user_id: string
-    texto: string
-    referencia: string | null
-    criado_em: string
-  }[]
+  q = user ? q.or(`aprovado.eq.true,user_id.eq.${user.id}`) : q.eq('aprovado', true)
+
+  const { data: postsData } = await q
+  const posts = (postsData ?? []) as PostRow[]
   if (posts.length === 0) return []
 
   const ids = posts.map((p) => p.id)
@@ -62,13 +87,16 @@ export async function listarMural(): Promise<MuralPost[]> {
       referencia: p.referencia,
       criado_em: p.criado_em,
       souAutora: !!user && p.user_id === user.id,
+      daCasa: p.da_casa === true,
+      pendente: !p.aprovado && p.recusado !== true,
+      recusado: !p.aprovado && p.recusado === true,
       reacoes: { amem: conta('amem'), orando: conta('orando') },
       minhasReacoes: { amem: minha('amem'), orando: minha('orando') },
     }
   })
 }
 
-/** Publica um post no mural (auto-aprovado). */
+/** Publica um post no mural. Entra PENDENTE: só a Elisângela põe no ar. */
 export async function publicarPost(texto: string, referencia: string | null): Promise<{ ok: boolean; erro?: string }> {
   const supabase = await createClient()
   const {
@@ -84,7 +112,7 @@ export async function publicarPost(texto: string, referencia: string | null): Pr
     user_id: user.id,
     texto: t,
     referencia: ref,
-    aprovado: true,
+    aprovado: false,
   })
   return error ? { ok: false, erro: 'falha' } : { ok: true }
 }
