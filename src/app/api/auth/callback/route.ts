@@ -9,7 +9,11 @@ type CookieToSet = { name: string; value: string; options: CookieOptions }
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/ler'
+  // Primeira aba depois de logar = a Biblia (decisao do Mateus, 02/09/2026).
+  // A Biblia e a porta de entrada: e a tela que funciona pra todo mundo, pagante
+  // ou nao, e e onde a leitora ve o proprio progresso. Cair em /ler primeiro
+  // jogava quem nao assina direto num redirect de volta pra ca.
+  const next = searchParams.get('next') ?? '/biblia'
 
   if (code) {
     const response = NextResponse.redirect(`${origin}${next}`)

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   IconeBiblia,
   IconeCadeado,
@@ -23,6 +23,20 @@ import {
 //   Bíblia + Conta    = grátis (sempre clicáveis)
 //   Hoje/Caminhos/Irmãs = pago (com cadeado pra quem ainda não assinou — o
 //   cadeado VENDE: esconder faria a leitora nem saber que existe mais coisa)
+
+/* Voltar — seta simples pra esquerda. Mora aqui e não no Icones.tsx porque só a
+   barra usa. Fica em TODAS as telas: a leitora entra num caminho, abre um livro,
+   e precisa de um caminho de volta que não seja o botão do navegador — que no
+   celular, com o app aberto pela tela inicial, muitas vezes nem aparece. */
+function IconeVoltar({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M15 5 8 12l7 7" stroke="currentColor" strokeWidth={1.8}
+            strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 const ABAS = [
   { href: "/biblia", label: "Bíblia", Icone: IconeBiblia, pago: false },
   { href: "/ler", label: "Hoje", Icone: IconeCandeia, pago: true },
@@ -33,9 +47,26 @@ const ABAS = [
 
 export default function AppNav({ pago = true }: { pago?: boolean }) {
   const pathname = usePathname();
+  const router = useRouter();
   return (
     <nav className="an-nav">
       <div className="an-in">
+        {/* Voltar — em TODAS as telas (pedido do Mateus, 02/09/2026).
+            router.back() usa o histórico real: volta pro lugar de onde ela veio,
+            não pra uma tela fixa. Se ela abriu o app direto nesta página e não há
+            histórico, cai na Bíblia, que é a casa dela. */}
+        <button
+          type="button"
+          className="an-volta"
+          aria-label="Voltar"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) router.back();
+            else router.push("/biblia");
+          }}
+        >
+          <IconeVoltar size={20} />
+        </button>
+
         <Link href={pago ? "/ler" : "/biblia"} className="an-brand">
           <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden>
             <rect width="64" height="64" rx="15" fill="#3A2E1D" />
@@ -89,6 +120,17 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
         }
         .an-brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:400;font-size:18px;color:var(--ink);flex:none}
 
+        /* botão de voltar: alvo de toque cheio (40px), discreto, sempre no
+           mesmo lugar — canto superior esquerdo, que é onde a mão procura */
+        .an-volta{
+          flex:none;display:flex;align-items:center;justify-content:center;
+          width:40px;height:40px;margin-right:-4px;border-radius:12px;
+          color:#96866D;background:transparent;border:0;cursor:pointer;
+          transition:color .2s,background .2s,transform .2s;
+        }
+        .an-volta:hover{color:var(--base);background:color-mix(in srgb,var(--areia) 26%,transparent);transform:translateX(-2px)}
+        .an-volta:active{transform:translateX(-3px) scale(.94)}
+
         .an-abas{display:flex;align-items:stretch;gap:clamp(2px,1.4vw,10px)}
 
         /* tab bar: ícone SOBRE o rótulo, área de toque cheia, respiro entre abas */
@@ -129,11 +171,12 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
         @media(max-width:640px){
           .an-in{gap:8px;padding:0 10px;min-height:62px}
           .an-brand :global(span){display:none}
+          .an-volta{width:34px;height:34px;margin-right:-8px}
           .an-abas{flex:1;justify-content:space-between;gap:0}
           .an-aba{min-width:0;flex:1;padding:8px 4px 7px;font-size:10.5px}
         }
         @media (prefers-reduced-motion: reduce){
-          .an-aba,.an-aba :global(.an-ico),.an-aba :global(.an-fio){transition:none}
+          .an-aba,.an-aba :global(.an-ico),.an-aba :global(.an-fio),.an-volta{transition:none}
         }
       `}</style>
     </nav>
