@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getEstadoLeitura } from "@/lib/leitura";
+import { getEntradaDoDia } from "@/lib/caderno";
 import { IconeCandeia, IconeEspiga, IconePerola } from "../Icones";
 import LerClient from "./LerClient";
 
@@ -44,12 +45,19 @@ export default async function Ler() {
     );
   }
 
+  // O que ela já escreveu no caderno para ESTE dia do caminho. Vem do servidor
+  // para o formulário abrir preenchido quando ela volta — o caderno é dela e
+  // tem que estar lá do jeito que ela deixou.
+  const entrada = await getEntradaDoDia(estado.plano.id, estado.diaAtual);
+
   return (
     /* key={diaAtual}: quando ela registra um dia, o servidor devolve o dia
        seguinte e o componente REMONTA limpo — botão liberado de novo, pérola
-       nova, texto novo. Sem isso a tela ficaria com o estado do dia anterior. */
+       nova, texto novo, caderno em branco. Sem isso a tela ficaria com o
+       estado do dia anterior. */
     <LerClient
       key={estado.diaAtual}
+      planoId={estado.plano.id}
       planoTitulo={estado.plano.titulo}
       referencia={estado.referencia}
       texto={estado.texto}
@@ -63,6 +71,16 @@ export default async function Ler() {
       espigas={estado.espigas}
       perola={estado.perola}
       camadas={estado.camadas}
+      entrada={
+        entrada
+          ? {
+              promessa: entrada.promessa,
+              ordem: entrada.ordem,
+              principio: entrada.principio,
+              passo: entrada.passo,
+            }
+          : null
+      }
     />
   );
 }
