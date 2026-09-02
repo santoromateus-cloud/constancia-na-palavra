@@ -45,7 +45,11 @@ export default async function Ler() {
   }
 
   return (
+    /* key={diaAtual}: quando ela registra um dia, o servidor devolve o dia
+       seguinte e o componente REMONTA limpo — botão liberado de novo, pérola
+       nova, texto novo. Sem isso a tela ficaria com o estado do dia anterior. */
     <LerClient
+      key={estado.diaAtual}
       planoTitulo={estado.plano.titulo}
       referencia={estado.referencia}
       texto={estado.texto}
@@ -53,6 +57,7 @@ export default async function Ler() {
       totalDias={estado.totalDias}
       progressoPct={estado.progressoPct}
       jaLeuHoje={estado.jaLeuHoje}
+      concluido={estado.concluido}
       streak={estado.streak}
       recorde={estado.recorde}
       espigas={estado.espigas}
