@@ -66,14 +66,20 @@ const HOTMART_MENSAL = process.env.NEXT_PUBLIC_HOTMART_MENSAL_URL || "";
 const HOTMART_VITALICIO = process.env.NEXT_PUBLIC_HOTMART_VITALICIO_URL || "";
 const CHECKOUT_ABERTO = Boolean(HOTMART_MENSAL && HOTMART_VITALICIO);
 
-// Ensaio 2026 — PENDENTE DE UPLOAD. Os 3 arquivos novos (elisangela-hero.jpg,
-// elisangela-ritual.jpg, elisangela-medalhao.jpg) estão prontos e recortados, mas
-// binário não sobe pela API do GitHub (o proxy de git desta sessão não tem o repo
-// autorizado e o /upload do GitHub web exige login). Enquanto não sobem, a página
-// usa a foto que JÁ está em produção — melhor do que <img> quebrada no ar.
-// Para ativar: subir os 3 arquivos em public/ e trocar as 3 linhas abaixo.
-const FOTO = "/elisangela.jpg";
-const MEDALHAO = "/elisangela.jpg";
+// Ensaio 2026 — NO AR desde 02/09/2026.
+//
+// As fotos NÃO moram neste repositório: JPG é binário e o conector do GitHub
+// desta sessão só passa texto — foi o que travou a troca por semanas. Moram no
+// cPanel do educaverbum.com.br (conta educaverbumcom), em
+// public_html/constancia/, junto com as outras landings do ecossistema
+// (/virgula/, /raiox/). É o mesmo lugar de onde a Flávia já serve imagem, e sai
+// do bundle da Vercel.
+//
+// O terceiro arquivo do ensaio, elisangela-ritual.jpg, também está lá e não tem
+// slot nesta página ainda — está pronto pra quando tiver.
+const CDN = "https://educaverbum.com.br/constancia";
+const FOTO = `${CDN}/elisangela-hero.jpg`;
+const MEDALHAO = `${CDN}/elisangela-medalhao.jpg`;
 
 const ECOS = [
   "Comecei animada e parei no meio do Antigo Testamento.",
