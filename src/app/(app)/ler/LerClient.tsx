@@ -44,6 +44,7 @@ type Props = {
   totalDias: number;
   progressoPct: number;
   jaLeuHoje: boolean;
+  concluido: boolean;
   streak: number;
   recorde: number;
   espigas: number;
@@ -52,7 +53,7 @@ type Props = {
   camadas: Camadas;
 };
 
-/* ── AS CAMADAS DO DIA ──────────────────────────────────────────
+/* ── AS CAMADAS DO DIA ──────────────────────────────────
    O que vem por cima do texto nos caminhos que têm essa prática: o
    comentário de um autor de domínio público, o lugar onde a cena se
    passou e a curiosidade de contexto.
@@ -105,7 +106,7 @@ function Camadas({ c }: { c: Camadas }) {
   );
 }
 
-/* ── A LAVRA ────────────────────────────────────────────────────
+/* ── A LAVRA ─────────────────────────────────────────
    Campo de espigas em SVG. Uma espiga por dia lido, até 30 na tela;
    depois disso o campo continua no contador, senão vira poluição.
    O que importa é a leitora ver o campo dela crescer, não contar grão. */
@@ -180,7 +181,7 @@ function Lavra({ espigas, brotando }: { espigas: number; brotando: boolean }) {
   );
 }
 
-/* ── CELEBRAÇÃO ─────────────────────────────────────────────────
+/* ── CELEBRAÇÃO ───────────────────────────────────────
    1,5s de dopamina limpa: partículas douradas subindo do botão.
    BJ Fogg — a emoção positiva no instante do hábito é o que consolida. */
 function Particulas({ ativo }: { ativo: boolean }) {
@@ -218,25 +219,39 @@ function Particulas({ ativo }: { ativo: boolean }) {
   );
 }
 
+/* LEITURA LIVRE (02/09/2026) — a decisão que muda esta tela.
+   Antes: um registro por dia de calendário. Quem lia três capítulos numa sentada
+   via a tela travada em "Leitura de hoje guardada" e o caminho parado — o app
+   dizia "chega por hoje" pra quem estava com vontade de ler. Isso é o oposto do
+   produto.
+   Agora: ela registra QUANTOS DIAS QUISER. O caminho anda de verdade a cada
+   toque, a Lavra ganha uma espiga por dia lido. O que NÃO infla é a constância:
+   a Candeia (sequência), o recorde e os Dias de Graça continuam contando por dia
+   de calendário, no servidor. Ler muito num dia rende caminho e Lavra; voltar
+   amanhã é o que rende sequência. */
+
 export default function LerClient(p: Props) {
-  const [lido, setLido] = useState(p.jaLeuHoje);
+  // marcado = registrou o dia que está na tela AGORA (some quando o servidor
+  // devolve o próximo dia, porque a página remonta com key={diaAtual})
+  const [marcado, setMarcado] = useState(false);
   const [festa, setFesta] = useState(false);
   const [mostrarPerola, setMostrarPerola] = useState(p.jaLeuHoje);
   const [pendente, startTransition] = useTransition();
   const jaMontou = useRef(false);
 
-  // streak e espigas otimistas: a tela responde no toque, o servidor confirma
-  const marcouAgora = lido && !p.jaLeuHoje;
-  const streak = p.streak + (marcouAgora ? 1 : 0);
-  const espigas = p.espigas + (marcouAgora ? 1 : 0);
+  // otimista: a tela responde no toque, o servidor confirma.
+  // A sequência só sobe se este for o PRIMEIRO registro do dia de calendário.
+  const primeiroDeHoje = marcado && !p.jaLeuHoje;
+  const streak = p.streak + (primeiroDeHoje ? 1 : 0);
+  const espigas = p.espigas + (marcado ? 1 : 0);
 
   useEffect(() => {
     jaMontou.current = true;
   }, []);
 
   function marcar() {
-    if (lido) return;
-    setLido(true);
+    if (marcado || p.concluido) return;
+    setMarcado(true);
     setFesta(true);
     setTimeout(() => setMostrarPerola(true), 520);
     setTimeout(() => setFesta(false), 1500);
@@ -245,7 +260,7 @@ export default function LerClient(p: Props) {
     });
   }
 
-  const quebrou = p.streak === 0 && p.espigas > 0 && !lido;
+  const quebrou = p.streak === 0 && p.espigas > 0 && !marcado;
 
   return (
     <main className="hoje">
@@ -334,14 +349,26 @@ export default function LerClient(p: Props) {
           <button
             type="button"
             onClick={marcar}
-            disabled={lido || pendente}
-            className={"lt-btn" + (lido ? " feito" : "")}
+            disabled={marcado || pendente || p.concluido}
+            className={"lt-btn" + (marcado || p.concluido ? " feito" : "")}
           >
-            {lido ? "Leitura de hoje guardada" : "Li hoje"}
+            {p.concluido
+              ? "Caminho concluído"
+              : marcado
+                ? "Guardado"
+                : p.jaLeuHoje
+                  ? "Li este dia também"
+                  : "Li hoje"}
           </button>
         </div>
 
-        {!lido && <p className="lt-mini">Um toque. É só isso que a sua sequência pede.</p>}
+        {!marcado && !p.concluido && (
+          <p className="lt-mini">
+            {p.jaLeuHoje
+              ? "A sua sequência de hoje já está contada. Siga lendo à vontade — o caminho anda junto."
+              : "Um toque. É só isso que a sua sequência pede."}
+          </p>
+        )}
       </section>
 
       {/* ── AS CAMADAS: comentário, geografia e curiosidade do dia ── */}
