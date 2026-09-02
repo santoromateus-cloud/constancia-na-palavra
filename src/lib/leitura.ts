@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 
-// ── Lógica de leitura (server-side) do Constância na Palavra ───────────────────
+// ── Lógica de leitura (server-side) do Constância na Palavra ───────────────
 // Tudo roda com o client de SESSÃO da usuária (RLS garante que ela só toca no que é
 // dela). Sem IA, sem cota — o gate de assinatura é feito no layout da área logada.
 // Modelo: dia_atual = próximo dia a ler; cada check-in registra um dia concluído e
@@ -25,6 +25,8 @@ export type EstadoLeitura =
       referencia: string | null
       texto: string | null
       jaLeuHoje: boolean
+      /** Dias de calendario distintos com leitura — a constancia de verdade. */
+      diasDeConstancia: number
       streak: number
       diasLidos: number
       progressoPct: number
@@ -112,7 +114,12 @@ export function extrairPerola(texto: string | null, dia: number): { n: number; t
 }
 
 /** Dias de Graça: 1 a cada 7 dias de constância acumulada, teto 3.
- *  REGRA DURA do doc de gamificação: graça NUNCA é vendida, só conquistada. */
+ *  REGRA DURA do doc de gamificação: graça NUNCA é vendida, só conquistada.
+ *
+ *  02/09/2026 — a conta passou a ser por DIA DE CALENDÁRIO com leitura, não por
+ *  check-in. Desde que a leitora pode registrar vários dias do caminho de uma vez,
+ *  contar check-in daria três graças numa tarde de leitura puxada. Graça se ganha
+ *  voltando, não lendo muito de uma vez. */
 export function calcGracas(diasLidos: number, usadas = 0): number {
   return Math.max(0, Math.min(3, Math.floor(diasLidos / 7) - usadas))
 }
@@ -260,7 +267,10 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
   const jaLeuHoje = datasTodas.includes(hojeISO())
   const recorde = Math.max(calcRecorde(datasTodas), streak)
   const perola = extrairPerola(texto, diaAtual)
-  const gracas = calcGracas(espigas)
+  // Dias de calendário distintos: é o que mede constância. Ler dez dias do
+  // caminho numa tarde é UM dia de constância — e dez espigas na Lavra.
+  const diasDeConstancia = new Set(datasTodas).size
+  const gracas = calcGracas(diasDeConstancia)
 
   return {
     temPlano: true,
@@ -270,6 +280,7 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
     referencia,
     texto,
     jaLeuHoje,
+    diasDeConstancia,
     streak,
     diasLidos,
     progressoPct,
