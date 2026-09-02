@@ -1,9 +1,9 @@
 import { createClient } from '@/lib/supabase-server'
-import { calcGracas, calcRecorde, calcStreak } from '@/lib/leitura'
+import { calcRecorde, calcStreak } from '@/lib/leitura'
 import { getEstadoTracker, type Meta } from '@/lib/tracker'
 import { LIVROS } from '@/lib/biblia'
 
-// ── O RAIO-X DA CAMINHADA ────────────────────────────────────────
+// ── O RAIO-X DA CAMINHADA ────────────────
 // Uma tela só que responde às três perguntas que fazem a leitora voltar:
 //   1. Onde eu parei?      → o caminho ativo, o dia exato e o botão de continuar
 //   2. O que eu já andei?  → a constância no calendário, caminho por caminho
@@ -50,7 +50,6 @@ export type RaioX = {
   streak: number
   recorde: number
   espigas: number
-  gracas: number
   diasDeConstancia: number
   dias: DiaMarcado[]
   primeiraData: string | null
@@ -93,13 +92,12 @@ export async function getRaioX(): Promise<RaioX | null> {
   const checkins = (checks ?? []) as CheckinRow[]
 
   // ── constância (mesma conta da tela de Hoje, pra não existirem dois números
-  //    diferentes pra mesma coisa) ──────────────────────────────────────
+  //    diferentes pra mesma coisa) ────────────────────
   const datasCheckin = checkins.map((c) => c.data)
   const streak = calcStreak(datasCheckin)
   const recorde = Math.max(calcRecorde(datasCheckin), streak)
   const espigas = datasCheckin.length
   const diasDeConstancia = new Set(datasCheckin).size
-  const gracas = calcGracas(diasDeConstancia)
 
   // ── o calendário: dia de caminho vence dia de só-capítulo quando cai no
   //    mesmo dia, porque o check-in é o compromisso maior ──────────────────
@@ -111,7 +109,7 @@ export async function getRaioX(): Promise<RaioX | null> {
     .sort((a, b) => a.data.localeCompare(b.data))
   const primeiraData = dias.length > 0 ? dias[0].data : null
 
-  // ── os caminhos que ela já tocou ─────────────────────────────────
+  // ── os caminhos que ela já tocou ─────────────────
   const lidosPorPlano = new Map<string, number>()
   for (const c of checkins) lidosPorPlano.set(c.plan_id, (lidosPorPlano.get(c.plan_id) ?? 0) + 1)
 
@@ -156,7 +154,7 @@ export async function getRaioX(): Promise<RaioX | null> {
     }
   }
 
-  // ── a Bíblia: os livros que ela começou e ainda não fechou ──────────────
+  // ── a Bíblia: os livros que ela começou e ainda não fechou ───────────
   const porLivro = tracker?.porLivro ?? {}
   const emAndamento: LivroEmAndamento[] = LIVROS.map((l) => {
     const lidos = (porLivro[l.slug] ?? []).filter((c) => c >= 1 && c <= l.capitulos).length
@@ -171,7 +169,6 @@ export async function getRaioX(): Promise<RaioX | null> {
     streak,
     recorde,
     espigas,
-    gracas,
     diasDeConstancia,
     dias,
     primeiraData,

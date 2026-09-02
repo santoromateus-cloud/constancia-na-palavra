@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 
-// ── Lógica de leitura (server-side) do Constância na Palavra ───────────────
+// ── Lógica de leitura (server-side) do Constância na Palavra ─────────────────
 // Tudo roda com o client de SESSÃO da usuária (RLS garante que ela só toca no que é
 // dela). Sem IA, sem cota — o gate de assinatura é feito no layout da área logada.
 // Modelo: dia_atual = próximo dia a ler; cada check-in registra um dia concluído e
@@ -37,8 +37,6 @@ export type EstadoLeitura =
       recorde: number
       /** A Pérola do dia: um versículo tirado do texto que ela acabou de ler. */
       perola: { n: number; texto: string } | null
-      /** Dias de Graça no cofre (1 a cada 7 de constância, teto 3). */
-      gracas: number
       /** As camadas do dia (migration 009/010). Só existem nos caminhos que
        *  têm essa prática — nos outros vêm null e a tela não mostra nada. */
       camadas: CamadasDoDia
@@ -113,16 +111,12 @@ export function extrairPerola(texto: string | null, dia: number): { n: number; t
   return versiculos[(dia * 7) % versiculos.length]
 }
 
-/** Dias de Graça: 1 a cada 7 dias de constância acumulada, teto 3.
- *  REGRA DURA do doc de gamificação: graça NUNCA é vendida, só conquistada.
- *
- *  02/09/2026 — a conta passou a ser por DIA DE CALENDÁRIO com leitura, não por
- *  check-in. Desde que a leitora pode registrar vários dias do caminho de uma vez,
- *  contar check-in daria três graças numa tarde de leitura puxada. Graça se ganha
- *  voltando, não lendo muito de uma vez. */
-export function calcGracas(diasLidos: number, usadas = 0): number {
-  return Math.max(0, Math.min(3, Math.floor(diasLidos / 7) - usadas))
-}
+/* 02/09/2026 — o Dia de Graça saiu do produto. A mecânica prometia cobrir a
+   falta e manter a sequência, mas o cálculo da Candeia nunca consultou o cofre:
+   quem faltava perdia a sequência do mesmo jeito. Entre consertar a conta e
+   tirar a promessa, tiramos a promessa. Fica no lugar o que já funcionava de
+   verdade — o Recomeço com Memória: a sequência recomeça, o recorde e as
+   espigas continuam, e a tela abre no dia em que ela parou. */
 
 /** Streak = quantos dias de calendário consecutivos, terminando hoje ou ontem, têm leitura. */
 export function calcStreak(datas: string[]): number {
@@ -270,7 +264,6 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
   // Dias de calendário distintos: é o que mede constância. Ler dez dias do
   // caminho numa tarde é UM dia de constância — e dez espigas na Lavra.
   const diasDeConstancia = new Set(datasTodas).size
-  const gracas = calcGracas(diasDeConstancia)
 
   return {
     temPlano: true,
@@ -288,7 +281,6 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
     espigas,
     recorde,
     perola,
-    gracas,
     camadas,
   }
 }

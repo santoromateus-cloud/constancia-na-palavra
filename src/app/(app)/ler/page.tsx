@@ -61,7 +61,6 @@ export default async function Ler() {
       streak={estado.streak}
       recorde={estado.recorde}
       espigas={estado.espigas}
-      gracas={estado.gracas}
       perola={estado.perola}
       camadas={estado.camadas}
     />

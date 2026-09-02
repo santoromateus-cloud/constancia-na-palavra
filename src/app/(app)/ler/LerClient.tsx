@@ -18,7 +18,7 @@ import { liHoje } from "../actions";
      1. Candeia   — a sequência de dias, com chama viva
      2. A Lavra   — o campo que cresce, uma espiga por leitura
      5. Pérolas   — o versículo-joia revelado no check-in
-   Mais o Recomeço com Memória (3) e os Dias de Graça (2).
+   Mais o Recomeço com Memória (3): quem quebra a sequência não perde o que andou.
 
    Regra de design que atravessa tudo: motor é honra, crescimento e
    companhia — nunca culpa. Nada aqui diz "você falhou".
@@ -48,12 +48,11 @@ type Props = {
   streak: number;
   recorde: number;
   espigas: number;
-  gracas: number;
   perola: Perola;
   camadas: Camadas;
 };
 
-/* ── AS CAMADAS DO DIA ──────────────────────────────────
+/* ── AS CAMADAS DO DIA ──────────────────────
    O que vem por cima do texto nos caminhos que têm essa prática: o
    comentário de um autor de domínio público, o lugar onde a cena se
    passou e a curiosidade de contexto.
@@ -106,7 +105,7 @@ function Camadas({ c }: { c: Camadas }) {
   );
 }
 
-/* ── A LAVRA ─────────────────────────────────────────
+/* ── A LAVRA ─────────────────────────
    Campo de espigas em SVG. Uma espiga por dia lido, até 30 na tela;
    depois disso o campo continua no contador, senão vira poluição.
    O que importa é a leitora ver o campo dela crescer, não contar grão. */
@@ -181,7 +180,7 @@ function Lavra({ espigas, brotando }: { espigas: number; brotando: boolean }) {
   );
 }
 
-/* ── CELEBRAÇÃO ───────────────────────────────────────
+/* ── CELEBRAÇÃO ───────────────────────
    1,5s de dopamina limpa: partículas douradas subindo do botão.
    BJ Fogg — a emoção positiva no instante do hábito é o que consolida. */
 function Particulas({ ativo }: { ativo: boolean }) {
@@ -226,8 +225,8 @@ function Particulas({ ativo }: { ativo: boolean }) {
    produto.
    Agora: ela registra QUANTOS DIAS QUISER. O caminho anda de verdade a cada
    toque, a Lavra ganha uma espiga por dia lido. O que NÃO infla é a constância:
-   a Candeia (sequência), o recorde e os Dias de Graça continuam contando por dia
-   de calendário, no servidor. Ler muito num dia rende caminho e Lavra; voltar
+   a Candeia (sequência) e o recorde continuam contando por dia de calendário,
+   no servidor. Ler muito num dia rende caminho e Lavra; voltar
    amanhã é o que rende sequência. */
 
 export default function LerClient(p: Props) {
@@ -282,10 +281,6 @@ export default function LerClient(p: Props) {
           <div className="cl-item">
             <b className="tnum">{p.recorde}</b>
             <span>seu recorde</span>
-          </div>
-          <div className="cl-item">
-            <b className="tnum">{p.gracas}</b>
-            <span>{p.gracas === 1 ? "dia de graça" : "dias de graça"}</span>
           </div>
         </div>
       </section>
