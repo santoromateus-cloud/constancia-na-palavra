@@ -17,7 +17,7 @@ import {
    Server component. Identidade Luz e Lavra (marfim/tabaco/dourado/oliva).
 
    ── A COPY (01/09/2026, reescrita com supervisor-copy + vendas-validadas
-      + o método de hook do incrivelhook) ──────────────────────────────────
+      + o método de hook do incrivelhook) ────────────────────────────────
 
    Nível de consciência (Schwartz): 2, com um pé no 3. A leitora SABE que tem
    o problema — "eu começo e paro" é frase dela, não diagnóstico nosso. Ela já
@@ -53,9 +53,11 @@ import {
    · Travessão de IA, "não é X, é Y", "vamos lá", "crucial". Voz da Elisangela:
      professora-guia, calor humano, clareza sem agressão.
    · Promessa que o produto não cumpre. O checkout ainda não abriu e a página
-     DIZ isso, em vez de esconder atrás de um botão morto.
+     DIZ isso, em vez de esconder atrás de um botão morto. Foi também o motivo
+     de o Dia de Graça sair daqui em 02/09/2026: a mecânica prometia cobrir a
+     falta e o código nunca cobriu.
 
-   ── O VISUAL ──────────────────────────────────────────────────────────────
+   ── O VISUAL ───────────────────────────────────────────────────────
    · Vitrine: a home mostra as telas de verdade (candeia acesa, lavra crescendo,
      trilha serpenteando), animadas, em vez de descrever com adjetivo.
    · Reveal por scroll de verdade (animation-timeline: view()), com a animação
@@ -112,8 +114,8 @@ const PECAS = [
   {
     Icone: IconeGraca,
     n: "O perdão",
-    t: "O dia perdido não derruba você",
-    p: "A cada sete dias de constância você ganha um Dia de Graça. Faltou um dia, ele cobre por você e a sequência continua. Graça aqui não se compra em nenhum plano: só se recebe de quem já caminhou.",
+    t: "Faltou um dia? Você volta de onde parou",
+    p: "Aqui ninguém recomeça do zero. Se a sequência quebrar, o seu recorde continua marcado, as suas espigas continuam no campo e as suas pérolas continuam no cofre — e a tela abre exatamente no dia em que você parou. A conta que importa não é a de dias perfeitos: é a de quantas vezes você voltou.",
   },
   {
     Icone: IconeIrmas,
@@ -189,7 +191,7 @@ const CAMINHOS = [
   },
 ];
 
-/* ── VITRINE ────────────────────────────────────────────────────
+/* ── VITRINE ─────────────────────────────────────────────────
    Em vez de escrever "gamificação divertida" e pedir fé, a home MOSTRA as
    telas: a candeia acesa com a chama tremendo, o campo de espigas balançando
    e a trilha serpenteando com o dia de hoje pulsando. Tudo SVG + CSS, sem
@@ -211,8 +213,8 @@ function VitrineCandeia() {
           <span>na Palavra</span>
         </div>
         <div>
-          <b className="tnum">2</b>
-          <span>dias de graça</span>
+          <b className="tnum">23</b>
+          <span>seu recorde</span>
         </div>
       </div>
     </div>
@@ -629,7 +631,7 @@ export default function Home() {
             <ul>
               <li>Tudo do grátis, mais:</li>
               <li>Os oito caminhos guiados, com a trilha do dia</li>
-              <li>A Candeia e os Dias de Graça</li>
+              <li>A Candeia: seus dias seguidos e o recorde</li>
               <li>As Pérolas e a Lavra que cresce</li>
               <li>Comentário, geografia e curiosidade do dia</li>
               <li>O mural das irmãs</li>
@@ -687,7 +689,7 @@ export default function Home() {
           </details>
           <details>
             <summary>O que é grátis de verdade?</summary>
-            <div className="ans">O marcador da Bíblia inteira: os 66 livros, os 1.189 capítulos para marcar, o seu progresso do Antigo e do Novo Testamento e a sua meta com data. Não é teste de sete dias nem versão que expira: é seu e continua seu. O plano pago abre os oito caminhos guiados, a Candeia, as Pérolas, os Dias de Graça e o mural.</div>
+            <div className="ans">O marcador da Bíblia inteira: os 66 livros, os 1.189 capítulos para marcar, o seu progresso do Antigo e do Novo Testamento e a sua meta com data. Não é teste de sete dias nem versão que expira: é seu e continua seu. O plano pago abre os oito caminhos guiados, a Candeia, as Pérolas, a Lavra e o mural.</div>
           </details>
           <details>
             <summary>Já posso pagar?</summary>
@@ -695,7 +697,7 @@ export default function Home() {
           </details>
           <details>
             <summary>Perdi vários dias. Consigo voltar?</summary>
-            <div className="ans">Sempre. A proposta aqui é constância, não perfeição. Você retoma a leitura de hoje e segue de onde está, um dia de cada vez. E a cada sete dias de leitura você ganha um Dia de Graça, que cobre uma falta sem derrubar a sua sequência. Ele nunca é vendido: só se ganha caminhando.</div>
+            <div className="ans">Sempre. A proposta aqui é constância, não perfeição. Você retoma a leitura de hoje e segue de onde está, um dia de cada vez. A sequência recomeça, sim — mas o seu recorde continua marcado, as suas espigas continuam no campo e a tela abre no dia exato em que você parou. Nada do que você já andou se perde.</div>
           </details>
           <details>
             <summary>Qual tradução da Bíblia vocês usam?</summary>
