@@ -10,7 +10,7 @@ import {
   IconeGeografia,
   IconePerola,
 } from "../Icones";
-import { liHoje } from "../actions";
+import { liHoje, salvarCaderno } from "../actions";
 
 /* ============================================================
    A TELA DE HOJE — o núcleo da gamificação
@@ -19,6 +19,7 @@ import { liHoje } from "../actions";
      2. A Lavra   — o campo que cresce, uma espiga por leitura
      5. Pérolas   — o versículo-joia revelado no check-in
    Mais o Recomeço com Memória (3): quem quebra a sequência não perde o que andou.
+   E, desde 02/09/2026, O CADERNO: as quatro perguntas sobre o capítulo lido.
 
    Regra de design que atravessa tudo: motor é honra, crescimento e
    companhia — nunca culpa. Nada aqui diz "você falhou".
@@ -36,7 +37,16 @@ type Camadas = {
   fonte: string | null;
 };
 
+/* O que já está escrito no caderno para o dia que está na tela (ou null). */
+type EntradaSalva = {
+  promessa: string | null;
+  ordem: string | null;
+  principio: string | null;
+  passo: string;
+} | null;
+
 type Props = {
+  planoId: string;
   planoTitulo: string;
   referencia: string | null;
   texto: string | null;
@@ -50,7 +60,22 @@ type Props = {
   espigas: number;
   perola: Perola;
   camadas: Camadas;
+  entrada: EntradaSalva;
 };
+
+/* Caderno aberto com a caneta em cima: o ícone da peça. Local e não em
+   Icones.tsx porque é pequeno e só três telas usam — mesmo padrão dos
+   ícones do mural. */
+function IconeCaderno({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H19v13.5H5.5A1.5 1.5 0 0 0 4 19V5.5Z" />
+      <path d="M4 19a1.5 1.5 0 0 0 1.5 1.5H19" />
+      <path d="M8.6 9h6.2M8.6 12.4h4.2" />
+    </svg>
+  );
+}
 
 /* ── AS CAMADAS DO DIA ──────────────────────
    O que vem por cima do texto nos caminhos que têm essa prática: o
@@ -238,6 +263,15 @@ export default function LerClient(p: Props) {
   const [pendente, startTransition] = useTransition();
   const jaMontou = useRef(false);
 
+  // ── O CADERNO: o rascunho vive aqui, no dia que está na tela ──
+  const [promessa, setPromessa] = useState(p.entrada?.promessa ?? "");
+  const [ordem, setOrdem] = useState(p.entrada?.ordem ?? "");
+  const [principio, setPrincipio] = useState(p.entrada?.principio ?? "");
+  const [passo, setPasso] = useState(p.entrada?.passo ?? "");
+  const [salvando, setSalvando] = useState(false);
+  const [salvo, setSalvo] = useState(!!p.entrada);
+  const [erroCaderno, setErroCaderno] = useState("");
+
   // otimista: a tela responde no toque, o servidor confirma.
   // A sequência só sobe se este for o PRIMEIRO registro do dia de calendário.
   const primeiroDeHoje = marcado && !p.jaLeuHoje;
@@ -248,8 +282,45 @@ export default function LerClient(p: Props) {
     jaMontou.current = true;
   }, []);
 
-  function marcar() {
+  async function guardarCaderno(silencioso = false): Promise<boolean> {
+    if (!passo.trim()) {
+      if (!silencioso) setErroCaderno("Escreva pelo menos o passo de hoje.");
+      return false;
+    }
+    setSalvando(true);
+    setErroCaderno("");
+    try {
+      const r = await salvarCaderno({
+        planId: p.planoId,
+        dia: p.diaAtual,
+        referencia: p.referencia,
+        promessa,
+        ordem,
+        principio,
+        passo,
+        perola: p.perola,
+      });
+      if (!r.ok) {
+        setErroCaderno("Não consegui guardar agora. Tente de novo.");
+        return false;
+      }
+      setSalvo(true);
+      return true;
+    } catch {
+      setErroCaderno("Não consegui guardar agora. Tente de novo.");
+      return false;
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  async function marcar() {
     if (marcado || p.concluido) return;
+    // Se ela escreveu no caderno e não guardou, o toque em "Li hoje" guarda
+    // junto. A página avança de dia logo em seguida e o rascunho iria embora —
+    // perder texto de leitora por causa de uma remontagem é inaceitável.
+    if (passo.trim() && !salvo) await guardarCaderno(true);
+
     setMarcado(true);
     setFesta(true);
     setTimeout(() => setMostrarPerola(true), 520);
@@ -260,6 +331,7 @@ export default function LerClient(p: Props) {
   }
 
   const quebrou = p.streak === 0 && p.espigas > 0 && !marcado;
+  const passagem = p.referencia ?? `Dia ${p.diaAtual}`;
 
   return (
     <main className="hoje">
@@ -318,7 +390,7 @@ export default function LerClient(p: Props) {
         <div className="lt-topo">
           <div>
             <span className="lt-plano">{p.planoTitulo}</span>
-            <h1>{p.referencia ?? `Dia ${p.diaAtual}`}</h1>
+            <h1>{passagem}</h1>
           </div>
           <div className="lt-dia">
             <b className="tnum">{p.diaAtual}</b>
@@ -335,7 +407,7 @@ export default function LerClient(p: Props) {
         ) : (
           <div className="lt-texto lt-vazio">
             O texto deste dia ainda não foi carregado. Abra a sua Bíblia em{" "}
-            <b>{p.referencia ?? `dia ${p.diaAtual}`}</b> e volte para marcar.
+            <b>{passagem}</b> e volte para marcar.
           </div>
         )}
 
@@ -381,6 +453,87 @@ export default function LerClient(p: Props) {
           </cite>
         </section>
       )}
+
+      {/* ── O CADERNO ────────────────────────────────────
+          As quatro perguntas sobre o capítulo que ela acabou de ler.
+          Três opcionais, uma obrigatória — a regra está explicada na tela
+          porque ela é a diferença entre ler o texto e forçar um molde sobre
+          ele. Nada daqui vai para o mural: é dela e só dela. */}
+      <section className="caderno">
+        <header className="cad-topo">
+          <span className="cad-kick">
+            <IconeCaderno size={15} /> O seu caderno
+          </span>
+          <span className="cad-ref">{passagem}</span>
+        </header>
+
+        <p className="cad-regra">
+          Nem todo capítulo traz as quatro coisas. Escreva as que estiverem no texto —
+          o passo é o único que nunca falta.
+        </p>
+
+        <div className="cad-campos">
+          <label className="cad-campo">
+            <span className="cad-rot">Uma promessa</span>
+            <textarea
+              value={promessa}
+              onChange={(e) => { setPromessa(e.target.value); setSalvo(false); }}
+              maxLength={600}
+              rows={2}
+              placeholder="O que Deus prometeu aqui?"
+            />
+          </label>
+
+          <label className="cad-campo">
+            <span className="cad-rot">Uma ordem</span>
+            <textarea
+              value={ordem}
+              onChange={(e) => { setOrdem(e.target.value); setSalvo(false); }}
+              maxLength={600}
+              rows={2}
+              placeholder="O que Ele mandou fazer?"
+            />
+          </label>
+
+          <label className="cad-campo">
+            <span className="cad-rot">Um princípio</span>
+            <textarea
+              value={principio}
+              onChange={(e) => { setPrincipio(e.target.value); setSalvo(false); }}
+              maxLength={600}
+              rows={2}
+              placeholder="O que isso ensina que vale para sempre?"
+            />
+          </label>
+
+          <label className="cad-campo obrigatorio">
+            <span className="cad-rot">
+              Um passo <b>hoje</b>
+            </span>
+            <textarea
+              value={passo}
+              onChange={(e) => { setPasso(e.target.value); setSalvo(false); setErroCaderno(""); }}
+              maxLength={600}
+              rows={2}
+              placeholder="O que eu faço com isso hoje?"
+            />
+          </label>
+        </div>
+
+        {erroCaderno && <p className="cad-erro">{erroCaderno}</p>}
+
+        <div className="cad-pe">
+          <button
+            type="button"
+            className={"cad-btn" + (salvo ? " feito" : "")}
+            onClick={() => void guardarCaderno()}
+            disabled={salvando}
+          >
+            {salvando ? "Guardando…" : salvo ? "Guardado no caderno" : "Guardar no caderno"}
+          </button>
+          <Link href="/caderno" className="cad-link">ver o meu caderno →</Link>
+        </div>
+      </section>
 
       {p.progressoPct >= 100 && (
         <Link href="/planos" className="proximo">
@@ -539,6 +692,51 @@ export default function LerClient(p: Props) {
         .perola blockquote{font-family:var(--serif);font-style:italic;font-size:clamp(17px,2.4vw,21px);line-height:1.55;color:var(--base);margin:14px 0 0}
         .perola cite{display:block;font-style:normal;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--ouro);margin-top:14px}
 
+        /* ---------- O CADERNO ----------
+           Papel pautado: a única superfície do produto em que quem escreve é
+           ela. Fio à esquerda como margem de caderno, e o campo obrigatório
+           ganha a cor da casa para não haver dúvida de qual é qual. */
+        .caderno{
+          background:var(--paper);border:1px solid var(--line);
+          border-left:3px solid var(--fio);
+          border-radius:6px 24px 24px 6px;
+          padding:clamp(20px,3.4vw,28px);box-shadow:var(--shadow-sm);
+        }
+        .cad-topo{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+        .cad-kick{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--ouro)}
+        .cad-ref{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--coral)}
+        .cad-regra{font-size:13px;line-height:1.6;color:var(--muted);margin:12px 0 18px;max-width:56ch}
+        .cad-campos{display:flex;flex-direction:column;gap:14px}
+        .cad-campo{display:flex;flex-direction:column;gap:6px}
+        .cad-rot{font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:var(--muted)}
+        .cad-campo.obrigatorio .cad-rot{color:var(--coral)}
+        .cad-rot b{font-weight:700}
+        .cad-campo textarea{
+          width:100%;border:1px solid var(--line);border-radius:12px;
+          padding:11px 14px;font-family:var(--serif);font-size:15.5px;line-height:1.6;
+          color:var(--ink);background:color-mix(in srgb,var(--areia) 12%,var(--paper));
+          resize:vertical;outline:none;transition:border-color .18s;
+        }
+        .cad-campo textarea:focus{border-color:var(--ambar)}
+        .cad-campo.obrigatorio textarea:focus{border-color:var(--coral)}
+        .cad-campo textarea::placeholder{font-family:var(--sans);font-size:14px;color:#A8967A}
+        .cad-erro{font-size:13px;color:#8C3A3A;margin-top:12px}
+        .cad-pe{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px}
+        .cad-btn{
+          font-family:var(--sans);font-weight:700;font-size:14.5px;
+          background:var(--coral);color:#FCF8EF;border:0;border-radius:13px;
+          padding:12px 22px;cursor:pointer;transition:.2s;
+        }
+        .cad-btn:hover:not(:disabled){background:#47512C;transform:translateY(-1px)}
+        .cad-btn:disabled{opacity:.6;cursor:default}
+        .cad-btn.feito{
+          background:color-mix(in srgb,var(--areia) 46%,var(--paper));
+          color:var(--ouro);border:1px solid color-mix(in srgb,var(--ambar) 50%,var(--line));
+        }
+        .cad-btn.feito:hover{background:color-mix(in srgb,var(--areia) 46%,var(--paper));transform:none}
+        .cad-link{font-size:12.5px;font-weight:600;color:var(--ouro)}
+        .cad-link:hover{text-decoration:underline}
+
         .proximo{display:block;text-align:center;background:var(--base);color:var(--areia);font-weight:700;font-size:15px;border-radius:16px;padding:16px;transition:.2s}
         .proximo:hover{transform:translateY(-2px);background:#2E2416}
 
@@ -546,6 +744,7 @@ export default function LerClient(p: Props) {
           .candeia-box{flex-wrap:wrap;gap:14px}
           .candeia-lado{margin-left:0;width:100%;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(232,217,174,.18)}
           .cl-item{text-align:left}
+          .cad-btn{width:100%}
         }
         @media (prefers-reduced-motion: reduce){
           .cd{animation:none}
