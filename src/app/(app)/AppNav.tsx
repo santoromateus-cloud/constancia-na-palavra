@@ -24,6 +24,18 @@ import {
 //   Hoje/Caminhos/Irmãs = pago (com cadeado pra quem ainda não assinou — o
 //   cadeado VENDE: esconder faria a leitora nem saber que existe mais coisa)
 
+/* Raio-X — as três barras que sobem, o mesmo desenho da marca. É a leitura
+   certa pro que a tela faz: mostrar a caminhada dela crescendo. */
+function IconeRaioX({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="3.5" y="13" width="4.4" height="7.5" rx="2.2" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="9.8" y="9" width="4.4" height="11.5" rx="2.2" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="16.1" y="3.5" width="4.4" height="17" rx="2.2" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+
 /* Voltar — seta simples pra esquerda. Mora aqui e não no Icones.tsx porque só a
    barra usa. Fica em TODAS as telas: a leitora entra num caminho, abre um livro,
    e precisa de um caminho de volta que não seja o botão do navegador — que no
@@ -42,6 +54,7 @@ const ABAS = [
   { href: "/ler", label: "Hoje", Icone: IconeCandeia, pago: true },
   { href: "/planos", label: "Caminhos", Icone: IconeGeografia, pago: true },
   { href: "/mural", label: "Irmãs", Icone: IconeIrmas, pago: true },
+  { href: "/raio-x", label: "Raio-X", Icone: IconeRaioX, pago: true },
   { href: "/conta", label: "Conta", Icone: IconeConta, pago: false },
 ];
 
@@ -173,7 +186,8 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
           .an-brand :global(span){display:none}
           .an-volta{width:34px;height:34px;margin-right:-8px}
           .an-abas{flex:1;justify-content:space-between;gap:0}
-          .an-aba{min-width:0;flex:1;padding:8px 4px 7px;font-size:10.5px}
+          .an-aba{min-width:0;flex:1;padding:8px 2px 7px;font-size:9.5px;border-radius:11px}
+          .an-aba :global(.an-ico) svg{width:20px;height:20px}
         }
         @media (prefers-reduced-motion: reduce){
           .an-aba,.an-aba :global(.an-ico),.an-aba :global(.an-fio),.an-volta{transition:none}
