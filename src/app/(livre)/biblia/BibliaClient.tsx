@@ -23,7 +23,7 @@ type Props = {
   inicial: EstadoTracker;
 };
 
-// ── Anel de progresso (SVG, anima sozinho ao mudar) ───────────────────────────
+// ── Anel de progresso (SVG, anima sozinho ao mudar) ────────────────────────────
 function Anel({
   pct,
   tamanho = 148,
@@ -138,7 +138,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
 
   return (
     <main className="bb">
-      {/* ── Painel de progresso ─────────────────────────────────────────── */}
+      {/* ── Painel de progresso ────────────────────────────────────── */}
       <section className="bb-painel">
         <div className="bb-anelbox">
           <Anel pct={pctTotal}>
@@ -195,7 +195,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         </div>
       </section>
 
-      {/* ── Meta ───────────────────────────────────────────────────────── */}
+      {/* ── Meta ──────────────────────────────────────────────── */}
       <section className="bb-meta">
         <div className="bb-meta-cab">
           <IconeMeta size={18} />
@@ -249,7 +249,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         </form>
       </section>
 
-      {/* ── Livros ─────────────────────────────────────────────────────── */}
+      {/* ── Livros ───────────────────────────────────────────── */}
       <section className="bb-livros">
         <div className="bb-abas" role="tablist">
           <button
@@ -343,7 +343,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         </ul>
       </section>
 
-      {/* ── Ponte pro pago ─────────────────────────────────────────────── */}
+      {/* ── Ponte pro pago ─────────────────────────────────────── */}
       {!pago && (
         <section className="bb-ponte">
           <span className="bb-ponte-kick">
@@ -359,8 +359,8 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
             <li>
               <IconeCandeia size={22} />
               <span>
-                <b>Candeia e Dias de Graça</b>
-                A sequência que perdoa o dia que faltou
+                <b>A Candeia</b>
+                Seus dias seguidos e o seu recorde guardado
               </span>
             </li>
             <li>
