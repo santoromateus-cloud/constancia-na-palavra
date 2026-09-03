@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRaioX } from "@/lib/raiox";
+import { getResumoCaderno } from "@/lib/caderno";
 import { ativarPlano } from "../actions";
 import {
   IconeBiblia,
@@ -21,9 +22,10 @@ export const dynamic = "force-dynamic";
         Vem primeiro porque é o motivo de ela ter aberto esta página.
      2. A SUA CONSTÂNCIA — os números e o calendário dos últimos três meses.
         É o "raio-x" propriamente dito: ela vê a própria história em pontos.
-     3. OS SEUS CAMINHOS — todos os que ela já tocou, com o dia guardado e o
+     3. O SEU CADERNO — o que ELA escreveu. Presença vira obra.
+     4. OS SEUS CAMINHOS — todos os que ela já tocou, com o dia guardado e o
         botão de retomar. Nenhum caminho recomeça do zero, nunca.
-     4. A SUA BÍBLIA — o marcador dos 1.189 capítulos, a meta e o ritmo.
+     5. A SUA BÍBLIA — o marcador dos 1.189 capítulos, a meta e o ritmo.
 
    Regra de tom (a mesma do resto do produto): honra, crescimento e companhia,
    nunca culpa. Nada nesta tela diz "você falhou", nem quando o calendário está
@@ -47,8 +49,19 @@ function porExtenso(data: string): string {
   return `${Number(d)} de ${meses[Number(m) - 1]} de ${a}`;
 }
 
+function IconeCaderno({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H19v13.5H5.5A1.5 1.5 0 0 0 4 19V5.5Z" />
+      <path d="M4 19a1.5 1.5 0 0 0 1.5 1.5H19" />
+      <path d="M8.6 9h6.2M8.6 12.4h4.2" />
+    </svg>
+  );
+}
+
 export default async function RaioXPage() {
-  const rx = await getRaioX();
+  const [rx, caderno] = await Promise.all([getRaioX(), getResumoCaderno()]);
   if (!rx) return null;
 
   // ── o calendário: 13 colunas de 7 dias, terminando hoje ──
@@ -168,7 +181,40 @@ export default async function RaioXPage() {
         </div>
       </section>
 
-      {/* ── 3 · OS SEUS CAMINHOS ── */}
+      {/* ── 3 · O SEU CADERNO ──
+          O único bloco desta tela feito do que ELA escreveu. Vem logo depois
+          da constância de propósito: os números de cima medem presença, este
+          mede obra. Em três meses ela tem um livro tirado da própria leitura,
+          e é isso que faz voltar. */}
+      <section className="rx-card">
+        <header className="rx-head">
+          <span className="rx-kick"><IconeCaderno size={15} /> O seu caderno</span>
+          <Link href="/caderno" className="rx-link">abrir o caderno →</Link>
+        </header>
+
+        {caderno.total === 0 ? (
+          <p className="rx-vazio">
+            Depois de cada leitura você pode guardar uma promessa, uma ordem, um princípio e
+            um passo. O que você escrever fica aqui, só seu, e vira o seu próprio livro.
+          </p>
+        ) : (
+          <>
+            <div className="rx-nums">
+              <div><b className="tnum">{caderno.promessas}</b><span>{caderno.promessas === 1 ? "promessa" : "promessas"}</span></div>
+              <div><b className="tnum">{caderno.ordens}</b><span>{caderno.ordens === 1 ? "ordem" : "ordens"}</span></div>
+              <div><b className="tnum">{caderno.total}</b><span>{caderno.total === 1 ? "passo escrito" : "passos escritos"}</span></div>
+            </div>
+            <p className="rx-cams-nota">
+              {caderno.total === 1
+                ? "Uma leitura já está escrita por você."
+                : `${caderno.total} leituras já estão escritas por você`}
+              {caderno.total > 1 && caderno.primeiraData ? `, desde ${porExtenso(caderno.primeiraData)}.` : "."}
+            </p>
+          </>
+        )}
+      </section>
+
+      {/* ── 4 · OS SEUS CAMINHOS ── */}
       <section className="rx-card">
         <header className="rx-head">
           <span className="rx-kick"><IconeEspiga size={15} /> Os seus caminhos</span>
@@ -217,7 +263,7 @@ export default async function RaioXPage() {
         )}
       </section>
 
-      {/* ── 4 · A SUA BÍBLIA ── */}
+      {/* ── 5 · A SUA BÍBLIA ── */}
       <section className="rx-card">
         <header className="rx-head">
           <span className="rx-kick"><IconeBiblia size={15} /> A sua Bíblia</span>
@@ -349,7 +395,7 @@ export default async function RaioXPage() {
         .rx-leg i{width:11px;height:11px;flex:none;aspect-ratio:auto}
         .rx-cal-conta{margin-left:auto}
 
-        /* ---------- 3 · caminhos ---------- */
+        /* ---------- 4 · caminhos ---------- */
         .rx-cams{display:flex;flex-direction:column;gap:12px}
         .rx-cams li{border:1px solid var(--line);border-radius:18px;padding:16px 18px;background:var(--paper)}
         .rx-cams li.on{border-color:color-mix(in srgb,var(--ambar) 55%,var(--line));background:color-mix(in srgb,var(--areia) 16%,var(--paper))}
@@ -370,7 +416,7 @@ export default async function RaioXPage() {
         .rx-retomar:hover{text-decoration:underline}
         .rx-cams-nota{font-family:var(--serif);font-size:13.5px;line-height:1.6;color:var(--muted);margin-top:14px}
 
-        /* ---------- 4 · bíblia ---------- */
+        /* ---------- 5 · bíblia ---------- */
         .rx-biblia{display:flex;align-items:center;gap:clamp(16px,3vw,28px)}
         .rx-anel{position:relative;flex:none;width:clamp(104px,16vw,124px)}
         .rx-anel svg{display:block;width:100%;height:auto}
