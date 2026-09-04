@@ -8,7 +8,7 @@ export const metadata = { title: "Minha leitura de hoje — Constância na Palav
 export const dynamic = "force-dynamic";
 
 /* Servidor: só busca o estado e entrega pro cliente.
-   Toda a gamificação (candeia, lavra, celebração, pérola) vive no LerClient,
+   Toda a gamificação (candeia, seara, celebração, pérola) vive no LerClient,
    porque depende de interação — o check-in tem que responder no toque. */
 export default async function Ler() {
   const estado = await getEstadoLeitura();
@@ -26,7 +26,7 @@ export default async function Ler() {
           <h1>Escolha por onde começar.</h1>
           <p>
             Você ainda não tem um caminho ativo. Escolha um e a leitura de hoje já aparece
-            aqui, com a sua candeia acesa, a sua Lavra e a pérola do dia.
+            aqui, com a sua candeia acesa, a sua Seara e a pérola do dia.
           </p>
           <Link href="/planos" className="vz-btn">Ver os caminhos →</Link>
         </section>

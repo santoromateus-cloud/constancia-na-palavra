@@ -59,7 +59,7 @@ export default function PricingPage() {
             <span style={{ color: 'var(--coral)', fontStyle: 'italic', fontWeight: 500 }}>Assine quando quiser companhia.</span>
           </h1>
           <p style={{ fontSize: 'clamp(16px,1.5vw,18px)', color: '#5D4E39', margin: '20px auto 0', maxWidth: '54ch', lineHeight: 1.6 }}>
-            O marcador da Bíblia inteira é grátis e continua grátis. O que o plano abre é o
+            A Bíblia inteira e o seu marcador são grátis e continuam grátis. O que o plano abre é o
             caminho guiado, o jogo da sua constância e a companhia das irmãs.
           </p>
         </header>
@@ -76,7 +76,7 @@ export default function PricingPage() {
             </div>
             <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 26 }}>Só criar a conta</p>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28, flex: 1 }}>
-              {['Os 66 livros e os 1.189 capítulos para marcar', 'Seu progresso do Antigo e do Novo Testamento', 'A meta com data de início e de fim', 'O ritmo diário calculado para você chegar'].map(f => (
+              {['A Bíblia inteira para ler aqui: 66 livros, 1.189 capítulos', 'Seu progresso do Antigo e do Novo Testamento', 'A meta com data de início e de fim', 'O ritmo diário calculado para você chegar'].map(f => (
                 <li key={f} style={feat}>{check}{f}</li>
               ))}
             </ul>
@@ -93,7 +93,7 @@ export default function PricingPage() {
             <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 16 }}>Cancele quando quiser</p>
             <p style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>Tudo do grátis, mais:</p>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28, flex: 1 }}>
-              {['Os caminhos de leitura guiados pela Elisangela', 'A Candeia: seus dias seguidos e o seu recorde', 'As Pérolas: um versículo-joia guardado por dia', 'A Lavra: seu campo crescendo a cada leitura', 'O Mural das Irmãs e a Dupla de Constância'].map(f => (
+              {['Os caminhos de leitura guiados pela Elisangela', 'A Candeia: seus dias seguidos e o seu recorde', 'As Pérolas: um versículo-joia guardado por dia', 'A Seara: seu campo crescendo a cada leitura', 'O Mural das Irmãs e a Dupla de Constância'].map(f => (
                 <li key={f} style={feat}>{check}{f}</li>
               ))}
             </ul>

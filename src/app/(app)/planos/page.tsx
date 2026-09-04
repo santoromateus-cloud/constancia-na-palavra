@@ -7,7 +7,7 @@ export const metadata = { title: "Os caminhos — Constância na Palavra" };
 export const dynamic = "force-dynamic";
 
 /* Os caminhos: a trilha do caminho ativo (Trilha.tsx) + os outros
-   caminhos pra trocar. Trocar não perde progresso — a Lavra é da leitora. */
+   caminhos pra trocar. Trocar não perde progresso — a Seara é da leitora. */
 
 export default async function Planos() {
   const [planos, ativo, progresso] = await Promise.all([
@@ -53,7 +53,7 @@ export default async function Planos() {
         <span className="cm-kick">{planoAtivo ? "Trocar de caminho" : "Os caminhos"}</span>
         <h2>{planoAtivo ? "Outros caminhos abertos" : "Escolha a sua caminhada."}</h2>
         <p>
-          Você troca de caminho quando quiser e o seu progresso continua guardado — a Lavra é
+          Você troca de caminho quando quiser e o seu progresso continua guardado — a Seara é
           sua, não do plano. Nada do que você já leu se perde.
         </p>
       </header>
