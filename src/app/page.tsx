@@ -13,7 +13,7 @@ import {
 } from "./(app)/Icones";
 
 /* ============================================================
-   CONSTÂNCIA NA PALAVRA — Home v5 · "O Método da Lavra"
+   CONSTÂNCIA NA PALAVRA — Home v5 · "O Método da Seara"
    Server component. Identidade Luz e Lavra (marfim/tabaco/dourado/oliva).
 
    ── A COPY (01/09/2026, reescrita com supervisor-copy + vendas-validadas
@@ -37,7 +37,7 @@ import {
    novo, era o que faltava) → mecanismo nomeado → prova → PROJEÇÃO (a tela dela
    em dezembro, bloco novo) → autoridade → oferta/stack → objeções → CTA.
 
-   Mecanismo único (Todd Brown): "O Método da Lavra", em cinco peças — trilho,
+   Mecanismo único (Todd Brown): "O Método da Seara", em cinco peças — trilho,
    marca, prova, perdão, companhia. Sem nome, isso vira "app com streak" e
    qualquer concorrente diz igual. Com nome, é dela.
 
@@ -57,8 +57,8 @@ import {
      de o Dia de Graça sair daqui em 02/09/2026: a mecânica prometia cobrir a
      falta e o código nunca cobriu.
 
-   ── O VISUAL ───────────────────────────────────────────────────────
-   · Vitrine: a home mostra as telas de verdade (candeia acesa, lavra crescendo,
+   ── O VISUAL ────────────────────────────────────────────────────────────────
+   · Vitrine: a home mostra as telas de verdade (candeia acesa, seara crescendo,
      trilha serpenteando), animadas, em vez de descrever com adjetivo.
    · Reveal por scroll de verdade (animation-timeline: view()), com a animação
      de carregamento como fallback em quem não suporta. Nunca esconde conteúdo.
@@ -90,7 +90,7 @@ const ECOS = [
   "Queria muito ler com alguém, não sozinha.",
 ];
 
-// As cinco peças do Método da Lavra. Cada uma existe de verdade no produto —
+// As cinco peças do Método da Seara. Cada uma existe de verdade no produto —
 // nenhuma é promessa de roadmap.
 const PECAS = [
   {
@@ -108,7 +108,7 @@ const PECAS = [
   {
     Icone: IconeEspiga,
     n: "A prova",
-    t: "A Lavra cresce e as Pérolas ficam guardadas",
+    t: "A Seara cresce e as Pérolas ficam guardadas",
     p: "Uma espiga nasce no seu campo a cada dia lido, e um versículo do que você acabou de ler fica guardado no seu cofre. Em um mês você não tem uma porcentagem: tem um campo e um punhado de joias que saíram da sua própria leitura.",
   },
   {
@@ -191,7 +191,7 @@ const CAMINHOS = [
   },
 ];
 
-/* ── VITRINE ─────────────────────────────────────────────────
+/* ── VITRINE ─────────────────────────────────────────────────────────
    Em vez de escrever "gamificação divertida" e pedir fé, a home MOSTRA as
    telas: a candeia acesa com a chama tremendo, o campo de espigas balançando
    e a trilha serpenteando com o dia de hoje pulsando. Tudo SVG + CSS, sem
@@ -226,7 +226,7 @@ function VitrineLavra() {
   return (
     <div className="vt-card">
       <span className="vt-kick">
-        <IconeEspiga size={14} /> A sua Lavra
+        <IconeEspiga size={14} /> A sua Seara
       </span>
       <svg viewBox="0 0 300 74" className="vt-lavra" aria-hidden>
         <path d="M0 62 Q75 56 150 60 T300 58 L300 74 L0 74 Z" fill="#B8A57A" fillOpacity=".22" />
@@ -439,11 +439,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── O MÉTODO DA LAVRA: o mecanismo, nomeado e em cinco peças ── */}
+      {/* ── O MÉTODO DA SEARA: o mecanismo, nomeado e em cinco peças ── */}
       <section className="cnp-sec">
         <div className="cnp-head-c">
           <span className="kick">O mecanismo</span>
-          <h2 className="cnp-title center">O Método da Lavra, em <em>cinco peças</em>.</h2>
+          <h2 className="cnp-title center">O Método da Seara, em <em>cinco peças</em>.</h2>
           <p className="cnp-desc center">
             Você planta um dia de cada vez e vê o campo crescer. Nenhuma das cinco peças é
             promessa de roadmap: todas já estão funcionando lá dentro, e você conhece todas elas
@@ -486,13 +486,13 @@ export default function Home() {
             <span className="kick">Comece hoje, sem pagar nada</span>
             <h2>A Bíblia inteira na sua mão, capítulo por capítulo, de graça, para sempre.</h2>
             <p>
-              Os 66 livros e os 1.189 capítulos estão aqui em caixinhas para você marcar. Cada
+              Os 66 livros e os 1.189 capítulos estão aqui dentro, para você ler e marcar. Cada
               capítulo que você lê fica registrado, o seu percentual do Antigo e do Novo Testamento
               sobe na tela, e você escolhe uma data de chegada. O app calcula sozinho quantos
               capítulos por dia faltam para você chegar lá.
             </p>
             <ul className="cnp-free-lista">
-              <li><b>1.189 capítulos</b> para marcar, do Gênesis ao Apocalipse</li>
+              <li><b>1.189 capítulos</b> para ler e marcar, do Gênesis ao Apocalipse</li>
               <li><b>Seu progresso</b> do Antigo e do Novo Testamento, sempre à vista</li>
               <li><b>Sua meta</b> com data de início e de fim, e o ritmo diário calculado</li>
             </ul>
@@ -619,8 +619,8 @@ export default function Home() {
           <span className="kick">Planos</span>
           <h2 className="cnp-title center">O marcador é grátis. O <em>caminho guiado</em> é o plano.</h2>
           <p className="cnp-desc center">
-            Você pode marcar a Bíblia inteira sem pagar nada, hoje e sempre. Quem assina ganha os
-            oito caminhos, o Método da Lavra inteiro e o mural das irmãs.
+            Você pode ler e marcar a Bíblia inteira sem pagar nada, hoje e sempre. Quem assina ganha os
+            oito caminhos, o Método da Seara inteiro e o mural das irmãs.
           </p>
         </div>
 
@@ -632,7 +632,7 @@ export default function Home() {
               <li>Tudo do grátis, mais:</li>
               <li>Os oito caminhos guiados, com a trilha do dia</li>
               <li>A Candeia: seus dias seguidos e o recorde</li>
-              <li>As Pérolas e a Lavra que cresce</li>
+              <li>As Pérolas e a Seara que cresce</li>
               <li>Comentário, geografia e curiosidade do dia</li>
               <li>O mural das irmãs</li>
               <li>Cancele quando quiser</li>
@@ -689,7 +689,7 @@ export default function Home() {
           </details>
           <details>
             <summary>O que é grátis de verdade?</summary>
-            <div className="ans">O marcador da Bíblia inteira: os 66 livros, os 1.189 capítulos para marcar, o seu progresso do Antigo e do Novo Testamento e a sua meta com data. Não é teste de sete dias nem versão que expira: é seu e continua seu. O plano pago abre os oito caminhos guiados, a Candeia, as Pérolas, a Lavra e o mural.</div>
+            <div className="ans">A Bíblia inteira, para ler aqui dentro: os 66 livros, os 1.189 capítulos para ler e marcar, o seu progresso do Antigo e do Novo Testamento e a sua meta com data. Não é teste de sete dias nem versão que expira: é seu e continua seu. O plano pago abre os oito caminhos guiados, a Candeia, as Pérolas, a Seara e o mural.</div>
           </details>
           <details>
             <summary>Já posso pagar?</summary>
