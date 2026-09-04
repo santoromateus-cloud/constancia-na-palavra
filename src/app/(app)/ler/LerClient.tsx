@@ -16,7 +16,7 @@ import { liHoje, salvarCaderno } from "../actions";
    A TELA DE HOJE — o núcleo da gamificação
    Três mecânicas do doc GAMIFICACAO-LOCKIN, agora com tela:
      1. Candeia   — a sequência de dias, com chama viva
-     2. A Lavra   — o campo que cresce, uma espiga por leitura
+     2. A Seara   — o campo que cresce, uma espiga por leitura
      5. Pérolas   — o versículo-joia revelado no check-in
    Mais o Recomeço com Memória (3): quem quebra a sequência não perde o que andou.
    E, desde 02/09/2026, O CADERNO: as quatro perguntas sobre o capítulo lido.
@@ -77,7 +77,7 @@ function IconeCaderno({ size = 15 }: { size?: number }) {
   );
 }
 
-/* ── AS CAMADAS DO DIA ──────────────────────
+/* ── AS CAMADAS DO DIA ──────────────────────────────
    O que vem por cima do texto nos caminhos que têm essa prática: o
    comentário de um autor de domínio público, o lugar onde a cena se
    passou e a curiosidade de contexto.
@@ -130,11 +130,11 @@ function Camadas({ c }: { c: Camadas }) {
   );
 }
 
-/* ── A LAVRA ─────────────────────────
+/* ── A SEARA ─────────────────────────
    Campo de espigas em SVG. Uma espiga por dia lido, até 30 na tela;
    depois disso o campo continua no contador, senão vira poluição.
    O que importa é a leitora ver o campo dela crescer, não contar grão. */
-function Lavra({ espigas, brotando }: { espigas: number; brotando: boolean }) {
+function Seara({ espigas, brotando }: { espigas: number; brotando: boolean }) {
   const visiveis = Math.min(espigas, 30);
   const haste = Array.from({ length: visiveis }, (_, i) => i);
 
@@ -249,9 +249,9 @@ function Particulas({ ativo }: { ativo: boolean }) {
    dizia "chega por hoje" pra quem estava com vontade de ler. Isso é o oposto do
    produto.
    Agora: ela registra QUANTOS DIAS QUISER. O caminho anda de verdade a cada
-   toque, a Lavra ganha uma espiga por dia lido. O que NÃO infla é a constância:
+   toque, a Seara ganha uma espiga por dia lido. O que NÃO infla é a constância:
    a Candeia (sequência) e o recorde continuam contando por dia de calendário,
-   no servidor. Ler muito num dia rende caminho e Lavra; voltar
+   no servidor. Ler muito num dia rende caminho e Seara; voltar
    amanhã é o que rende sequência. */
 
 export default function LerClient(p: Props) {
@@ -367,17 +367,17 @@ export default function LerClient(p: Props) {
         </p>
       )}
 
-      {/* ── A LAVRA ── */}
+      {/* ── A SEARA ── */}
       <section className="lavra-box">
         <header>
           <span className="lb-kick">
-            <IconeEspiga size={15} /> A sua Lavra
+            <IconeEspiga size={15} /> A sua Seara
           </span>
           <span className="lb-conta">
             {espigas} {espigas === 1 ? "espiga" : "espigas"}
           </span>
         </header>
-        <Lavra espigas={espigas} brotando={festa} />
+        <Seara espigas={espigas} brotando={festa} />
         <p className="lb-frase">
           {espigas === 0
             ? "Seu campo está pronto. A primeira espiga nasce na sua primeira leitura."
@@ -454,7 +454,7 @@ export default function LerClient(p: Props) {
         </section>
       )}
 
-      {/* ── O CADERNO ────────────────────────────────────
+      {/* ── O CADERNO ────────────────────────────────
           As quatro perguntas sobre o capítulo que ela acabou de ler.
           Três opcionais, uma obrigatória — a regra está explicada na tela
           porque ela é a diferença entre ler o texto e forçar um molde sobre
