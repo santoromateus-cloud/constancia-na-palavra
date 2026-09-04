@@ -92,7 +92,8 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
 
         <div className="an-abas">
           {ABAS.map((a) => {
-            const on = pathname === a.href;
+            // /biblia/joao/3 continua sendo a aba Bíblia (o leitor mora embaixo dela)
+            const on = pathname === a.href || pathname.startsWith(a.href + "/");
             const travada = a.pago && !pago;
             return (
               <Link
@@ -118,7 +119,12 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
         </div>
       </div>
 
-      <style jsx>{`
+      {/* GLOBAL de propósito (04/09/2026): com <style jsx> escopado, o styled-jsx só
+          carimba a classe jsx-xxxx nos elementos nativos — o <Link> das abas ficava
+          "an-aba" sem o carimbo e NENHUMA regra da tab bar chegava nele (rótulo 16px,
+          sem cor de aba ativa, sem fio dourado, abas coladas no celular). Conferido
+          no site publicado antes da troca. Os nomes an-* são únicos no app. */}
+      <style jsx global>{`
         .an-nav{
           position:sticky;top:0;z-index:60;
           backdrop-filter:blur(14px) saturate(1.2);
@@ -154,26 +160,26 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
           color:#96866D;font-size:11.5px;font-weight:600;letter-spacing:.2px;
           transition:color .2s,background .2s;
         }
-        .an-aba :global(.an-ico){position:relative;display:flex;color:currentColor;transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
-        .an-aba :global(.an-lb){line-height:1;white-space:nowrap}
+        .an-aba .an-ico{position:relative;display:flex;color:currentColor;transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+        .an-aba .an-lb{line-height:1;white-space:nowrap}
 
         .an-aba:hover{color:var(--base);background:color-mix(in srgb,var(--areia) 26%,transparent)}
-        .an-aba:hover :global(.an-ico){transform:translateY(-2px)}
+        .an-aba:hover .an-ico{transform:translateY(-2px)}
 
         .an-aba.on{color:var(--ouro)}
-        .an-aba.on :global(.an-ico){transform:translateY(-1px)}
+        .an-aba.on .an-ico{transform:translateY(-1px)}
         /* fio dourado embaixo da aba ativa, no lugar da pílula de fundo:
            é mais discreto e casa com os fios da identidade */
-        .an-aba :global(.an-fio){
+        .an-aba .an-fio{
           position:absolute;left:50%;bottom:-1px;height:2px;width:0;border-radius:2px;
           background:linear-gradient(90deg,var(--ambar),var(--ouro));
           transform:translateX(-50%);transition:width .3s cubic-bezier(.16,1,.3,1);
         }
-        .an-aba.on :global(.an-fio){width:calc(100% - 18px)}
+        .an-aba.on .an-fio{width:calc(100% - 18px)}
 
         .an-aba.lock{color:#B3A68E}
         .an-aba.lock:hover{color:var(--ouro)}
-        .an-aba :global(.an-cad){
+        .an-aba .an-cad{
           position:absolute;right:-6px;bottom:-3px;
           display:flex;align-items:center;justify-content:center;
           width:14px;height:14px;border-radius:50%;
@@ -183,14 +189,14 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
 
         @media(max-width:640px){
           .an-in{gap:8px;padding:0 10px;min-height:62px}
-          .an-brand :global(span){display:none}
+          .an-brand span{display:none}
           .an-volta{width:34px;height:34px;margin-right:-8px}
           .an-abas{flex:1;justify-content:space-between;gap:0}
           .an-aba{min-width:0;flex:1;padding:8px 2px 7px;font-size:9.5px;border-radius:11px}
-          .an-aba :global(.an-ico) svg{width:20px;height:20px}
+          .an-aba .an-ico svg{width:20px;height:20px}
         }
         @media (prefers-reduced-motion: reduce){
-          .an-aba,.an-aba :global(.an-ico),.an-aba :global(.an-fio),.an-volta{transition:none}
+          .an-aba,.an-aba .an-ico,.an-aba .an-fio,.an-volta{transition:none}
         }
       `}</style>
     </nav>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { ChevronDown, Check, Sparkles } from "lucide-react";
 import {
@@ -74,12 +74,34 @@ function Anel({
   );
 }
 
+// O que acontece ao tocar num capítulo da grade.
+//   "ler"    → abre o capítulo no leitor (padrão desde 04/09/2026: tocar no número e
+//              nada abrir foi o primeiro feedback da Elisângela)
+//   "marcar" → marca/desmarca na hora, sem abrir — pra quem lê na Bíblia de papel
+// A escolha fica guardada no aparelho dela.
+type Modo = "ler" | "marcar";
+const CHAVE_MODO = "cnp:biblia:modo";
+
 export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial }: Props) {
   const [porLivro, setPorLivro] = useState<Record<string, number[]>>(inicial.porLivro);
   const [aba, setAba] = useState<"at" | "nt">("nt");
   const [aberto, setAberto] = useState<string | null>(null);
   const [festa, setFesta] = useState<string | null>(null);
+  const [modo, setModo] = useState<Modo>("ler");
   const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    try {
+      const m = localStorage.getItem(CHAVE_MODO);
+      if (m === "ler" || m === "marcar") setModo(m);
+    } catch {}
+  }, []);
+  function mudarModo(m: Modo) {
+    setModo(m);
+    try {
+      localStorage.setItem(CHAVE_MODO, m);
+    } catch {}
+  }
 
   const livros = aba === "at" ? livrosAT : livrosNT;
 
@@ -150,8 +172,8 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         <div className="bb-nums">
           <h1>Minha Bíblia</h1>
           <p className="bb-lead">
-            Marque cada capítulo que você ler. É seu, fica guardado, e não custa nada —
-            para sempre.
+            Toque num capítulo para ler e marque quando terminar. É seu, fica guardado, e
+            não custa nada — para sempre.
           </p>
 
           <div className="bb-grade">
@@ -195,7 +217,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         </div>
       </section>
 
-      {/* ── Meta ──────────────────────────────────────────────── */}
+      {/* ── Meta ──────────────────────────────────────────────────── */}
       <section className="bb-meta">
         <div className="bb-meta-cab">
           <IconeMeta size={18} />
@@ -249,7 +271,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         </form>
       </section>
 
-      {/* ── Livros ───────────────────────────────────────────── */}
+      {/* ── Livros ─────────────────────────────────────────────────── */}
       <section className="bb-livros">
         <div className="bb-abas" role="tablist">
           <button
@@ -309,6 +331,25 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
                       <span>
                         {n} de {l.capitulos} {l.capitulos === 1 ? "capítulo" : "capítulos"}
                       </span>
+                      <div className="bb-modo" role="group" aria-label="Ao tocar num capítulo">
+                        <span>Ao tocar:</span>
+                        <button
+                          type="button"
+                          className={modo === "ler" ? "on" : ""}
+                          onClick={() => mudarModo("ler")}
+                          aria-pressed={modo === "ler"}
+                        >
+                          Ler
+                        </button>
+                        <button
+                          type="button"
+                          className={modo === "marcar" ? "on" : ""}
+                          onClick={() => mudarModo("marcar")}
+                          aria-pressed={modo === "marcar"}
+                        >
+                          Marcar
+                        </button>
+                      </div>
                       <button className="bb-todos" onClick={() => toggleLivro(l)}>
                         {completo ? "Desmarcar tudo" : "Marcar tudo"}
                       </button>
@@ -316,7 +357,23 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
                     <div className="bb-grid">
                       {Array.from({ length: l.capitulos }, (_, i) => i + 1).map((c) => {
                         const on = lidos.includes(c);
-                        return (
+                        const marca = on && (
+                          <span className="bb-cap-ok" aria-hidden>
+                            <Check size={9} strokeWidth={3.6} />
+                          </span>
+                        );
+                        return modo === "ler" ? (
+                          <Link
+                            key={c}
+                            href={`/biblia/${l.slug}/${c}`}
+                            prefetch={false}
+                            className={"bb-cap" + (on ? " on" : "")}
+                            aria-label={`${on ? "Reler" : "Ler"} ${l.nome} ${c}`}
+                          >
+                            {c}
+                            {marca}
+                          </Link>
+                        ) : (
                           <button
                             key={c}
                             className={"bb-cap" + (on ? " on" : "")}
@@ -324,7 +381,8 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
                             aria-pressed={on}
                             aria-label={`${l.nome} ${c}`}
                           >
-                            {on ? <Check size={15} strokeWidth={3.2} aria-hidden /> : c}
+                            {c}
+                            {marca}
                           </button>
                         );
                       })}
@@ -343,7 +401,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         </ul>
       </section>
 
-      {/* ── Ponte pro pago ─────────────────────────────────────── */}
+      {/* ── Ponte pro pago ────────────────────────────────────────────────────── */}
       {!pago && (
         <section className="bb-ponte">
           <span className="bb-ponte-kick">
@@ -352,7 +410,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
           <h2>O marcador é seu de graça. A caminhada é melhor acompanhada.</h2>
           <p>
             Os planos guiados da Elisangela, a Candeia que conta os seus dias seguidos, as
-            Pérolas que você coleciona a cada leitura, a Lavra que cresce no seu ritmo e o
+            Pérolas que você coleciona a cada leitura, a Seara que cresce no seu ritmo e o
             Mural das Irmãs — tudo isso mora no plano completo.
           </p>
           <ul className="bb-ponte-lista">
@@ -366,7 +424,7 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
             <li>
               <IconeEspiga size={22} />
               <span>
-                <b>A Lavra</b>
+                <b>A Seara</b>
                 O seu campo, uma espiga por leitura
               </span>
             </li>
@@ -454,13 +512,22 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
 
         .bb-caps{padding:0 18px 18px;animation:bbAbre .3s cubic-bezier(.16,1,.3,1)}
         @keyframes bbAbre{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-        .bb-caps-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:13px}
+        .bb-caps-topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;padding:13px 0 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line)}
         .bb-todos{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ouro);background:transparent;border:0;cursor:pointer;padding:4px 2px}
         .bb-todos:hover{color:var(--coral);text-decoration:underline}
+        /* "Ao tocar: Ler | Marcar" — o interruptor entre abrir o capítulo e só marcar */
+        .bb-modo{display:inline-flex;align-items:center;gap:4px;background:color-mix(in srgb,var(--areia) 30%,transparent);border:1px solid var(--line);border-radius:99px;padding:3px 4px 3px 10px}
+        .bb-modo > span{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-right:4px}
+        .bb-modo button{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--muted);background:transparent;border:0;border-radius:99px;padding:6px 11px;cursor:pointer;transition:.2s;line-height:1}
+        .bb-modo button:hover{color:var(--base)}
+        .bb-modo button.on{background:var(--paper);color:var(--ouro);box-shadow:var(--shadow-sm)}
         .bb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:7px}
-        .bb-cap{aspect-ratio:1;display:grid;place-items:center;font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--muted);background:transparent;border:1.5px solid var(--line);border-radius:11px;cursor:pointer;transition:transform .16s,background .2s,border-color .2s,color .2s;min-width:40px}
+        .bb-cap{position:relative;aspect-ratio:1;display:grid;place-items:center;font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--muted);background:transparent;border:1.5px solid var(--line);border-radius:11px;cursor:pointer;transition:transform .16s,background .2s,border-color .2s,color .2s;min-width:40px}
         .bb-cap:hover{border-color:var(--ambar);color:var(--base);transform:translateY(-1px)}
         .bb-cap.on{background:linear-gradient(140deg,#C9A85C,#8F6D1E);border-color:transparent;color:#FCF8EF;animation:bbMarca .34s cubic-bezier(.34,1.56,.64,1)}
+        /* o número continua visível no capítulo lido (pra ela achar o que quer reler);
+           a marca de lido vira um selo pequeno no canto */
+        .bb-cap-ok{position:absolute;right:-4px;top:-4px;display:grid;place-items:center;width:15px;height:15px;border-radius:50%;background:var(--verde);color:#FCF8EF;box-shadow:0 0 0 2px var(--paper)}
         @keyframes bbMarca{0%{transform:scale(.82)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
 
         .bb-festa{position:absolute;right:16px;top:14px;display:inline-flex;align-items:center;gap:6px;background:var(--base);color:var(--areia);font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:99px;animation:bbSobe .5s cubic-bezier(.16,1,.3,1)}
@@ -482,6 +549,10 @@ export default function BibliaClient({ pago, livrosAT, livrosNT, totais, inicial
         .bb-ponte-btn:hover{transform:translateY(-2px);background:#E8D9AE}
         .bb-ponte small{display:block;margin-top:14px;font-size:12.5px;color:color-mix(in srgb,var(--creme) 58%,transparent)}
 
+        @media(max-width:560px){
+          /* no celular o interruptor ganha a linha de baixo inteira */
+          .bb-modo{order:3;flex-basis:100%;justify-content:center}
+        }
         @media(max-width:760px){
           .bb-painel{flex-direction:column;text-align:center}
           .bb-lead{margin-left:auto;margin-right:auto}
