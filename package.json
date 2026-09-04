@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "biblia": "node scripts/gerar-biblia.mjs",
+    "build": "node scripts/gerar-biblia.mjs && next build",
     "start": "next start"
   },
   "dependencies": {

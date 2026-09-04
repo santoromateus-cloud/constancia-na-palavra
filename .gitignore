@@ -12,3 +12,7 @@ build/
 # sistema
 .DS_Store
 *.log
+
+# gerado antes de todo build por scripts/gerar-biblia.mjs (a Bíblia inteira, 4 MB
+# que não mudam nunca) — o repo guarda a receita, não o texto
+src/data/biblia/
