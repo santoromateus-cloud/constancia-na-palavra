@@ -362,11 +362,17 @@ const MAPAS: Record<string, MapaDia> = {
   },
 }
 
+/* A faixa dos acentos combinantes (U+0300 a U+036F), montada com fromCharCode de
+   propósito: escrita como escape no código-fonte, ela vira dois caracteres
+   invisíveis na passagem pelo conector do GitHub — funciona igual, mas some do
+   olho de quem lê. Assim fica legível e sem depender de editor nenhum. */
+const ACENTOS = new RegExp(`[${String.fromCharCode(0x300)}-${String.fromCharCode(0x36f)}]`, 'g')
+
 /** Normaliza o geografia_lugar do banco: minúsculas, sem acento, sem pontuação. */
 export function chave(lugar: string): string {
   return lugar
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(ACENTOS, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, ' ')
     .trim()
