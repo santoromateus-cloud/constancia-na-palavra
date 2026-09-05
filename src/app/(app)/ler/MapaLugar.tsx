@@ -38,8 +38,8 @@ function enquadrar(m: MapaDia): Enquadramento {
   ];
   const lats = todos.map((p) => p.lat);
   const lons = todos.map((p) => p.lon);
-  const latC = (Math.min(...lats) + Math.max(...lats)) / 2;
-  const lonC = (Math.min(...lons) + Math.max(...lons)) / 2;
+  let latC = (Math.min(...lats) + Math.max(...lats)) / 2;
+  let lonC = (Math.min(...lons) + Math.max(...lons)) / 2;
   const cosc = Math.cos((latC * Math.PI) / 180);
   const spanX = (Math.max(...lons) - Math.min(...lons)) * KM_LON * cosc;
   const spanY = (Math.max(...lats) - Math.min(...lats)) * KM_LAT;
@@ -47,7 +47,19 @@ function enquadrar(m: MapaDia): Enquadramento {
   // ~28% de ar de cada lado (os nomes saem dos pontos), e nunca menos que o raio pedido
   const meioX = Math.max(spanX * 0.72, raio);
   const meioY = Math.max(spanY * 0.72, raio * (H / W));
-  const kmPorUnidade = Math.max((2 * meioX) / W, (2 * meioY) / H);
+  let kmPorUnidade = Math.max((2 * meioX) / W, (2 * meioY) / H);
+
+  // A moldura nunca sai da caixa dos dados (lon -12..50, lat 20..48): fora dela a
+  // terra acaba numa reta vertical, e o mapa do Jonas (Társis a Nínive) mostrava
+  // essa reta dos dois lados no celular. Se a moldura é mais larga que a caixa,
+  // aproxima até caber; se só escorrega pra fora, desliza o centro pra dentro.
+  const larguraCaixa = (CAIXA.x1 - CAIXA.x0) * KM_LON * cosc;
+  const alturaCaixa = (CAIXA.y1 - CAIXA.y0) * KM_LAT;
+  kmPorUnidade = Math.min(kmPorUnidade, larguraCaixa / W, alturaCaixa / H);
+  const meioLon = ((W / 2) * kmPorUnidade) / (KM_LON * cosc);
+  const meioLat = ((H / 2) * kmPorUnidade) / KM_LAT;
+  lonC = Math.min(Math.max(lonC, CAIXA.x0 + meioLon), CAIXA.x1 - meioLon);
+  latC = Math.min(Math.max(latC, CAIXA.y0 + meioLat), CAIXA.y1 - meioLat);
   return { lonC, latC, cosc, kmPorUnidade, H };
 }
 

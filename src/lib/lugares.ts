@@ -95,13 +95,13 @@ const MAPAS: Record<string, MapaDia> = {
   'betel e o vale do jordao': {
     pontos: [
       { ...P.betel, tipo: 'principal', lado: 'esq' },
-      { nome: 'campina do Jordão', lat: 31.86, lon: 35.5, tipo: 'principal', lado: 'dir' },
-      { ...P.jerico, tipo: 'apoio', lado: 'baixo' },
+      { nome: 'campina do Jordão', lat: 31.86, lon: 35.5, tipo: 'principal', lado: 'baixo' },
+      { ...P.jerico, tipo: 'apoio', lado: 'cima' },
       { ...P.marMorto, lat: 31.55 },
     ],
     rota: [P.betel, { nome: 'campina do Jordão', lat: 31.86, lon: 35.5 }],
-    distanciaEm: { lat: 31.95, lon: 35.38 },
-    raioKm: 32,
+    distanciaEm: { lat: 31.975, lon: 35.4 },
+    raioKm: 38,
     nota: 'De quase 900 m acima do mar para 250 m abaixo dele.',
   },
   // 3 · Gênesis 28
@@ -111,9 +111,9 @@ const MAPAS: Record<string, MapaDia> = {
       { ...P.jerusalem, tipo: 'apoio', lado: 'dir' },
       { ...P.siquem, tipo: 'apoio', lado: 'dir' },
       { ...P.hebrom, tipo: 'apoio', lado: 'dir' },
-      { ...P.marMorto },
+      { ...P.marMorto, lat: 31.33, lon: 35.55 },
     ],
-    contexto: [{ pontos: CAMINHO_DA_CORDILHEIRA, nome: 'a estrada da cordilheira', rotuloEm: { lat: 31.42, lon: 34.86 } }],
+    contexto: [{ pontos: CAMINHO_DA_CORDILHEIRA, nome: 'a estrada da cordilheira', rotuloEm: { lat: 31.3, lon: 34.56 } }],
     raioKm: 70,
     nota: 'A estrada da montanha que corta Canaã de norte a sul — e Betel no acostamento.',
   },
@@ -186,13 +186,13 @@ const MAPAS: Record<string, MapaDia> = {
   // 9 · Juízes 7
   'a fonte de harode e o vale de jezreel': {
     pontos: [
-      { nome: 'fonte de Harode', lat: 32.554, lon: 35.357, tipo: 'principal', lado: 'baixo' },
+      { nome: 'fonte de Harode', lat: 32.554, lon: 35.357, tipo: 'principal', lado: 'cima' },
       { nome: 'monte Gilboa', lat: 32.48, lon: 35.42, tipo: 'apoio', lado: 'baixo' },
       { nome: 'Megido', lat: 32.585, lon: 35.184, tipo: 'apoio', lado: 'esq' },
       { ...P.betesea, tipo: 'apoio', lado: 'dir' },
-      { nome: 'vale de Jezreel', lat: 32.64, lon: 35.3, tipo: 'rotulo' },
+      { nome: 'vale de Jezreel', lat: 32.69, lon: 35.2, tipo: 'rotulo' },
     ],
-    contexto: [{ pontos: [{ nome: 'Megido', lat: 32.585, lon: 35.184 }, { nome: 'Jezreel', lat: 32.559, lon: 35.327 }, P.betesea], nome: 'o corredor dos exércitos', rotuloEm: { lat: 32.5, lon: 35.22 } }],
+    contexto: [{ pontos: [{ nome: 'Megido', lat: 32.585, lon: 35.184 }, { nome: 'Jezreel', lat: 32.559, lon: 35.327 }, P.betesea], nome: 'o corredor dos exércitos', rotuloEm: { lat: 32.51, lon: 35.12 } }],
     raioKm: 40,
     nota: 'A planície mais fértil e mais disputada de Israel: quem dominava Jezreel dominava a estrada.',
   },
@@ -204,7 +204,7 @@ const MAPAS: Record<string, MapaDia> = {
       { nome: 'planície filisteia', lat: 31.72, lon: 34.68, tipo: 'rotulo' },
       { nome: 'montanhas de Judá', lat: 31.58, lon: 35.13, tipo: 'rotulo' },
     ],
-    contexto: [{ pontos: [P.belem, { nome: 'vale de Elá', lat: 31.692, lon: 34.96 }], nome: 'Davi desce de Belém' }],
+    contexto: [{ pontos: [P.belem, { nome: 'vale de Elá', lat: 31.692, lon: 34.96 }], nome: 'Davi desce de Belém', rotuloEm: { lat: 31.765, lon: 35.08 } }],
     raioKm: 38,
     nota: 'Uma garganta entre a planície dos filisteus e as montanhas de Judá.',
   },
@@ -236,7 +236,7 @@ const MAPAS: Record<string, MapaDia> = {
       { ...P.jope, tipo: 'principal', lado: 'baixo' },
       { nome: 'Társis', lat: 37.0, lon: -6.6, tipo: 'principal', lado: 'cima' },
       { nome: 'Nínive', lat: 36.36, lon: 43.15, tipo: 'apoio', lado: 'cima' },
-      { nome: 'Mediterrâneo', lat: 33.6, lon: 17.5, tipo: 'rotulo' },
+      { nome: 'Mediterrâneo', lat: 32.3, lon: 17.5, tipo: 'rotulo' },
     ],
     rota: [
       P.jope,
@@ -246,7 +246,10 @@ const MAPAS: Record<string, MapaDia> = {
       { nome: 'Gibraltar', lat: 35.95, lon: -5.6 },
       { nome: 'Társis', lat: 37.0, lon: -6.6 },
     ],
-    contexto: [{ pontos: [P.jope, { nome: 'Nínive', lat: 36.36, lon: 43.15 }], nome: 'para onde Deus mandou', rotuloEm: { lat: 33.3, lon: 39.6 } }],
+    // o traço até Nínive vai sem nome: num mapa desta largura não há lugar pra ele
+    // no celular, e a nota embaixo já diz para onde Deus mandou
+    contexto: [{ pontos: [P.jope, { nome: 'Nínive', lat: 36.36, lon: 43.15 }] }],
+    distanciaEm: { lat: 36.6, lon: 22.5 },
     proporcao: 0.46,
     nota: 'Nínive ficava a nordeste. Jonas comprou passagem para o ponto mais a oeste que um navio alcançava.',
   },
@@ -256,7 +259,7 @@ const MAPAS: Record<string, MapaDia> = {
       { ...P.jerusalem, tipo: 'principal', lado: 'dir' },
       { nome: 'Babilônia', lat: 32.542, lon: 44.421, tipo: 'principal', lado: 'baixo' },
       { nome: 'Carquemis', lat: 36.83, lon: 38.01, tipo: 'apoio', lado: 'dir' },
-      { nome: 'Eufrates', lat: 34.2, lon: 41.6, tipo: 'rotulo' },
+      { nome: 'Eufrates', lat: 33.6, lon: 42.6, tipo: 'rotulo' },
       { nome: 'deserto da Síria', lat: 32.8, lon: 39.5, tipo: 'rotulo' },
     ],
     rota: [
@@ -272,11 +275,12 @@ const MAPAS: Record<string, MapaDia> = {
   // 15 · Lucas 2
   belem: {
     pontos: [
-      { ...P.belem, tipo: 'principal', lado: 'baixo' },
+      { ...P.belem, tipo: 'principal', lado: 'esq' },
       { ...P.nazare, tipo: 'principal', lado: 'dir' },
-      { ...P.jerusalem, tipo: 'apoio', lado: 'esq' },
-      { ...P.jerico, tipo: 'apoio', lado: 'dir' },
-      { ...P.marMorto, lat: 31.5, lon: 35.5 },
+      { ...P.jerusalem, tipo: 'apoio', lado: 'dir' },
+      // Jericó fica só como vértice da rota: a 8 km de Jerusalém, no celular o
+      // nome dele cai em cima do de Jerusalém
+      { ...P.marMorto, lat: 31.42, lon: 35.58 },
       { ...P.galileia, lat: 32.85, lon: 35.62 },
     ],
     rota: [P.nazare, P.betesea, P.jerico, P.jerusalem, P.belem],
@@ -285,15 +289,16 @@ const MAPAS: Record<string, MapaDia> = {
   // 16 · Mateus 2
   'egito e nazare': {
     pontos: [
-      { ...P.belem, tipo: 'principal', lado: 'esq' },
+      { ...P.belem, tipo: 'principal', lado: 'dir' },
       { nome: 'Egito', lat: 30.129, lon: 31.307, tipo: 'principal', lado: 'baixo' },
       { ...P.nazare, tipo: 'principal', lado: 'esq' },
       { nome: 'Alexandria', lat: 31.2, lon: 29.92, tipo: 'apoio', lado: 'cima' },
       { ...P.gaza, tipo: 'apoio', lado: 'baixo' },
-      { nome: 'deserto do Sinai', lat: 30.3, lon: 33.6, tipo: 'rotulo' },
+      { nome: 'deserto do Sinai', lat: 30.0, lon: 33.9, tipo: 'rotulo' },
     ],
     rota: [P.belem, P.gaza, { nome: 'El-Arish', lat: 31.13, lon: 33.8 }, { nome: 'Pelúsio', lat: 31.05, lon: 32.55 }, { nome: 'Egito', lat: 30.129, lon: 31.307 }],
     volta: [{ nome: 'Egito', lat: 30.129, lon: 31.307 }, { nome: 'Pelúsio', lat: 31.05, lon: 32.55 }, { nome: 'El-Arish', lat: 31.13, lon: 33.8 }, P.gaza, P.jope, P.nazare],
+    distanciaEm: { lat: 30.6, lon: 32.4 },
     nota: 'A fuga pela estrada da costa, e a volta para um vilarejo que o Antigo Testamento nem menciona.',
   },
   // 17 · Marcos 1
@@ -319,7 +324,7 @@ const MAPAS: Record<string, MapaDia> = {
     ],
     rota: [P.jerusalem, { nome: 'Sicar', lat: 32.215, lon: 35.29 }, P.cana],
     distanciaEm: { lat: 32.5, lon: 35.14 },
-    contexto: [{ pontos: [P.jerusalem, P.jerico, P.betesea, P.cana], nome: 'a volta pelo Jordão', rotuloEm: { lat: 32.08, lon: 35.78 } }],
+    contexto: [{ pontos: [P.jerusalem, P.jerico, P.betesea, P.cana], nome: 'a volta pelo Jordão', rotuloEm: { lat: 32.0, lon: 35.9 } }],
     nota: 'O caminho curto passa por Samaria; a volta pelo Jordão era o desvio de quem não queria pisar ali.',
   },
   // 19 · Mateus 16
@@ -342,6 +347,7 @@ const MAPAS: Record<string, MapaDia> = {
     ],
     rota: [P.jerusalem, { nome: 'Emaús', lat: 31.842, lon: 35.136 }],
     volta: [{ nome: 'Emaús', lat: 31.842, lon: 35.136 }, P.jerusalem],
+    distanciaEm: { lat: 31.758, lon: 35.163 },
     raioKm: 14,
     nota: 'Umas três horas de caminhada — e a volta na mesma noite.',
   },
