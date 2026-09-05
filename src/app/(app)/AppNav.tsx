@@ -187,13 +187,24 @@ export default function AppNav({ pago = true }: { pago?: boolean }) {
           box-shadow:0 0 0 1.5px var(--creme);
         }
 
+        /* Celular (04/09/2026, medido no site publicado): seis abas em 360px davam 43px
+           por aba e o rótulo "Caminhos" tem 48px — invadia "Irmãs" e a barra ficava
+           embolada. A marca sai da barra no celular (a seta de voltar já ancora o canto,
+           e a identidade está no resto da tela); o espaço é das abas. Rótulo sem
+           letter-spacing e com corte por reticências como última defesa, nunca invasão. */
         @media(max-width:640px){
-          .an-in{gap:8px;padding:0 10px;min-height:62px}
-          .an-brand span{display:none}
-          .an-volta{width:34px;height:34px;margin-right:-8px}
-          .an-abas{flex:1;justify-content:space-between;gap:0}
-          .an-aba{min-width:0;flex:1;padding:8px 2px 7px;font-size:9.5px;border-radius:11px}
+          .an-in{gap:6px;padding:0 8px;min-height:62px}
+          .an-brand{display:none}
+          .an-volta{width:34px;height:34px;margin-right:0}
+          .an-abas{flex:1;min-width:0;justify-content:space-between;gap:0}
+          .an-aba{min-width:0;flex:1;padding:8px 1px 7px;font-size:9.5px;letter-spacing:0;border-radius:11px;overflow:hidden}
+          .an-aba .an-lb{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+          .an-aba .an-fio{bottom:0}
           .an-aba .an-ico svg{width:20px;height:20px}
+        }
+        @media(max-width:360px){
+          .an-aba{font-size:8.6px;padding:8px 0 7px}
+          .an-aba .an-ico svg{width:19px;height:19px}
         }
         @media (prefers-reduced-motion: reduce){
           .an-aba,.an-aba .an-ico,.an-aba .an-fio,.an-volta{transition:none}
