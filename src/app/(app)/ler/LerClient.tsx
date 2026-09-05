@@ -63,7 +63,73 @@ type Props = {
   entrada: EntradaSalva;
   /** o mapa do dia, já renderizado no servidor (ou null) */
   mapa?: React.ReactNode;
+  /** os dias deste caminho que ela já andou — é o que desenha a trilha */
+  diasAndados: number[];
+  /** Presente quando a tela é um dia JÁ ANDADO aberto de novo (04/09/2026).
+   *  Aí `diaAtual` é o dia na tela, e o dia em andamento vem aqui dentro. */
+  passado?: {
+    lidoEm: string;
+    anterior: number | null;
+    seguinte: number | null;
+    diaEmAndamento: number;
+  };
 };
+
+const MESES = [
+  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+];
+function porExtenso(iso: string): string {
+  const [a, m, d] = iso.slice(0, 10).split("-");
+  if (!a || !m || !d) return "";
+  return `${Number(d)} de ${MESES[Number(m) - 1]} de ${a}`;
+}
+
+/* ── A TRILHA DOS DIAS ──────────────────────────────
+   Os dias do caminho, um por um, embaixo do "3 de 21". Os que ela já andou
+   ficam dourados e abrem de novo (texto, mapa, pérola, caderno); o dia em
+   andamento é a tela de Hoje; os dias à frente aparecem fechados — chegam no
+   tempo deles. Decisão do Mateus (04/09/2026): voltar, sim; adiantar, não.
+   Antes disso a leitora não tinha como rever um dia: a tela só mostrava o dia
+   em andamento e o mapa do dia 3 sumia no dia 4. */
+function Trilha({
+  total, andados, emAndamento, vendo,
+}: { total: number; andados: number[]; emAndamento: number; vendo: number }) {
+  const set = new Set(andados);
+  return (
+    <nav className="trilha" aria-label="Os dias deste caminho">
+      {Array.from({ length: total }, (_, i) => i + 1).map((d) => {
+        const andou = set.has(d);
+        if (d === vendo) {
+          return (
+            <span key={d} className={"tr-dia tr-aqui" + (andou ? " tr-andou" : " tr-hoje")} aria-current="page">
+              {d}
+            </span>
+          );
+        }
+        if (andou) {
+          return (
+            <Link key={d} href={`/ler/dia/${d}`} className="tr-dia tr-andou" aria-label={`Dia ${d}, já lido — abrir de novo`}>
+              {d}
+            </Link>
+          );
+        }
+        if (d === emAndamento) {
+          return (
+            <Link key={d} href="/ler" className="tr-dia tr-hoje" aria-label={`Dia ${d}, o de hoje`}>
+              {d}
+            </Link>
+          );
+        }
+        return (
+          <span key={d} className="tr-dia tr-fechado" title="Chega no seu tempo" aria-label={`Dia ${d}, ainda fechado`}>
+            {d}
+          </span>
+        );
+      })}
+    </nav>
+  );
+}
 
 /* Caderno aberto com a caneta em cima: o ícone da peça. Local e não em
    Icones.tsx porque é pequeno e só três telas usam — mesmo padrão dos
@@ -262,7 +328,9 @@ export default function LerClient(p: Props) {
   // devolve o próximo dia, porque a página remonta com key={diaAtual})
   const [marcado, setMarcado] = useState(false);
   const [festa, setFesta] = useState(false);
-  const [mostrarPerola, setMostrarPerola] = useState(p.jaLeuHoje);
+  const passado = p.passado;
+  // num dia já andado a pérola não é prêmio a revelar: ela já leu, já ganhou
+  const [mostrarPerola, setMostrarPerola] = useState(p.jaLeuHoje || !!passado);
   const [pendente, startTransition] = useTransition();
   const jaMontou = useRef(false);
 
@@ -338,7 +406,16 @@ export default function LerClient(p: Props) {
 
   return (
     <main className="hoje">
+      {/* ── um dia já andado: a volta pra Hoje fica no topo, sempre à vista ── */}
+      {passado && (
+        <section className="volta">
+          <Link href="/ler" className="volta-link">← Voltar para hoje</Link>
+          <span className="volta-info">Você leu este dia em {porExtenso(passado.lidoEm)}</span>
+        </section>
+      )}
+
       {/* ── CANDEIA: a sequência, com a chama viva ── */}
+      {!passado && (
       <section className={"candeia-box" + (festa ? " festa" : "")}>
         <div className="candeia-luz" aria-hidden />
         <div className="candeia-ico">
@@ -359,10 +436,11 @@ export default function LerClient(p: Props) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Recomeço com Memória: quem quebrou a sequência não leva bronca.
           O maior churn de app de streak é o dia seguinte à quebra. */}
-      {quebrou && (
+      {!passado && quebrou && (
         <p className="recomeco">
           Seu recorde foi de <b>{p.recorde} dias</b>, e você já tem{" "}
           <b>{p.espigas} dias na Palavra</b>. A graça é nova a cada manhã. Recomece de onde
@@ -371,6 +449,7 @@ export default function LerClient(p: Props) {
       )}
 
       {/* ── A SEARA ── */}
+      {!passado && (
       <section className="lavra-box">
         <header>
           <span className="lb-kick">
@@ -387,6 +466,7 @@ export default function LerClient(p: Props) {
             : "No tempo próprio ceifaremos, se não desfalecermos."}
         </p>
       </section>
+      )}
 
       {/* ── A LEITURA DE HOJE ── */}
       <section className="leitura">
@@ -404,6 +484,12 @@ export default function LerClient(p: Props) {
         <div className="lt-barra">
           <i style={{ width: `${Math.max(3, p.progressoPct)}%` }} />
         </div>
+        <Trilha
+          total={p.totalDias}
+          andados={p.diasAndados}
+          emAndamento={passado ? passado.diaEmAndamento : p.diaAtual}
+          vendo={p.diaAtual}
+        />
 
         {p.texto ? (
           <div className="lt-texto">{p.texto}</div>
@@ -414,6 +500,25 @@ export default function LerClient(p: Props) {
           </div>
         )}
 
+        {passado ? (
+          <>
+            <div className="lt-lido">
+              <IconeEspiga size={15} /> Lido em {porExtenso(passado.lidoEm)}
+            </div>
+            <div className="lt-folhear">
+              {passado.anterior ? (
+                <Link href={`/ler/dia/${passado.anterior}`} className="lt-folha">← Dia {passado.anterior}</Link>
+              ) : (
+                <span />
+              )}
+              {passado.seguinte ? (
+                <Link href={`/ler/dia/${passado.seguinte}`} className="lt-folha">Dia {passado.seguinte} →</Link>
+              ) : (
+                <Link href="/ler" className="lt-folha">Hoje →</Link>
+              )}
+            </div>
+          </>
+        ) : (
         <div className="lt-acao">
           <Particulas ativo={festa} />
           <button
@@ -431,8 +536,9 @@ export default function LerClient(p: Props) {
                   : "Li hoje"}
           </button>
         </div>
+        )}
 
-        {!marcado && !p.concluido && (
+        {!passado && !marcado && !p.concluido && (
           <p className="lt-mini">
             {p.jaLeuHoje
               ? "A sua sequência de hoje já está contada. Siga lendo à vontade — o caminho anda junto."
@@ -538,7 +644,7 @@ export default function LerClient(p: Props) {
         </div>
       </section>
 
-      {p.progressoPct >= 100 && (
+      {!passado && p.progressoPct >= 100 && (
         <Link href="/planos" className="proximo">
           Você terminou este caminho. Escolher o próximo →
         </Link>
@@ -604,6 +710,39 @@ export default function LerClient(p: Props) {
         .lt-dia span{font-size:11.5px;color:var(--muted)}
         .lt-barra{height:7px;border-radius:99px;background:var(--line);overflow:hidden;margin:18px 0 22px}
         .lt-barra i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#C9A85C,#6A7A42);transition:width .9s cubic-bezier(.16,1,.3,1)}
+
+        /* ---------- A TRILHA DOS DIAS ----------
+           dourado = já andou (abre de novo) · contorno = hoje · apagado = fechado.
+           Classes com prefixo tr- de propósito: .hoje é o <main> desta tela. */
+        .trilha{display:flex;flex-wrap:wrap;gap:6px 5px;margin:-8px 0 22px}
+        .tr-dia{
+          display:inline-flex;align-items:center;justify-content:center;
+          width:26px;height:26px;border-radius:50%;
+          font-size:11px;font-weight:700;letter-spacing:0;line-height:1;
+          transition:transform .2s,box-shadow .2s;
+        }
+        .tr-dia.tr-andou{background:linear-gradient(140deg,#D7B96C,#B8933F);color:#3A2E1D;box-shadow:0 4px 10px -6px rgba(143,109,30,.8)}
+        a.tr-dia.tr-andou:hover{transform:translateY(-2px);box-shadow:0 8px 14px -8px rgba(143,109,30,.9)}
+        .tr-dia.tr-hoje{background:var(--paper);color:var(--ouro);border:1.5px solid var(--ouro)}
+        a.tr-dia.tr-hoje:hover{transform:translateY(-2px)}
+        .tr-dia.tr-aqui{box-shadow:0 0 0 3px color-mix(in srgb,var(--ouro) 28%,transparent)}
+        .tr-dia.tr-fechado{background:color-mix(in srgb,var(--areia) 30%,var(--paper));color:#B3A68E;border:1px solid var(--line);cursor:default}
+
+        /* ---------- um dia já andado, aberto de novo ---------- */
+        .volta{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;padding:2px 4px}
+        .volta-link{font-size:13.5px;font-weight:700;color:var(--ouro)}
+        .volta-link:hover{text-decoration:underline}
+        .volta-info{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--muted)}
+        .lt-lido{
+          display:flex;align-items:center;justify-content:center;gap:8px;
+          margin-top:24px;padding:14px;border-radius:17px;
+          font-weight:700;font-size:14.5px;color:var(--ouro);
+          background:color-mix(in srgb,var(--areia) 46%,var(--paper));
+          border:1px solid color-mix(in srgb,var(--ambar) 50%,var(--line));
+        }
+        .lt-folhear{display:flex;justify-content:space-between;gap:12px;margin-top:12px}
+        .lt-folha{font-size:13px;font-weight:700;color:var(--ouro);padding:8px 4px}
+        .lt-folha:hover{text-decoration:underline}
 
         .lt-texto{
           white-space:pre-line;font-family:var(--serif);font-size:17px;line-height:1.78;color:#33291B;
@@ -744,6 +883,8 @@ export default function LerClient(p: Props) {
         .proximo:hover{transform:translateY(-2px);background:#2E2416}
 
         @media(max-width:620px){
+          .trilha{gap:5px 4px}
+          .tr-dia{width:23px;height:23px;font-size:10px}
           .candeia-box{flex-wrap:wrap;gap:14px}
           .candeia-lado{margin-left:0;width:100%;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(232,217,174,.18)}
           .cl-item{text-align:left}
@@ -752,7 +893,7 @@ export default function LerClient(p: Props) {
         @media (prefers-reduced-motion: reduce){
           .cd{animation:none}
           .candeia-luz,.candeia-ico{animation:none}
-          .lt-barra i,.lt-btn{transition:none}
+          .lt-barra i,.lt-btn,.tr-dia{transition:none}
           .perola{animation:none}
         }
       `}</style>

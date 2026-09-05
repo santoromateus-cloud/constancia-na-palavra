@@ -40,6 +40,32 @@ export type EstadoLeitura =
       /** As camadas do dia (migration 009/010). Só existem nos caminhos que
        *  têm essa prática — nos outros vêm null e a tela não mostra nada. */
       camadas: CamadasDoDia
+      /** Os dias deste caminho que ela já andou (têm check-in), em ordem. É o
+       *  que desenha a trilha e diz quais dias ela pode voltar a abrir. */
+      diasAndados: number[]
+    }
+
+/** Um dia já andado, aberto de novo: o mesmo conteúdo da tela de Hoje daquele dia,
+ *  mais a data em que ela leu e os vizinhos pra folhear. */
+export type DiaAndado =
+  | { ok: false; motivo: 'sem_plano' | 'invalido' | 'hoje' | 'nao_andado' }
+  | {
+      ok: true
+      plano: PlanoLeitura
+      dia: number
+      diaAtual: number
+      totalDias: number
+      progressoPct: number
+      diasAndados: number[]
+      /** data (ISO) do check-in daquele dia */
+      lidoEm: string
+      referencia: string | null
+      texto: string | null
+      camadas: CamadasDoDia
+      perola: { n: number; texto: string } | null
+      /** o dia andado logo antes / logo depois deste (null se não houver) */
+      anterior: number | null
+      seguinte: number | null
     }
 
 /** O que vem POR CIMA do texto bíblico naquele dia, quando o caminho tem.
@@ -164,6 +190,58 @@ export async function getPlanoAtivo(): Promise<UserPlanRow | null> {
   return (data as UserPlanRow | null) ?? null
 }
 
+type ClienteSessao = Awaited<ReturnType<typeof createClient>>
+
+/** O conteúdo de UM dia do caminho: referência, texto e camadas.
+ *  Duas tentativas de propósito. O select COM as camadas depende das colunas
+ *  da migration 009; num banco onde ela ainda não rodou, o PostgREST devolve
+ *  erro de coluna inexistente e a leitora ficaria sem o TEXTO do dia por causa
+ *  de um recurso que ela nem tem. Se o primeiro select falhar, cai pro select
+ *  antigo e a tela funciona igual, só sem as camadas.
+ *  (Regra que este projeto aprendeu do jeito ruim: o código nunca pode quebrar
+ *  esperando um asset ou uma migration que ainda não subiu.) */
+async function lerDiaDoPlano(
+  supabase: ClienteSessao,
+  planId: string,
+  dia: number,
+): Promise<{ referencia: string | null; texto: string | null; camadas: CamadasDoDia }> {
+  let dayRow: Record<string, string | null> | null = null
+  const comCamadas = await supabase
+    .from('reading_plan_days')
+    .select(
+      'referencia, texto, comentario, comentario_autor, comentario_obra, geografia, geografia_lugar, curiosidade, fonte',
+    )
+    .eq('plan_id', planId)
+    .eq('dia', dia)
+    .maybeSingle()
+  if (comCamadas.error) {
+    const basico = await supabase
+      .from('reading_plan_days')
+      .select('referencia, texto')
+      .eq('plan_id', planId)
+      .eq('dia', dia)
+      .maybeSingle()
+    dayRow = (basico.data ?? null) as Record<string, string | null> | null
+  } else {
+    dayRow = (comCamadas.data ?? null) as Record<string, string | null> | null
+  }
+  if (!dayRow) return { referencia: null, texto: null, camadas: SEM_CAMADAS }
+  const d = dayRow
+  return {
+    referencia: d.referencia,
+    texto: d.texto,
+    camadas: {
+      comentario: d.comentario ?? null,
+      comentarioAutor: d.comentario_autor ?? null,
+      comentarioObra: d.comentario_obra ?? null,
+      geografia: d.geografia ?? null,
+      geografiaLugar: d.geografia_lugar ?? null,
+      curiosidade: d.curiosidade ?? null,
+      fonte: d.fonte ?? null,
+    },
+  }
+}
+
 /** Estado completo da tela /ler: dia atual, texto, streak, progresso, conclusão. */
 export async function getEstadoLeitura(): Promise<EstadoLeitura> {
   const supabase = await createClient()
@@ -189,56 +267,14 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
     .select('data, dia')
     .eq('user_id', user.id)
     .eq('plan_id', up.plan_id)
-  const datas = ((checks ?? []) as { data: string; dia: number }[]).map((c) => c.data)
+  const linhas = (checks ?? []) as { data: string; dia: number }[]
+  const datas = linhas.map((c) => c.data)
+  const diasAndados = linhas.map((c) => c.dia).sort((a, b) => a - b)
   const diasLidos = datas.length
   const concluido = diasLidos >= p.total_dias
   const diaAtual = Math.min(up.dia_atual, p.total_dias)
 
-  let referencia: string | null = null
-  let texto: string | null = null
-  let camadas: CamadasDoDia = SEM_CAMADAS
-  // Duas tentativas de propósito. O select COM as camadas depende das colunas
-  // da migration 009; num banco onde ela ainda não rodou, o PostgREST devolve
-  // erro de coluna inexistente e a leitora ficaria sem o TEXTO do dia por causa
-  // de um recurso que ela nem tem. Se o primeiro select falhar, cai pro select
-  // antigo e a tela funciona igual, só sem as camadas.
-  // (Regra que este projeto aprendeu do jeito ruim: o código nunca pode quebrar
-  // esperando um asset ou uma migration que ainda não subiu.)
-  let dayRow: Record<string, string | null> | null = null
-  const comCamadas = await supabase
-    .from('reading_plan_days')
-    .select(
-      'referencia, texto, comentario, comentario_autor, comentario_obra, geografia, geografia_lugar, curiosidade, fonte',
-    )
-    .eq('plan_id', up.plan_id)
-    .eq('dia', diaAtual)
-    .maybeSingle()
-  if (comCamadas.error) {
-    const basico = await supabase
-      .from('reading_plan_days')
-      .select('referencia, texto')
-      .eq('plan_id', up.plan_id)
-      .eq('dia', diaAtual)
-      .maybeSingle()
-    dayRow = (basico.data ?? null) as Record<string, string | null> | null
-  } else {
-    dayRow = (comCamadas.data ?? null) as Record<string, string | null> | null
-  }
-
-  if (dayRow) {
-    const d = dayRow as Record<string, string | null>
-    referencia = d.referencia
-    texto = d.texto
-    camadas = {
-      comentario: d.comentario ?? null,
-      comentarioAutor: d.comentario_autor ?? null,
-      comentarioObra: d.comentario_obra ?? null,
-      geografia: d.geografia ?? null,
-      geografiaLugar: d.geografia_lugar ?? null,
-      curiosidade: d.curiosidade ?? null,
-      fonte: d.fonte ?? null,
-    }
-  }
+  const { referencia, texto, camadas } = await lerDiaDoPlano(supabase, up.plan_id, diaAtual)
 
   const progressoPct = p.total_dias > 0 ? Math.round((diasLidos / p.total_dias) * 100) : 0
 
@@ -282,6 +318,73 @@ export async function getEstadoLeitura(): Promise<EstadoLeitura> {
     recorde,
     perola,
     camadas,
+    diasAndados,
+  }
+}
+
+/**
+ * Abre de novo um dia que ela JÁ ANDOU no caminho ativo (04/09/2026, pedido do
+ * Mateus: "precisa ser possível voltar e ver os mapas e textos anteriores").
+ *
+ * Regra decidida por ele: só os dias andados abrem; os dias à frente ficam
+ * fechados — o caminho segue um dia por vez, que é a constância que o produto
+ * vende. O dia em andamento não passa por aqui: é a tela de Hoje.
+ */
+export async function getDiaAndado(dia: number): Promise<DiaAndado> {
+  if (!Number.isInteger(dia) || dia < 1) return { ok: false, motivo: 'invalido' }
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, motivo: 'sem_plano' }
+
+  const up = await getPlanoAtivo()
+  if (!up) return { ok: false, motivo: 'sem_plano' }
+
+  const { data: plano } = await supabase
+    .from('reading_plans')
+    .select('id, slug, titulo, descricao, total_dias, ordem')
+    .eq('id', up.plan_id)
+    .maybeSingle()
+  if (!plano) return { ok: false, motivo: 'sem_plano' }
+  const p = plano as PlanoLeitura
+  if (dia > p.total_dias) return { ok: false, motivo: 'invalido' }
+
+  const { data: checks } = await supabase
+    .from('checkins')
+    .select('data, dia')
+    .eq('user_id', user.id)
+    .eq('plan_id', up.plan_id)
+  const linhas = (checks ?? []) as { data: string; dia: number }[]
+  const diasAndados = linhas.map((c) => c.dia).sort((a, b) => a - b)
+  const diaAtual = Math.min(up.dia_atual, p.total_dias)
+  const concluido = linhas.length >= p.total_dias
+
+  // o dia em andamento mora em /ler — menos no caminho concluído, em que o
+  // último dia é ao mesmo tempo "atual" e andado, e aí pode ser folheado
+  if (dia === diaAtual && !concluido) return { ok: false, motivo: 'hoje' }
+  const check = linhas.find((c) => c.dia === dia)
+  if (!check) return { ok: false, motivo: 'nao_andado' }
+
+  const { referencia, texto, camadas } = await lerDiaDoPlano(supabase, up.plan_id, dia)
+  const progressoPct = p.total_dias > 0 ? Math.round((linhas.length / p.total_dias) * 100) : 0
+  const i = diasAndados.indexOf(dia)
+
+  return {
+    ok: true,
+    plano: p,
+    dia,
+    diaAtual,
+    totalDias: p.total_dias,
+    progressoPct,
+    diasAndados,
+    lidoEm: check.data,
+    referencia,
+    texto,
+    camadas,
+    perola: extrairPerola(texto, dia),
+    anterior: i > 0 ? diasAndados[i - 1] : null,
+    seguinte: i >= 0 && i < diasAndados.length - 1 ? diasAndados[i + 1] : null,
   }
 }
 
