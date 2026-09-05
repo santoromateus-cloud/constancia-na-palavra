@@ -3,6 +3,7 @@ import { getEstadoLeitura } from "@/lib/leitura";
 import { getEntradaDoDia } from "@/lib/caderno";
 import { IconeCandeia, IconeEspiga, IconePerola } from "../Icones";
 import LerClient from "./LerClient";
+import MapaLugar from "./MapaLugar";
 
 export const metadata = { title: "Minha leitura de hoje — Constância na Palavra" };
 export const dynamic = "force-dynamic";
@@ -71,6 +72,10 @@ export default async function Ler() {
       espigas={estado.espigas}
       perola={estado.perola}
       camadas={estado.camadas}
+      /* O mapa do dia (caminho "Onde tudo aconteceu") nasce aqui, no servidor: o
+         litoral (56 KB) não vai pro navegador — só o SVG do dia. Sem lugar mapeado
+         o componente devolve null e o card segue só com o texto. */
+      mapa={<MapaLugar lugar={estado.camadas.geografiaLugar} />}
       entrada={
         entrada
           ? {

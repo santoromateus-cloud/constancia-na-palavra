@@ -61,6 +61,8 @@ type Props = {
   perola: Perola;
   camadas: Camadas;
   entrada: EntradaSalva;
+  /** o mapa do dia, já renderizado no servidor (ou null) */
+  mapa?: React.ReactNode;
 };
 
 /* Caderno aberto com a caneta em cima: o ícone da peça. Local e não em
@@ -89,7 +91,7 @@ function IconeCaderno({ size = 15 }: { size?: number }) {
 
    O crédito nunca é opcional: o autor e a obra vêm coladas na citação,
    e o banco recusa comentário sem os dois (CHECK da migration 009). */
-function Camadas({ c }: { c: Camadas }) {
+function Camadas({ c, mapa }: { c: Camadas; mapa?: React.ReactNode }) {
   const temComentario = Boolean(c.comentario && c.comentarioAutor && c.comentarioObra);
   if (!temComentario && !c.geografia && !c.curiosidade) return null;
 
@@ -114,6 +116,7 @@ function Camadas({ c }: { c: Camadas }) {
             <IconeGeografia size={15} /> Onde foi
           </span>
           {c.geografiaLugar && <h3>{c.geografiaLugar}</h3>}
+          {mapa}
           <p>{c.geografia}</p>
         </article>
       )}
@@ -439,7 +442,7 @@ export default function LerClient(p: Props) {
       </section>
 
       {/* ── AS CAMADAS: comentário, geografia e curiosidade do dia ── */}
-      <Camadas c={p.camadas} />
+      <Camadas c={p.camadas} mapa={p.mapa} />
 
       {/* ── A PÉROLA: a joia que ela guarda do que acabou de ler ── */}
       {mostrarPerola && p.perola && (

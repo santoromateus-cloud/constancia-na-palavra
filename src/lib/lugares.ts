@@ -1,4 +1,4 @@
-// ── Os lugares do caminho "Onde tudo aconteceu" ──────────────────────────────────────
+// ── Os lugares do caminho "Onde tudo aconteceu" ──────────────────────────────
 // Cada dia do caminho tem um `geografia_lugar` no banco (ex.: "Ur, Harã e Siquém").
 // Esta tabela casa esse texto, normalizado, com pontos de verdade (latitude e
 // longitude) e, nos dias em que o lugar é um TRAJETO, com a rota na ordem da
